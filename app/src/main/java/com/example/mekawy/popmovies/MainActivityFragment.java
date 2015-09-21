@@ -30,6 +30,9 @@ public class MainActivityFragment extends Fragment {
         Grid_ImageAdapter movies_adapter=new Grid_ImageAdapter(getActivity());
         Image_Grid_View.setAdapter(movies_adapter);
 
+        Fetch_Task newFetchtask=new Fetch_Task(getActivity());
+        newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+
         return rootview;
     }
 }

@@ -2,6 +2,7 @@ package com.example.mekawy.popmovies;
 
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 
@@ -39,7 +40,10 @@ public class Utility {
     }
 
 
-
+    public static String getsortmethod(Context context){
+        return  PreferenceManager.getDefaultSharedPreferences(context).
+                getString(context.getString(R.string.setting_sort_key),context.getString(R.string.sort_popularity_desc));
+    }
 
 
 
