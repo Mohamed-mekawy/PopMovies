@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="sort_options">
+        <item>@string/sort_popularity.desc</item>
+        <item>@string/sort_vote_average.desc</item>
+    </string-array>
+
+    <string-array name="sort_options_readable">
+        <item>@string/sort_popularity.desc.human</item>
+        <item>@string/sort_vote_average.desc.human</item>
+    </string-array>
+
+</resources>
