@@ -23,6 +23,12 @@ public class Fetch_Task extends AsyncTask<String,Void,String>{
 
 
     @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+    }
+
+    @Override
     protected String doInBackground(String... strings) {
 
         BufferedReader reader=null;
