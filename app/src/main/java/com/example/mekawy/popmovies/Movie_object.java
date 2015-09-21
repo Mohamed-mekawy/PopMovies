@@ -11,18 +11,57 @@ public class Movie_object {
     private String Release_date;
 
 
-    public void Movie_object(String title,String main_poster,String thum_poster,String desc,String date,double rate){
-        Original_title=title;
-        mainPoster=main_poster;
-        Poster_thumbnail=thum_poster;
-        Overview=desc;
-        Release_date=date;
-        Rating=rate;
+
+    public void set_Original_title(String name){
+        this.Original_title=name;
     }
 
-    //to return the address of main poster
-    public String get_main_poster (){
+    public void set_Grid_Poster(String name){
+        this.mainPoster=name;
+    }
+
+    public void set_thum_Poster(String name){
+        this.Poster_thumbnail=name;
+    }
+
+    public void set_Overview(String name){
+        this.Overview=name;
+    }
+
+    public void set_Release_date(String name){
+        this.Release_date=name;
+    }
+
+    public void set_Rating(double name){
+        this.Rating=name;
+    }
+
+
+    public String get_Original_title(){
+        return this.Original_title;
+    }
+
+    public String get_Grid_Poster(){
         return this.mainPoster;
     }
+
+    public String get_thum_Poster(){
+        return this.Poster_thumbnail;
+    }
+
+    public String get_Overview(){
+       return this.Overview;
+    }
+
+    public String get_Release_date(){
+        return this.Release_date;
+    }
+
+    public double get_Rating(){
+        return this.Rating;
+    }
+
+
+
 
 }

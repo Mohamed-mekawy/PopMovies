@@ -25,6 +25,8 @@ public class Fetch_Task extends AsyncTask<String,Void,String>{
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        Parser_Task newParser=new Parser_Task();
+        newParser.execute(s);
 
     }
 
