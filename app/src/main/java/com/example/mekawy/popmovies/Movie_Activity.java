@@ -1,10 +1,18 @@
 package com.example.mekawy.popmovies;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.mekawy.popmovies.Data.DB_Contract;
+import com.example.mekawy.popmovies.Data.Db_OpenHelper;
 
 
 public class Movie_Activity extends ActionBarActivity {
@@ -13,6 +21,7 @@ public class Movie_Activity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_);
+
     }
 
 
