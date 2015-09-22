@@ -9,4 +9,5 @@
     <string name="sort_vote_average.desc">vote_average.desc</string>
     <string name="sort_popularity.desc.human">Sort by popularity</string>
     <string name="sort_vote_average.desc.human">Sort by Vote</string>
+    <string name="title_activity_movie_">Movie_Activity</string>
 </resources>

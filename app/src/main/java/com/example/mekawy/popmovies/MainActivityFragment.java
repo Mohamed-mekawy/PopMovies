@@ -1,20 +1,20 @@
 package com.example.mekawy.popmovies;
 
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MainActivityFragment extends Fragment {
 
     private GridView Image_Grid_View;
@@ -22,6 +22,7 @@ public class MainActivityFragment extends Fragment {
 
 
     public MainActivityFragment() {
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -36,19 +37,30 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootview= inflater.inflate(R.layout.movies_grid, container, false);
            Image_Grid_View=(GridView) rootview.findViewById(R.id.movies_grid);
+            //No Data at beginig
+            final ArrayList<Movie_object> movies_list=new ArrayList<Movie_object>();
+            mAdapter=new Grid_ImageAdapter(getActivity(),movies_list);
+            Image_Grid_View.setAdapter(mAdapter);
 
-            //Dummy data
-            Movie_object []t=new Movie_object[2];
-            t[0]=new Movie_object();
-            t[1]=new Movie_object();
+        Image_Grid_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-            ArrayList<Movie_object> p=new ArrayList<Movie_object>();
-            p.add(t[0]);
-            p.add(t[1]);
-           mAdapter=new Grid_ImageAdapter(getActivity(),p);
+                Intent mIntent=new Intent(getActivity(),Movie_Activity.class);
 
-           Image_Grid_View.setAdapter(mAdapter);
+                HashMap<String,String> passed_val=new HashMap<String, String>();
 
+                passed_val.put("Title",movies_list.get(i).get_Original_title());
+                passed_val.put("Image",movies_list.get(i).get_Grid_Poster());
+                passed_val.put("Date",movies_list.get(i).get_Release_date());
+                passed_val.put("Rate", Double.toString(movies_list.get(i).get_Rating()) + "/10");
+                passed_val.put("Desc",movies_list.get(i).get_Overview());
+
+                mIntent.putExtra("movie_data",passed_val);
+
+                startActivity(mIntent);
+            }
+        });
 
         return rootview;
     }

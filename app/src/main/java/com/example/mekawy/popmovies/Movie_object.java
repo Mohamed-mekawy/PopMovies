@@ -1,6 +1,9 @@
 package com.example.mekawy.popmovies;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 public class Movie_object {
 
     private String Original_title;
@@ -60,8 +63,6 @@ public class Movie_object {
     public double get_Rating(){
         return this.Rating;
     }
-
-
 
 
 }
