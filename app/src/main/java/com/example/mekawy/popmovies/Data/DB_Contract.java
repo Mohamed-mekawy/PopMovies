@@ -26,7 +26,7 @@ public class DB_Contract {
     public static class MOST_POPULAR_TABLE implements BaseColumns {
         public static final String TABLE_NAME = "Tpop";
 
-        public static final String OWM_COLUMN_TAG = "id";
+        public static final String OWM_COLUMN_MOVIE_ID = "movie_id";
         public static final String OWM_COLUMN_TITLE = "title";
         public static final String OWM_COLUMN_IS_FAVORITE="isFav";
     }
@@ -35,7 +35,7 @@ public class DB_Contract {
     public static class VOTE_TABLE implements BaseColumns {
         public static final String TABLE_NAME = "Tvote";
 
-        public static final String OWM_COLUMN_TAG = "id";
+        public static final String OWM_COLUMN_MOVIE_ID= "movie_id";
         public static final String OWM_COLUMN_TITLE = "title";
         public static final String OWM_COLUMN_IS_FAVORITE="isFav";
     }
@@ -43,7 +43,7 @@ public class DB_Contract {
     public static class FAVORITE_TABLE implements BaseColumns{
         public static final String TABLE_NAME = "TFav";
 
-        public static final String OWM_COLUMN_TAG = "id";
+        public static final String OWM_COLUMN_MOVIE_ID = "id";
         public static final String OWM_COLUMN_TITLE = "title";
     }
 

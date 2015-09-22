@@ -23,34 +23,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Dummy test
-        SQLiteDatabase db;
-        Db_OpenHelper temp=new Db_OpenHelper(getApplicationContext());
-        db=temp.getWritableDatabase();
-        ContentValues x=new ContentValues();
-
-        String title="movie1";
-        int tag=658531;
-        String ov="not overview";
-        String poster="path of poster";
-        int fav=1;// movie in fav list
-        String date="2015";
-        double avg=7.8;
-
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_TAG,tag);
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_TITLE,title);
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_OVERVIEW,ov);
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_POSTER_PATH,poster);
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_IS_FAVORITE, fav);
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_RELEASE_DATE,date);
-        x.put(DB_Contract.MOVIES_TABLE.OWM_COLUMN_VOTE_AVERAGE, avg);
-
-        Long retLong=db.insert(DB_Contract.MOVIES_TABLE.TABLE_NAME,null,x);
-
-        if(retLong!=-1 ) Log.i("TestDB",Long.toString(retLong));
-
-
-
     }
 
 
