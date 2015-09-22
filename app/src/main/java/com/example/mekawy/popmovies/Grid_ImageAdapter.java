@@ -2,66 +2,63 @@ package com.example.mekawy.popmovies;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 //Test dummy Data
-public class Grid_ImageAdapter extends BaseAdapter {
+public class Grid_ImageAdapter extends ArrayAdapter<Movie_object> {
 
-    private Context mContext;
+    private Context gContext;
+    private int resize_width;
+    private int resize_hight;
+    private String http_width;
+    private String IMAGE_BASE="http://image.tmdb.org/t/p/w";
 
-    private static int Resize_width;
-    private static int Resize_hight;
-    private static int Http_width;
+    public Grid_ImageAdapter(Context context, ArrayList<Movie_object> objects) {
+        super(context, 0, objects);
+        gContext=context;
 
-    public Grid_ImageAdapter(Context pContext){
-        mContext =pContext;
-        HashMap<String,Integer> mSizes=Utility.Get_Prefered_Dimension(pContext);
-        Resize_width=mSizes.get("resize_width");
-        Resize_hight=mSizes.get("resize_hight");
-        Http_width=mSizes.get("Http_width");
-    }
+        HashMap<String,Integer> Dimen=Utility.Get_Prefered_Dimension(gContext);
 
-
-    @Override
-    public int getCount() {
-        return 0;
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return null;
+        resize_width=Dimen.get("resize_width");
+        resize_hight=Dimen.get("resize_hight");
+        http_width=Integer.toString(Dimen.get("Http_width"));
+        IMAGE_BASE+=http_width;
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
 
+        Movie_object obj=getItem(position);
+        ImageView mImageView;
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ImageView mImage;
-
-        if(view==null)
-            mImage=new ImageView(mContext);
+        if(convertView==null)
+            mImageView=new ImageView(gContext);
         else
-            mImage=(ImageView) view;
+            mImageView=(ImageView) convertView;
+        try {
+            Picasso.with(getContext()).
+                    load(IMAGE_BASE+obj.get_Grid_Poster()).
+                    resize(resize_width, resize_hight).
+                    into(mImageView);
 
-        Picasso.with(mContext).
-                load("http://image.tmdb.org/t/p/w"+Integer.toString(Http_width)+"/9gm3lL8JMTTmc3W4BmNMCuRLdL8.jpg").
-                resize(Resize_width, Resize_hight).
-                into(mImage);
+            }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        return mImage;
+        return mImageView;
     }
 
 }

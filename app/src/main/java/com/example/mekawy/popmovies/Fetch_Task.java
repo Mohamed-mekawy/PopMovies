@@ -17,15 +17,17 @@ import java.net.URL;
 public class Fetch_Task extends AsyncTask<String,Void,String>{
 
     Context mContext;
-    public  Fetch_Task(Context context){
+    Grid_ImageAdapter mAdapter;
+    public  Fetch_Task(Context context,Grid_ImageAdapter Fadapter){
         mContext=context;
+        mAdapter=Fadapter;
     }
 
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Parser_Task newParser=new Parser_Task();
+        Parser_Task newParser=new Parser_Task(mContext,mAdapter);
         newParser.execute(s);
 
     }

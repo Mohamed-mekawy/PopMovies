@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +15,21 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
 
     private Movie_object[] temp_objects;
 
+    private Context mContext;
+    private Grid_ImageAdapter mAdapter;
+
+    public Parser_Task(Context C,Grid_ImageAdapter fadapter){
+        mContext=C;
+        mAdapter=fadapter;
+    }
+
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    protected void onPostExecute(Movie_object[] movie_objects) {
+        super.onPostExecute(movie_objects);
+            mAdapter.clear();
+            for(Movie_object movie:movie_objects){
+                mAdapter.add(movie);
+            }
     }
 
     @Override
@@ -50,6 +64,6 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
             e.printStackTrace();
         }
 
-        return null;
+        return temp_objects;
     }
 }
