@@ -3,6 +3,7 @@ package com.example.mekawy.popmovies;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,10 +47,10 @@ public class MainActivityFragment extends Fragment {
 
         Image_Grid_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent mIntent=new Intent(getActivity(),Movie_Activity.class);
+                mIntent.putExtra(Intent.EXTRA_TEXT,Integer.toString(movies_records.get(position)));
+                startActivity(mIntent);
             }
         });
 

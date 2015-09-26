@@ -19,8 +19,11 @@ public class dbContract {
 
     public static final String OWM_COMMON_COLUMN_TAG = "id";
     public static final String OWM_COMMON_POSTER_PATH = "poster_path";
-
-
+    public static final String OWM_COMMON_COLUMN_TITLE = "original_title";
+    public static final String OWM_COMMON_COLUMN_OVERVIEW = "overview";
+    public static final String OWM_COMMON_COLUMN_RELEASE_DATE = "release_date";
+    public static final String OWM_COMMON_COLUMN_VOTE_AVERAGE = "vote_average";
+    public static final String OWM_COMMON_COLUMN_IS_FAVORITE="isFav";
 
 
     public static final class POP_MOVIES_TABLE implements BaseColumns {

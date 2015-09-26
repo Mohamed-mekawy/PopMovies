@@ -123,7 +123,6 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
             for(int index=0;index<results_array.length();index++){
 
-
                 JSONObject Movie_object=results_array.getJSONObject(index);
                 ContentValues mContent= GET_MOVIE_CONTENT(Movie_object);
                 Content_vector.add(mContent);
