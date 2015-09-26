@@ -57,7 +57,6 @@ public class dbOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_POP_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_FAV_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_VOTE_MOVIES_TABLE);
-
     }
 
     @Override

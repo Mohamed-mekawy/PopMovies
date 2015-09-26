@@ -35,6 +35,11 @@
                 android:value="com.example.mekawy.popmovies.MainActivity" />
         </activity>
 
+
+        <provider
+            android:authorities="com.example.mekawy.popmovies"
+            android:name=".Data.MoviesProvider"/>
+
     </application>
 
 </manifest>
