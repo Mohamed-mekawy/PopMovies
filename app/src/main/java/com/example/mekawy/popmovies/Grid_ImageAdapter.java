@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 
-//Test dummy Data
 public class Grid_ImageAdapter extends ArrayAdapter<Movie_object> {
 
     private Context gContext;

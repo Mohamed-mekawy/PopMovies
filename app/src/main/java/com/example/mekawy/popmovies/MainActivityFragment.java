@@ -1,6 +1,9 @@
 package com.example.mekawy.popmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -14,7 +17,7 @@ import android.widget.GridView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
 public class MainActivityFragment extends Fragment {
 
     private GridView Image_Grid_View;
