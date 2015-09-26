@@ -2,9 +2,12 @@ package com.example.mekawy.popmovies;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
+
+import com.example.mekawy.popmovies.Data.dbContract;
 
 import java.util.HashMap;
 
@@ -44,6 +47,21 @@ public class Utility {
         return  PreferenceManager.getDefaultSharedPreferences(context).
                 getString(context.getString(R.string.setting_sort_key),context.getString(R.string.sort_popularity_desc));
     }
+
+
+    public static Uri get_content_uri(Context context){
+        String mode=getsortmethod(context);
+        Uri ret_uri=null;
+
+        if(mode.equals(context.getString(R.string.sort_popularity_desc)))
+            ret_uri=dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+
+        else if(mode.equals(context.getString(R.string.sort_vote_average_desc)))
+            ret_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
+
+        return ret_uri;
+    }
+
 
 
 

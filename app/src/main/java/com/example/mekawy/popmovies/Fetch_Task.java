@@ -13,15 +13,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 
 public class Fetch_Task extends AsyncTask<String,Void,String>{
 
     private Context mContext;
-    private Grid_ImageAdapter mAdapter;
+    private gridAdapter mAdapter;
     private String pushed_mode;
 
-    public  Fetch_Task(Context context,Grid_ImageAdapter Fadapter){
+    public  Fetch_Task(Context context,gridAdapter Fadapter){
         mContext=context;
         mAdapter=Fadapter;
     }

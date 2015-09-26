@@ -17,6 +17,12 @@ public class dbContract {
     public static final String PATH_POP_MOVIES = "pop_movies";
     public static final String PATH_VOTE_MOVIES = "vote_movies";
 
+    public static final String OWM_COMMON_COLUMN_TAG = "id";
+    public static final String OWM_COMMON_POSTER_PATH = "poster_path";
+
+
+
+
     public static final class POP_MOVIES_TABLE implements BaseColumns {
 
         public static final Uri CONTENT_URI =

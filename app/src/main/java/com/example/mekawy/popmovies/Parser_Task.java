@@ -16,15 +16,15 @@ import org.json.JSONObject;
 
 import java.util.Vector;
 
-public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
+public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
-    private Movie_object[] temp_objects;
 
     private Context mContext;
-    private Grid_ImageAdapter mAdapter;
+    private gridAdapter mAdapter;
     private static String sort_mode;
 
     final String OWM_RESULTS="results";
+
 
     final String OWM_TAG="id";
     final String OWM_TITLE="original_title";
@@ -37,7 +37,7 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
 
 
 
-    public Parser_Task(Context C,Grid_ImageAdapter fadapter,String mode){
+    public Parser_Task(Context C,gridAdapter fadapter,String mode){
         mContext=C;
         mAdapter=fadapter;
         sort_mode=mode;
@@ -45,11 +45,13 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
 
 
     @Override
-    protected void onPostExecute(Movie_object[] movie_objects) {
+    protected void onPostExecute(Integer movie_objects) {
         super.onPostExecute(movie_objects);
 
         Uri Content_uri=null;
         String Images[];
+
+        int records[];
 
         if(sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
             Content_uri= dbContract.POP_MOVIES_TABLE.CONTENT_URI;
@@ -62,23 +64,24 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
                 null,
                 null
                 );
-        Images=new String[cur.getCount()];
+
+        records=new int[cur.getCount()];
 
         if (cur.moveToFirst()){
             do {
-                Images[cur.getPosition()]=cur.getString(cur.getColumnIndex(OWM_GRID_POSTER));
+                records[cur.getPosition()]=cur.getInt(cur.getColumnIndex(OWM_TAG));
             }while (cur.moveToNext());
         }
-
-        for(String image:Images){
-            Log.i("images",image);
-
-        }
+//
+//        for (Integer x:records){
+//            Log.i("records",Integer.toString(x));
+//        }
 
             mAdapter.clear();
-            for(Movie_object movie:movie_objects){
-                mAdapter.add(movie);
+            for(Integer rec:records){
+                mAdapter.add(rec);
             }
+
     }
 
 
@@ -110,17 +113,16 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
 
 
     @Override
-    protected Movie_object[] doInBackground(String... mString) {
-
+    protected Integer doInBackground(String... mString) {
+        int inserted_counter=0;
         try {
             JSONObject big_obj=new JSONObject(mString[0]);
             JSONArray results_array=big_obj.getJSONArray(OWM_RESULTS);
-            temp_objects=new Movie_object[results_array.length()];
 
             Vector<ContentValues> Content_vector=new Vector<ContentValues>(results_array.length());
 
             for(int index=0;index<results_array.length();index++){
-                temp_objects[index]=new Movie_object();
+
 
                 JSONObject Movie_object=results_array.getJSONObject(index);
                 ContentValues mContent= GET_MOVIE_CONTENT(Movie_object);
@@ -137,19 +139,13 @@ public class Parser_Task extends AsyncTask<String,Void,Movie_object[]>{
                 else if(sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
                     Content_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
 
-               int inserted_counter= mContext.getContentResolver().bulkInsert(Content_uri,Content_array);
+               inserted_counter= mContext.getContentResolver().bulkInsert(Content_uri,Content_array);
             }
-
-
-
-
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return temp_objects;
+        return inserted_counter;
     }
 }
