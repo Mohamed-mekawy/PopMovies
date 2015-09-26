@@ -31,12 +31,12 @@ public class dbContract {
 
         public static final String TABLE_NAME = "pop_movies";
 
-        public static final String OWM_COLUMN_TAG = "TAG";
-        public static final String OWM_COLUMN_TITLE = "title";
+        public static final String OWM_COLUMN_TAG = "id";
+        public static final String OWM_COLUMN_TITLE = "original_title";
         public static final String OWM_COLUMN_OVERVIEW = "overview";
-        public static final String OWM_COLUMN_RELEASE_DATE = "date";
-        public static final String OWM_COLUMN_POSTER_PATH = "poster";
-        public static final String OWM_COLUMN_VOTE_AVERAGE = "vote";
+        public static final String OWM_COLUMN_RELEASE_DATE = "release_date";
+        public static final String OWM_COLUMN_POSTER_PATH = "poster_path";
+        public static final String OWM_COLUMN_VOTE_AVERAGE = "vote_average";
         public static final String OWM_COLUMN_IS_FAVORITE="isFav";
 
         public static Uri buildMovieUri(long id){
@@ -59,12 +59,12 @@ public class dbContract {
 
         public static final String TABLE_NAME = "vote_movies";
 
-        public static final String OWM_COLUMN_TAG = "TAG";
-        public static final String OWM_COLUMN_TITLE = "title";
+        public static final String OWM_COLUMN_TAG = "id";
+        public static final String OWM_COLUMN_TITLE = "original_title";
         public static final String OWM_COLUMN_OVERVIEW = "overview";
-        public static final String OWM_COLUMN_RELEASE_DATE = "date";
-        public static final String OWM_COLUMN_POSTER_PATH = "poster";
-        public static final String OWM_COLUMN_VOTE_AVERAGE = "vote";
+        public static final String OWM_COLUMN_RELEASE_DATE = "release_date";
+        public static final String OWM_COLUMN_POSTER_PATH = "poster_path";
+        public static final String OWM_COLUMN_VOTE_AVERAGE = "vote_average";
         public static final String OWM_COLUMN_IS_FAVORITE="isFav";
 
         public static Uri buildMovieUri(long id){
@@ -86,12 +86,12 @@ public class dbContract {
 
         public static final String TABLE_NAME = "fav_movies";
 
-        public static final String OWM_COLUMN_TAG = "TAG";
-        public static final String OWM_COLUMN_TITLE = "title";
+        public static final String OWM_COLUMN_TAG = "id";
+        public static final String OWM_COLUMN_TITLE = "original_title";
         public static final String OWM_COLUMN_OVERVIEW = "overview";
-        public static final String OWM_COLUMN_RELEASE_DATE = "date";
-        public static final String OWM_COLUMN_POSTER_PATH = "poster";
-        public static final String OWM_COLUMN_VOTE_AVERAGE = "vote";
+        public static final String OWM_COLUMN_RELEASE_DATE = "release_date";
+        public static final String OWM_COLUMN_POSTER_PATH = "poster_path";
+        public static final String OWM_COLUMN_VOTE_AVERAGE = "vote_average";
 
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);

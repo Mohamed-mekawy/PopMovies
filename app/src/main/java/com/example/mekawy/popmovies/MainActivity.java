@@ -1,11 +1,16 @@
 package com.example.mekawy.popmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.mekawy.popmovies.Data.dbContract;
+import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -14,6 +19,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+
+
 
 
     @Override

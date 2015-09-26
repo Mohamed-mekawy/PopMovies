@@ -65,9 +65,6 @@ public class MoviesProvider extends ContentProvider{
     }
 
 
-
-
-
     private Cursor get_Movie_by_TAG(Uri uri,String[] projection,String sort_order){
 
         SQLiteDatabase db=mhelper.getReadableDatabase();
