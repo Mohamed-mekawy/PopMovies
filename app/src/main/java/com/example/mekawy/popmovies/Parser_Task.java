@@ -21,6 +21,7 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
     private Context mContext;
 
     final String OWM_RESULTS="results";
+
     final String OWM_TAG="id";
     final String OWM_TITLE="original_title";
     final String OWM_GRID_POSTER="poster_path";
@@ -31,50 +32,11 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
 
     public Parser_Task(Context context){
-    mContext=context;
+
+        mContext=context;
     }
 
 
-
-//
-//    @Override
-//    protected void onPostExecute(Integer movie_objects) {
-//        super.onPostExecute(movie_objects);
-//
-//        Uri Content_uri=null;
-//        int records[];
-//
-//        if(sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
-//            Content_uri= dbContract.POP_MOVIES_TABLE.CONTENT_URI;
-//
-//        else if(sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
-//            Content_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
-//
-//            Cursor cur=mContext.getContentResolver().query(Content_uri,
-//                new String[]{OWM_TAG,OWM_TITLE,OWM_OVERVIEW,OWM_GRID_POSTER,OWM_DATE,OWM_RATE},
-//                null,
-//                null,
-//                null
-//                );
-//
-//        records=new int[cur.getCount()];
-//
-//        if (cur.moveToFirst()){
-//            do {
-//                records[cur.getPosition()]=cur.getInt(cur.getColumnIndex(OWM_TAG));
-//            }while (cur.moveToNext());
-//        }
-////
-////        for (Integer x:records){
-////            Log.i("records",Integer.toString(x));
-////        }
-//
-//            mAdapter.clear();
-//            for(Integer rec:records){
-//                mAdapter.add(rec);
-//            }
-//    }
-//
 
     public ContentValues GET_MOVIE_CONTENT(JSONObject movie_object){
         ContentValues retContent =new ContentValues();
