@@ -17,20 +17,16 @@ import java.net.URL;
 public class Fetch_Task extends AsyncTask<String,Void,String>{
 
     private Context mContext;
-    private MovieAdapter mAdapter;
-    private String pushed_mode;
 
-    public  Fetch_Task(Context context,MovieAdapter Fadapter){
-        mContext=context;
-        mAdapter=Fadapter;
+    public Fetch_Task(Context context){
+    mContext=context;
     }
 
 
     @Override
     protected void onPostExecute(String string) {
         super.onPostExecute(string);
-
-        Parser_Task newParser=new Parser_Task(mContext,mAdapter,pushed_mode);
+        Parser_Task newParser=new Parser_Task(mContext);
         newParser.execute(string);
     }
 
@@ -44,7 +40,6 @@ public class Fetch_Task extends AsyncTask<String,Void,String>{
         final String sorting="sort_by";
         final String Api_key="api_key";
         final String mode=Utility.getsortmethod(mContext);
-        pushed_mode=mode;
 
         Uri Builder=Uri.parse(query_base).buildUpon().appendQueryParameter(sorting, mode).
                 appendQueryParameter(Api_key, strings[0]).build();
@@ -68,6 +63,4 @@ public class Fetch_Task extends AsyncTask<String,Void,String>{
         }
         return null;
     }
-
-
-    }
+}

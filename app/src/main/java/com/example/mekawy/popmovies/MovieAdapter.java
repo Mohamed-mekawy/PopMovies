@@ -40,7 +40,7 @@ public class MovieAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View root= LayoutInflater.from(mContext).inflate(R.layout.movie_poster,parent);
+        View root= LayoutInflater.from(mContext).inflate(R.layout.movie_poster,parent,false);
         return root;
     }
 
@@ -48,9 +48,14 @@ public class MovieAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         ImageView mImageview=(ImageView)view;
-        String image_path=cursor.getString(cursor.getColumnIndex(dbContract.POP_MOVIES_TABLE.OWM_COLUMN_POSTER_PATH));
-        Picasso.with(mContext).load(IMAGE_BASE+image_path).into(mImageview);
 
+        String image_path =
+                    cursor.getString(cursor.getColumnIndex(dbContract.OWM_COMMON_POSTER_PATH));
+
+        Picasso.with(mContext).
+                load(IMAGE_BASE+image_path).
+                resize(resize_width,resize_hight).
+                into(mImageview);
     }
 
 }

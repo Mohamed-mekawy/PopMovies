@@ -18,14 +18,9 @@ import java.util.Vector;
 
 public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
-
     private Context mContext;
-    private MovieAdapter mAdapter;
-    private static String sort_mode;
 
     final String OWM_RESULTS="results";
-
-
     final String OWM_TAG="id";
     final String OWM_TITLE="original_title";
     final String OWM_GRID_POSTER="poster_path";
@@ -35,13 +30,11 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
     final String OWM_ISFAV="isFav";
 
 
-
-
-    public Parser_Task(Context C,MovieAdapter fadapter,String mode){
-        mContext=C;
-        mAdapter=fadapter;
-        sort_mode=mode;
+    public Parser_Task(Context context){
+    mContext=context;
     }
+
+
 
 //
 //    @Override
@@ -113,7 +106,7 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
     @Override
     protected Integer doInBackground(String... mString) {
         int inserted_counter=0;
-
+        String sort_mode=Utility.getsortmethod(mContext);
         try {
             JSONObject big_obj=new JSONObject(mString[0]);
             JSONArray results_array=big_obj.getJSONArray(OWM_RESULTS);
