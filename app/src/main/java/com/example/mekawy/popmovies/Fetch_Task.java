@@ -17,10 +17,10 @@ import java.net.URL;
 public class Fetch_Task extends AsyncTask<String,Void,String>{
 
     private Context mContext;
-    private gridAdapter mAdapter;
+    private MovieAdapter mAdapter;
     private String pushed_mode;
 
-    public  Fetch_Task(Context context,gridAdapter Fadapter){
+    public  Fetch_Task(Context context,MovieAdapter Fadapter){
         mContext=context;
         mAdapter=Fadapter;
     }

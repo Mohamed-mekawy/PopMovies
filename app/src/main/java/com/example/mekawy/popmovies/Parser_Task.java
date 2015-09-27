@@ -20,7 +20,7 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
 
     private Context mContext;
-    private gridAdapter mAdapter;
+    private MovieAdapter mAdapter;
     private static String sort_mode;
 
     final String OWM_RESULTS="results";
@@ -37,51 +37,51 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
 
 
-    public Parser_Task(Context C,gridAdapter fadapter,String mode){
+    public Parser_Task(Context C,MovieAdapter fadapter,String mode){
         mContext=C;
         mAdapter=fadapter;
         sort_mode=mode;
     }
 
-
-    @Override
-    protected void onPostExecute(Integer movie_objects) {
-        super.onPostExecute(movie_objects);
-
-        Uri Content_uri=null;
-        int records[];
-
-        if(sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
-            Content_uri= dbContract.POP_MOVIES_TABLE.CONTENT_URI;
-
-        else if(sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
-            Content_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
-
-            Cursor cur=mContext.getContentResolver().query(Content_uri,
-                new String[]{OWM_TAG,OWM_TITLE,OWM_OVERVIEW,OWM_GRID_POSTER,OWM_DATE,OWM_RATE},
-                null,
-                null,
-                null
-                );
-
-        records=new int[cur.getCount()];
-
-        if (cur.moveToFirst()){
-            do {
-                records[cur.getPosition()]=cur.getInt(cur.getColumnIndex(OWM_TAG));
-            }while (cur.moveToNext());
-        }
 //
-//        for (Integer x:records){
-//            Log.i("records",Integer.toString(x));
+//    @Override
+//    protected void onPostExecute(Integer movie_objects) {
+//        super.onPostExecute(movie_objects);
+//
+//        Uri Content_uri=null;
+//        int records[];
+//
+//        if(sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
+//            Content_uri= dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+//
+//        else if(sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
+//            Content_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
+//
+//            Cursor cur=mContext.getContentResolver().query(Content_uri,
+//                new String[]{OWM_TAG,OWM_TITLE,OWM_OVERVIEW,OWM_GRID_POSTER,OWM_DATE,OWM_RATE},
+//                null,
+//                null,
+//                null
+//                );
+//
+//        records=new int[cur.getCount()];
+//
+//        if (cur.moveToFirst()){
+//            do {
+//                records[cur.getPosition()]=cur.getInt(cur.getColumnIndex(OWM_TAG));
+//            }while (cur.moveToNext());
 //        }
-
-            mAdapter.clear();
-            for(Integer rec:records){
-                mAdapter.add(rec);
-            }
-    }
-
+////
+////        for (Integer x:records){
+////            Log.i("records",Integer.toString(x));
+////        }
+//
+//            mAdapter.clear();
+//            for(Integer rec:records){
+//                mAdapter.add(rec);
+//            }
+//    }
+//
 
     public ContentValues GET_MOVIE_CONTENT(JSONObject movie_object){
         ContentValues retContent =new ContentValues();
