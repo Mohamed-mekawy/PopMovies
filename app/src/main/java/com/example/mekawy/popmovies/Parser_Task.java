@@ -49,16 +49,15 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
         super.onPostExecute(movie_objects);
 
         Uri Content_uri=null;
-        String Images[];
-
         int records[];
 
         if(sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
             Content_uri= dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+
         else if(sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
             Content_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
 
-        Cursor cur=mContext.getContentResolver().query(Content_uri,
+            Cursor cur=mContext.getContentResolver().query(Content_uri,
                 new String[]{OWM_TAG,OWM_TITLE,OWM_OVERVIEW,OWM_GRID_POSTER,OWM_DATE,OWM_RATE},
                 null,
                 null,
@@ -81,7 +80,6 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
             for(Integer rec:records){
                 mAdapter.add(rec);
             }
-
     }
 
 
@@ -115,6 +113,7 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
     @Override
     protected Integer doInBackground(String... mString) {
         int inserted_counter=0;
+
         try {
             JSONObject big_obj=new JSONObject(mString[0]);
             JSONArray results_array=big_obj.getJSONArray(OWM_RESULTS);
@@ -134,11 +133,27 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                 Uri Content_uri=null;
 
                 if(sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
-                    Content_uri= dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+                    Content_uri = dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+
                 else if(sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
                     Content_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
 
-               inserted_counter= mContext.getContentResolver().bulkInsert(Content_uri,Content_array);
+                //Filter only new records needs to be inserted
+                for(int movie_index=0;movie_index<Content_vector.size();movie_index++) {
+
+                    Cursor cr = mContext.getContentResolver().query(
+                            Content_uri,
+                            new String[]{OWM_TAG},
+                            OWM_TAG + " = ?",
+                            new String[]{Integer.toString(Content_array[movie_index].getAsInteger(OWM_TAG))},
+                            null
+                    );
+
+                    if(!cr.moveToFirst()) {
+                        Uri uri_insert=mContext.getContentResolver().insert(Content_uri, Content_array[movie_index]);
+                        Log.i("insert_uri",uri_insert.toString());
+                    }
+                }
             }
 
         } catch (JSONException e) {
