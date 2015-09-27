@@ -100,10 +100,7 @@
         android:gravity="fill"
         android:textColor="#000000"
         android:textSize="@dimen/abc_text_size_headline_material"
-        android:scrollbars="vertical"
         />
-
-
 
         </LinearLayout>
 

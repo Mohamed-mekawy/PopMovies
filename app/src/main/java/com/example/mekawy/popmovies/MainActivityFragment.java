@@ -1,6 +1,7 @@
 package com.example.mekawy.popmovies;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -51,12 +52,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
 
-
-
     public MainActivityFragment() {
         setHasOptionsMenu(true);
     }
-
 
     @Override
     public void onStart() {
@@ -64,7 +62,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         Fetch_Task newFetchtask=new Fetch_Task(getActivity());
         newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
     }
-
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -79,6 +76,22 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         Image_Grid_View=(GridView) rootview.findViewById(R.id.movies_grid);
         mAdapter=new MovieAdapter(getActivity(),null,0);
         Image_Grid_View.setAdapter(mAdapter);
+
+        Image_Grid_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Cursor cr=(Cursor)adapterView.getItemAtPosition(position);
+                if(cr!=null){
+                    Uri passed_uri=
+                            POP_MOVIES_TABLE.builUriwithtag(
+                                    cr.getInt(cr.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG)));
+                    Intent passed_intent=new Intent(getActivity(),Movie_Activity.class);
+                    passed_intent.setData(passed_uri);
+                    startActivity(passed_intent);
+                }
+            }
+        });
+
         return rootview;
     }
 

@@ -52,6 +52,11 @@ public class dbContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri builUriwithtag(int tag){
+            return CONTENT_URI.buildUpon().appendPath(Integer.toString(tag)).build();
+        }
+
+
     }
 
     public static class MOST_VOTED_TABLE implements BaseColumns {

@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 
 import com.example.mekawy.popmovies.Data.dbContract.FAV_MOVIES_TABLE;
@@ -19,7 +20,7 @@ import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
 public class MoviesProvider extends ContentProvider{
     private static dbOpenHelper mhelper;
     private static final UriMatcher sUriMatcher=fill_matcher();
-    private static SQLiteQueryBuilder sQueryBuilder;
+
 
 
     private static final int POP_MOVIES=1;
@@ -31,12 +32,6 @@ public class MoviesProvider extends ContentProvider{
     private static final int FAV_MOVIES=5;
     private static final int FAV_MOVIES_WITH_TAG =6;
 
-
-    static {
-        sQueryBuilder=new SQLiteQueryBuilder();
-        sQueryBuilder.
-                setTables(POP_MOVIES_TABLE.TABLE_NAME + "," + MOST_VOTED_TABLE.TABLE_NAME + "," + FAV_MOVIES_TABLE.TABLE_NAME);
-    }
 
 
     private static final String POP_MOVIE_SELECT_BY_TAG=
@@ -66,6 +61,7 @@ public class MoviesProvider extends ContentProvider{
 
 
     private Cursor get_Movie_by_TAG(Uri uri,String[] projection,String sort_order){
+        SQLiteQueryBuilder sQueryBuilder=new SQLiteQueryBuilder();
 
         SQLiteDatabase db=mhelper.getReadableDatabase();
 
@@ -74,9 +70,21 @@ public class MoviesProvider extends ContentProvider{
 
         String selection;
 
-        if(Table_name.equals(POP_MOVIES_TABLE.TABLE_NAME))selection=POP_MOVIE_SELECT_BY_TAG;
-        else if(Table_name.equals(MOST_VOTED_TABLE.TABLE_NAME))selection=VOTE_MOVIE_SELECT_BY_TAG;
-        else if(Table_name.equals(FAV_MOVIES_TABLE.TABLE_NAME))selection=FAV_MOVIE_SELECT_BY_TAG;
+        if(Table_name.equals(POP_MOVIES_TABLE.TABLE_NAME)){
+            selection=POP_MOVIE_SELECT_BY_TAG;
+            sQueryBuilder.setTables(POP_MOVIES_TABLE.TABLE_NAME);
+        }
+
+        else if(Table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)){
+            selection=VOTE_MOVIE_SELECT_BY_TAG;
+            sQueryBuilder.setTables(MOST_VOTED_TABLE.TABLE_NAME);
+        }
+
+        else if(Table_name.equals(FAV_MOVIES_TABLE.TABLE_NAME)){
+            selection=FAV_MOVIE_SELECT_BY_TAG;
+            sQueryBuilder.setTables(FAV_MOVIES_TABLE.TABLE_NAME);
+        }
+
         else return null;
 
         String SelectionArgs[]=new String[]{Movie_TAG};
@@ -89,6 +97,7 @@ public class MoviesProvider extends ContentProvider{
                 null,
                 null,
                 sort_order);
+
         return mCur;
     }
 
@@ -144,16 +153,16 @@ public class MoviesProvider extends ContentProvider{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
                 break;
             }
-
-            case VOTE_MOVIES_WITH_TAG:{
-                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
-                break;
-            }
-
-            case FAV_MOVIES_WITH_TAG:{
-                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
-                break;
-            }
+//
+//            case VOTE_MOVIES_WITH_TAG:{
+//                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
+//                break;
+//            }
+//
+//            case FAV_MOVIES_WITH_TAG:{
+//                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
+//                break;
+//            }
             default:throw  new UnsupportedOperationException("unsupported Query "+uri);
         }
         ret_cursor.setNotificationUri(getContext().getContentResolver(),uri);
