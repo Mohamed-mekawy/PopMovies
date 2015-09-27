@@ -152,6 +152,19 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                     if(!cr.moveToFirst()) {
                         Uri uri_insert=mContext.getContentResolver().insert(Content_uri, Content_array[movie_index]);
                         Log.i("insert_uri",uri_insert.toString());
+                        inserted_counter++;
+                    }
+                    else if(cr.moveToFirst()){
+                        Content_array[movie_index].remove(OWM_ISFAV);
+
+                        int update=
+                                mContext.getContentResolver().update(
+                                Content_uri,
+                                Content_array[movie_index],
+                                OWM_TAG + " = ?",
+                                new String[]{Integer.toString(Content_array[movie_index].getAsInteger(OWM_TAG))}
+                        );
+                        Log.i("update_uri", Integer.toString(update));
                     }
                 }
             }
