@@ -74,6 +74,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onStart();
         Fetch_Task newFetchtask=new Fetch_Task(getActivity());
         newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+        getLoaderManager().restartLoader(Image_Loader,null,this);
     }
 
     @Override

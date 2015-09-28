@@ -95,12 +95,13 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
                 //Filter only new records needs to be inserted
                 for(int movie_index=0;movie_index<Content_vector.size();movie_index++) {
+                    String mTag=Integer.toString(Content_array[movie_index].getAsInteger(OWM_TAG));
 
                     Cursor cr = mContext.getContentResolver().query(
                             Content_uri,
                             new String[]{OWM_TAG},
-                            OWM_TAG + " = ?",
-                            new String[]{Integer.toString(Content_array[movie_index].getAsInteger(OWM_TAG))},
+                            OWM_TAG+"= ?",
+                            new String[]{mTag},
                             null
                     );
 
