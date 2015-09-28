@@ -109,7 +109,8 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                         Log.i("insert_uri",uri_insert.toString());
                         inserted_counter++;
                     }
-                    else if(cr.moveToFirst()){
+
+                   /* else if(cr.moveToFirst()){
                         Content_array[movie_index].remove(OWM_ISFAV);
 
                         int update=
@@ -121,6 +122,8 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                         );
                         Log.i("update_uri", Integer.toString(update));
                     }
+                    */
+
                 }
             }
 

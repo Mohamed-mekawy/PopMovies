@@ -43,6 +43,16 @@ public class Utility {
     }
 
 
+    public static String get_table_name(Context context){
+        Uri uri=get_content_uri(context);
+        if(uri.getPathSegments().get(0).equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
+            return  dbContract.POP_MOVIES_TABLE.TABLE_NAME;
+        else if(uri.getPathSegments().get(0).equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
+            return dbContract.MOST_VOTED_TABLE.TABLE_NAME;
+        return null;
+    }
+
+
     public static String getsortmethod(Context context){
         return  PreferenceManager.getDefaultSharedPreferences(context).
                 getString(context.getString(R.string.setting_sort_key),context.getString(R.string.sort_popularity_desc));

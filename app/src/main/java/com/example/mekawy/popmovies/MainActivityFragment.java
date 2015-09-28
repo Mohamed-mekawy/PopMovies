@@ -52,6 +52,19 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
 
+
+    static final int _ID_COULMN=0;
+    static final int TAG_COULMN=1;
+    static final int TITLE_COULMN=2;
+    static final int OVERVIEW_COULMN=3;
+    static final int DATE_COULMN=4;
+    static final int POSTER_COULMN=5;
+    static final int AVG_COULMN=6;
+    static final int ISFAV_COULMN=7;
+
+
+
+
     public MainActivityFragment() {
         setHasOptionsMenu(true);
     }
@@ -82,16 +95,23 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cr=(Cursor)adapterView.getItemAtPosition(position);
                 if(cr!=null){
-                    Uri passed_uri=
-                            POP_MOVIES_TABLE.builUriwithtag(
-                                    cr.getInt(cr.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG)));
+                    String table_name=Utility.get_table_name(getActivity());
+                    Uri passed_uri=null;
+
+                    if(table_name.equals(POP_MOVIES_TABLE.TABLE_NAME))
+                        passed_uri=POP_MOVIES_TABLE.builUriwithtag(
+                                    cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG)));
+
+                    else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME))
+                        passed_uri=MOST_VOTED_TABLE.builUriwithtag(
+                                cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG)));
+
                     Intent passed_intent=new Intent(getActivity(),Movie_Activity.class);
                     passed_intent.setData(passed_uri);
                     startActivity(passed_intent);
                 }
             }
         });
-
         return rootview;
     }
 

@@ -59,7 +59,6 @@ public class MoviesProvider extends ContentProvider{
         return mMathcer;
     }
 
-
     private Cursor get_Movie_by_TAG(Uri uri,String[] projection,String sort_order){
         SQLiteQueryBuilder sQueryBuilder=new SQLiteQueryBuilder();
 
@@ -153,11 +152,12 @@ public class MoviesProvider extends ContentProvider{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
                 break;
             }
-//
-//            case VOTE_MOVIES_WITH_TAG:{
-//                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
-//                break;
-//            }
+
+            case VOTE_MOVIES_WITH_TAG:{
+                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
+                Log.i("sad","ddddd");
+                break;
+            }
 //
 //            case FAV_MOVIES_WITH_TAG:{
 //                ret_cursor=get_Movie_by_TAG(uri, projection,sort);

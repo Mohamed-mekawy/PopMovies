@@ -32,10 +32,26 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
             dbContract.OWM_COMMON_COLUMN_TITLE,
             dbContract.OWM_COMMON_COLUMN_OVERVIEW,
             dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
-            dbContract.POP_MOVIES_TABLE.OWM_COLUMN_POSTER_PATH,
+            dbContract.OWM_COMMON_POSTER_PATH,
             dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
             dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
+
+
+    private final static String []VOTE_TABLE_PROJECTION ={
+            dbContract.MOST_VOTED_TABLE.TABLE_NAME+"."+ dbContract.MOST_VOTED_TABLE._ID,
+            dbContract.OWM_COMMON_COLUMN_TAG,
+            dbContract.OWM_COMMON_COLUMN_TITLE,
+            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
+            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
+            dbContract.OWM_COMMON_POSTER_PATH,
+            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
+            dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
+    };
+
+
+
+
 
     static final int _ID_COULMN=0;
     static final int TAG_COULMN=1;
@@ -98,21 +114,42 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Intent rec_intent=getActivity().getIntent();
+        String table_name;
         if(rec_intent!=null) {
             Uri rec_Uri = rec_intent.getData();
             Log.i("sad", rec_Uri.toString());
+            table_name=rec_Uri.getPathSegments().get(0);
 
-            return new CursorLoader(getActivity(),rec_Uri,
+
+            if(table_name.equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
+            return new CursorLoader(getActivity(),
+                    rec_Uri,
                     POP_TABLE_PROJECTION,
-                    dbContract.POP_MOVIES_TABLE.OWM_COLUMN_TAG,
+                    null,
                     null,
                     null);
+
+            else if (table_name.equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
+
+                return new CursorLoader(getActivity(),
+                        rec_Uri,
+                        VOTE_TABLE_PROJECTION,
+                        null,
+                        null,
+                        null);
+
+
+
+            else return null;
         }
+
         return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i("onfinish", "finished");
+
         if(data.moveToFirst()){
             movie_title.setText(data.getString(TITLE_COULMN));
 
@@ -123,8 +160,9 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
 
             Release_date.setText(data.getString(DATE_COULMN));
             movie_rating.setText(data.getString(AVG_COULMN));
-
+            //text view error viewing full text
             Describtion.setText(data.getString(OVERVIEW_COULMN));
+            Log.i("Cdata",data.getString(OVERVIEW_COULMN));
         }
     }
 
