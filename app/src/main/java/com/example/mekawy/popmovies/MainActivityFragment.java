@@ -95,6 +95,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cr=(Cursor)adapterView.getItemAtPosition(position);
+
+
                 if(cr!=null){
                     String table_name=Utility.get_table_name(getActivity());
                     Uri passed_uri=null;
@@ -107,13 +109,15 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                         passed_uri=MOST_VOTED_TABLE.builUriwithtag(
                                 cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG)));
 
-                    Intent passed_intent=new Intent(getActivity(),Movie_Activity.class);
-                    passed_intent.setData(passed_uri);
-                    startActivity(passed_intent);
+                    ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
                 }
             }
         });
         return rootview;
+    }
+
+    public interface movie_Callback{
+        public void  onMovieSelected(Uri movie_uri);
     }
 
 

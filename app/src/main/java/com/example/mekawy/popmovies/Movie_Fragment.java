@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 import com.example.mekawy.popmovies.Data.dbContract;
 
-public class Movie_ActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private final static String []POP_TABLE_PROJECTION ={
             dbContract.POP_MOVIES_TABLE.TABLE_NAME+"."+ dbContract.POP_MOVIES_TABLE._ID,
@@ -49,8 +49,9 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
             dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
 
-
-
+    //tage used by bundle to fetch Uri of selected movie
+    public final static String MOVIE_BUNDLE_TAG="mTag";
+    private Uri mUri;
 
 
     static final int _ID_COULMN=0;
@@ -76,7 +77,7 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
     private TextView movie_rating;
     private TextView Describtion;
 
-    public Movie_ActivityFragment() {
+    public Movie_Fragment() {
         setHasOptionsMenu(true);
     }
 
@@ -93,16 +94,25 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Receive Bundle parcable data from bundle
+        Bundle movie_arguments=getArguments();
+
+        if(movie_arguments!=null){
+            mUri=movie_arguments.getParcelable(MOVIE_BUNDLE_TAG);
+            Log.i("rec_uri",mUri.toString());
+        }
+
         View rootview= inflater.inflate(R.layout.fragment_movie_, container, false);
 
         movie_title=(TextView) rootview.findViewById(R.id.detail_title);
+
         movie_poster=(ImageView) rootview.findViewById(R.id.detail_thumb_image);
         Release_date=(TextView) rootview.findViewById(R.id.detail_date);
         movie_rating=(TextView) rootview.findViewById(R.id.detail_rate);
         Describtion=(TextView) rootview.findViewById(R.id.detail_desc);
 
-
         return rootview;
+
     }
 
     @Override
@@ -113,26 +123,21 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent rec_intent=getActivity().getIntent();
-        String table_name;
-        if(rec_intent!=null) {
-            Uri rec_Uri = rec_intent.getData();
-            Log.i("sad", rec_Uri.toString());
-            table_name=rec_Uri.getPathSegments().get(0);
 
+        if(mUri!=null) {
+            String table_name=mUri.getPathSegments().get(0);
 
             if(table_name.equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
             return new CursorLoader(getActivity(),
-                    rec_Uri,
+                    mUri,
                     POP_TABLE_PROJECTION,
                     null,
                     null,
                     null);
 
             else if (table_name.equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
-
                 return new CursorLoader(getActivity(),
-                        rec_Uri,
+                        mUri,
                         VOTE_TABLE_PROJECTION,
                         null,
                         null,
@@ -142,7 +147,6 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
 
             else return null;
         }
-
         return null;
     }
 
@@ -152,7 +156,6 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
 
         if(data.moveToFirst()){
             movie_title.setText(data.getString(TITLE_COULMN));
-
             Picasso.with(getActivity()).
                     load(IMAGE_BASE + data.getString(POSTER_COULMN)).
                     resize(resize_width,resize_hight).
@@ -164,6 +167,8 @@ public class Movie_ActivityFragment extends Fragment implements LoaderManager.Lo
             Describtion.setText(data.getString(OVERVIEW_COULMN));
             Log.i("Cdata",data.getString(OVERVIEW_COULMN));
         }
+
+
     }
 
     @Override

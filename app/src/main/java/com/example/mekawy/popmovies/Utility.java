@@ -21,6 +21,7 @@ public class Utility {
         int img_dimesnsions_width[]={92,154,185,342,500,780};
         int img_dimesnsions_hight[]={138,231,278,513,750,1170};
         int index=0;
+
         int width =uContext.getResources().getDisplayMetrics().widthPixels;
         int height=uContext.getResources().getDisplayMetrics().heightPixels;
 

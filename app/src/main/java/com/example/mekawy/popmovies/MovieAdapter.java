@@ -36,6 +36,15 @@ public class MovieAdapter extends CursorAdapter {
         resize_hight=Dimen.get("resize_hight");
         http_width=Integer.toString(Dimen.get("Http_width"));
         IMAGE_BASE+=http_width;
+
+
+        Log.i("inconing width",Integer.toString(resize_width));
+        Log.i("inconing width",Integer.toString(resize_hight));
+        Log.i("inconing http",http_width);
+
+
+
+
     }
 
     @Override
@@ -54,7 +63,7 @@ public class MovieAdapter extends CursorAdapter {
 
         Picasso.with(mContext).
                 load(IMAGE_BASE+image_path).
-                resize(resize_width,resize_hight).
+                resize(resize_width, resize_hight).
                 into(mImageview);
     }
 
