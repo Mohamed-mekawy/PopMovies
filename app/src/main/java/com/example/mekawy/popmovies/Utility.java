@@ -78,7 +78,7 @@ public class Utility {
 
 
 
-
+    //Testing method for custom_dimension
 
     public static void testing(Context context){
         WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
