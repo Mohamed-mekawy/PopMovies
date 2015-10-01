@@ -31,8 +31,9 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
     final String OWM_ISFAV="isFav";
 
 
-    public Parser_Task(Context context){
 
+
+    public Parser_Task(Context context){
         mContext=context;
     }
 

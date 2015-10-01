@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-import com.example.mekawy.popmovies.Data.dbContract.FAV_MOVIES_TABLE;
-import com.example.mekawy.popmovies.Data.dbContract.MOST_VOTED_TABLE;
-import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
+import com.example.mekawy.popmovies.Data.dbContract.*;
+
+
 
 public class dbOpenHelper extends SQLiteOpenHelper {
 
@@ -54,9 +54,22 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         FAV_MOVIES_TABLE.OWM_COLUMN_POSTER_PATH + " TEXT NOT NULL, "+
                         FAV_MOVIES_TABLE.OWM_COLUMN_VOTE_AVERAGE+ " REAL NOT NULL);";
 
+
+
+        final String SQL_MOVIES_VIDEOS_TABLE=
+                "CREATE TABLE "+ dbContract.MOVIE_VIDEOS.TABLE_NAME+" ( "+
+                       MOVIE_VIDEOS._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                       MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG +" TEXT NOT NULL, " +
+                       MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID +" TEXT UNIQUE NOT NULL, "+
+                       MOVIE_VIDEOS.OWM_COLUMN_KEY+ " TEXT NOT NULL, "+
+                       MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME+ " TEXT NOT NULL);";
+
+
         sqLiteDatabase.execSQL(SQL_POP_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_FAV_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_VOTE_MOVIES_TABLE);
+        sqLiteDatabase.execSQL(SQL_MOVIES_VIDEOS_TABLE);
+
     }
 
     @Override
@@ -64,6 +77,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ MOST_VOTED_TABLE.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ FAV_MOVIES_TABLE.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ POP_MOVIES_TABLE.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ MOVIE_VIDEOS.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }
