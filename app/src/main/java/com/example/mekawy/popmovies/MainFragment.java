@@ -3,6 +3,7 @@ package com.example.mekawy.popmovies;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -22,11 +23,14 @@ import com.example.mekawy.popmovies.Data.dbContract;
 import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
 import com.example.mekawy.popmovies.Data.dbContract.MOST_VOTED_TABLE;
 
-public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private GridView Image_Grid_View;
     private static MovieAdapter mAdapter;
     private static final int Image_Loader=0;
+
+
+    public static String BEST_FIT_IMAGE ="500";
 
     //projection for tables
 
@@ -65,7 +69,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
 
 
-    public MainActivityFragment() {
+    public MainFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -74,39 +78,59 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onStart();
         Fetch_Task newFetchtask=new Fetch_Task(getActivity());
         newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
-        getLoaderManager().restartLoader(Image_Loader,null,this);
+        getLoaderManager().restartLoader(Image_Loader, null, this);
     }
+
+
+
+
+
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(Image_Loader,null,this);
+        getLoaderManager().initLoader(Image_Loader, null, this);
         super.onActivityCreated(savedInstanceState);
     }
+
+
+
+
+    public void set_Grid_Col(){
+        int Orient=Utility.getCurrentOrientation(getActivity());
+        if(Orient==0)Image_Grid_View.setNumColumns(2); // if Portrait view
+        else if(Orient==1)Image_Grid_View.setNumColumns(3); // if landscapeview
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootview= inflater.inflate(R.layout.movies_grid, container, false);
         Image_Grid_View=(GridView) rootview.findViewById(R.id.movies_grid);
+
+        set_Grid_Col();
+
         mAdapter=new MovieAdapter(getActivity(),null,0);
         Image_Grid_View.setAdapter(mAdapter);
 
         Image_Grid_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Cursor cr=(Cursor)adapterView.getItemAtPosition(position);
+                Cursor cr = (Cursor) adapterView.getItemAtPosition(position);
 
 
-                if(cr!=null){
-                    String table_name=Utility.get_table_name(getActivity());
-                    Uri passed_uri=null;
+                if (cr != null) {
+                    String table_name = Utility.get_table_name(getActivity());
+                    Uri passed_uri = null;
 
-                    if(table_name.equals(POP_MOVIES_TABLE.TABLE_NAME))
-                        passed_uri=POP_MOVIES_TABLE.builUriwithtag(
-                                    cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG)));
+                    if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME))
+                        passed_uri = POP_MOVIES_TABLE.builUriwithtag(
+                                cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG)));
 
                     else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME))
-                        passed_uri=MOST_VOTED_TABLE.builUriwithtag(
+                        passed_uri = MOST_VOTED_TABLE.builUriwithtag(
                                 cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG)));
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
@@ -119,6 +143,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public interface movie_Callback{
         public void  onMovieSelected(Uri movie_uri);
     }
+
 
 
     @Override

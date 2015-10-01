@@ -2,10 +2,12 @@ package com.example.mekawy.popmovies;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.Pair;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.example.mekawy.popmovies.Data.dbContract;
 
@@ -13,7 +15,107 @@ import java.util.HashMap;
 
 public class Utility {
 
-    //return best dimensions in hashmap for grid posters
+/*
+    public static boolean isTablet(Context context){
+        boolean xLarge=
+                ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)==
+                        Configuration.SCREENLAYOUT_SIZE_XLARGE);
+
+        boolean Large=
+                ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)==
+                        Configuration.SCREENLAYOUT_SIZE_LARGE);
+
+        return (xLarge||Large);
+    }*/
+
+
+    public static Integer getCurrentOrientation(Context context){
+        WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        Display dsp=wm.getDefaultDisplay();
+        int orient= dsp.getOrientation();
+        if(orient==0) return 0;
+        if(orient==1 || orient==3) return 1;
+        return null;
+    }
+
+
+
+/*
+
+    public static String getBestFitLink(Context context){
+        WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        Display dsp=wm.getDefaultDisplay();
+
+        int Image_avail_dimension_width[]={92,154,185, 342, 500,780};
+
+        Integer orient=getCurrentOrientation(context);
+        boolean isTablet=isTablet(context);
+
+        int Screen_Width =dsp.getWidth();
+        int Screen_Hight =dsp.getHeight();
+
+        int Column_width=0;
+
+        int ret_size=185;
+
+        if(orient==0)
+            Column_width= Screen_Width /2;
+
+        else if( orient==1)
+            Column_width=Screen_Hight/2;
+
+        for( int i=0;i< Image_avail_dimension_width.length;i++){
+            if(Column_width> Image_avail_dimension_width[i])
+            {
+                ret_size= Image_avail_dimension_width[i];
+            }
+        }
+
+        return Integer.toString(ret_size);
+    }
+
+
+*/
+
+
+
+/*
+
+    public static void testing(Context context){
+        WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        Display dsp=wm.getDefaultDisplay();
+
+
+        Integer orient=getCurrentOrientation(context);
+        boolean isTablet=isTablet(context);
+
+        int Screen_Width =dsp.getWidth();
+        int Screen_Hight =dsp.getHeight();
+
+        int resize_width=0;
+        int resize_hight=0;
+
+
+        if(orient==0){
+            resize_width=Screen_Width/2;
+        }
+
+        else if(isTablet && orient==1){
+            resize_width=Screen_Width/6;
+
+        }
+
+    }*/
+
+
+
+
+
+
+
+
+
+
     public static HashMap<String,Integer> Get_Prefered_Dimension(Context uContext){
 
         HashMap<String,Integer> DimenMap=new HashMap<String,Integer>();

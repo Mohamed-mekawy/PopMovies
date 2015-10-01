@@ -12,7 +12,23 @@ public class Movie_Activity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_);
+        setContentView(R.layout.activity_movie);
+
+        if(savedInstanceState==null){
+            Bundle movie_bundle=new Bundle();
+            movie_bundle.putParcelable(Movie_Fragment.MOVIE_BUNDLE_TAG, getIntent().getData());
+
+            Movie_Fragment mFragment=new Movie_Fragment();
+            mFragment.setArguments(movie_bundle);
+
+            getSupportFragmentManager().beginTransaction().
+                    add(R.id.movie_container,
+                            mFragment).commit();
+        }
+
+
+
+
     }
 
 

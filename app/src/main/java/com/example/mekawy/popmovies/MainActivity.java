@@ -4,14 +4,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity implements MainActivityFragment.movie_Callback{
+public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback{
 
     private final static String MOVIE_FRAG_TAG ="MFTAG";
-    private boolean double_pain;
+
+
+    public static boolean double_pane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,9 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
                                     mf,
                                     MOVIE_FRAG_TAG).commit();
                 }
-                double_pain = true;
+                double_pane = true;
             }
-            else double_pain=false;
+            else double_pane =false;
         }
 
 
@@ -61,7 +62,7 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
     @Override
     public void onMovieSelected(Uri movie_uri) {
 
-        if(double_pain){
+        if(double_pane){
         // make new Bundle and put Uri as parcable form , then set Argument of the new Instance to that Bundle
         // and Replace the current one
         Bundle Double_Pane_Bundle=new Bundle();
@@ -73,6 +74,10 @@ public class MainActivity extends ActionBarActivity implements MainActivityFragm
                 replace(R.id.movie_container,
                         new_movieFragment,
                         MOVIE_FRAG_TAG).commit();
+        }
+
+        else if(!double_pane){
+            startActivity(new Intent(this,Movie_Activity.class).setData(movie_uri));
         }
 
 
