@@ -15,6 +15,11 @@ import java.util.HashMap;
 
 public class Utility {
 
+    public final static String RESIZE_WIDTH="resize_width";
+    public final static String RESIZE_HIGHT="resize_hight";
+
+
+
     public static boolean isTablet(Context context){
         boolean xLarge=
                 ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)==
@@ -151,8 +156,8 @@ public class Utility {
             resize_hight=calc_hight.intValue();
         }
 
-        DimenMap.put("resize_width",resize_width);
-        DimenMap.put("resize_hight",resize_hight);
+        DimenMap.put(RESIZE_WIDTH,resize_width);
+        DimenMap.put(RESIZE_HIGHT,resize_hight);
 
         return DimenMap;
     }

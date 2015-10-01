@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -160,10 +161,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     into(movie_poster);
 
             Release_date.setText(data.getString(DATE_COULMN));
-            movie_rating.setText(data.getString(AVG_COULMN));
-            //text view error viewing full text
+            movie_rating.setText(data.getString(AVG_COULMN) + "/10");
             Describtion.setText(data.getString(OVERVIEW_COULMN));
-            Log.i("Cdata",data.getString(OVERVIEW_COULMN));
         }
 
 

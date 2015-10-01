@@ -28,8 +28,8 @@ public class MovieAdapter extends CursorAdapter {
         mContext = context;
 
         HashMap<String, Integer> Dimen = Utility.Get_Prefered_Dimension(mContext);
-        resize_width = Dimen.get("resize_width");
-        resize_hight = Dimen.get("resize_hight");
+        resize_width = Dimen.get(Utility.RESIZE_WIDTH);
+        resize_hight = Dimen.get(Utility.RESIZE_HIGHT);
     }
 
 

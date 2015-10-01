@@ -29,6 +29,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private static MovieAdapter mAdapter;
     private static final int Image_Loader=0;
 
+    private int Selected_position=GridView.INVALID_POSITION;
+    private static final String Selected_position_key="Selected_position";
+
 
     public static String BEST_FIT_IMAGE;
 
@@ -88,11 +91,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
-
-
-
-
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Selected_position_key,Selected_position);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -140,9 +143,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                                 cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG)));
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
+                    Selected_position=position;
                 }
             }
         });
+
+        if(savedInstanceState!=null && savedInstanceState.containsKey(Selected_position_key))
+            Selected_position=savedInstanceState.getInt(Selected_position_key);
+
         return rootview;
     }
 
@@ -181,7 +189,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        //Scroll to the saved position
+        if(Selected_position!=GridView.INVALID_POSITION){
+        Image_Grid_View.smoothScrollToPosition(Selected_position);
+        }
+
     }
+
+
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
