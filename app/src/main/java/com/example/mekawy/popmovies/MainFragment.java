@@ -28,7 +28,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private GridView Image_Grid_View;
     private static MovieAdapter mAdapter;
     private static final int Image_Loader=0;
-
+    
     private int Selected_position=GridView.INVALID_POSITION;
     private static final String Selected_position_key="Selected_position";
 

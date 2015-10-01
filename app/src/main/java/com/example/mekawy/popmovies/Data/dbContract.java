@@ -16,6 +16,9 @@ public class dbContract {
     public static final String PATH_FAV_MOVIES = "fav_movies";
     public static final String PATH_POP_MOVIES = "pop_movies";
     public static final String PATH_VOTE_MOVIES = "vote_movies";
+    public static final String PATH_MOVIES_VIDEOS="movies_videos";
+
+
 
     public static final String OWM_COMMON_COLUMN_TAG = "id";
     public static final String OWM_COMMON_POSTER_PATH = "poster_path";
@@ -90,7 +93,6 @@ public class dbContract {
             return CONTENT_URI.buildUpon().appendPath(Integer.toString(tag)).build();
         }
 
-
     }
 
     public static class FAV_MOVIES_TABLE implements BaseColumns {
@@ -118,5 +120,30 @@ public class dbContract {
         }
 
     }
+
+
+    public static class MOVIE_VIDEOS implements BaseColumns{
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES_VIDEOS).build();
+
+        public final static String CONTENT_DIR_TYPE=
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +    CONTENT_AUTHORITY   +  "/" +    PATH_MOVIES_VIDEOS;
+
+        public static final String TABLE_NAME = PATH_MOVIES_VIDEOS;
+
+        public static final String OWM_COLUMN_MOVIE_TAG = "id";
+        public static final String OWM_COLUMN_TRAILER_ID = "trailer_id";
+        public static final String OWM_COLUMN_KEY = "key";
+        public static final String OWM_COLUMN_TRAILER_NAME = "name";
+
+
+
+
+    }
+
+
+
+
 
 }
