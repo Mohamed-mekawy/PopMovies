@@ -72,7 +72,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
         BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
         Log.i("IMAGE FIT",BEST_FIT_IMAGE);
-
+        Utility.testing(getActivity());
     }
 
     public MainFragment() {

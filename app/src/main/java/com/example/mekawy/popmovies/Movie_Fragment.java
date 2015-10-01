@@ -68,7 +68,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private int resize_width;
     private int resize_hight;
     private String http_width;
-    private String IMAGE_BASE="http://image.tmdb.org/t/p/w";
+    private String IMAGE_BASE="http://image.tmdb.org/t/p/w"+MainFragment.BEST_FIT_IMAGE;
     private static final int LOADER_ID=1;
 
     private TextView movie_title;
@@ -87,8 +87,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         HashMap<String,Integer> Dimen=Utility.Get_Prefered_Dimension(getActivity());
         resize_width=Dimen.get("resize_width");
         resize_hight=Dimen.get("resize_hight");
-        http_width=Integer.toString(Dimen.get("Http_width"));
-        IMAGE_BASE+=http_width;
     }
 
     @Override

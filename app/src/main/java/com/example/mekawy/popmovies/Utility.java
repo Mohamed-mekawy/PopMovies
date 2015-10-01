@@ -47,7 +47,6 @@ public class Utility {
         int Image_avail_dimension_width[]={92,154,185, 342, 500,780};
 
         Integer orient=getCurrentOrientation(context);
-        boolean isTablet=isTablet(context);
 
         int Screen_Width =dsp.getWidth();
         int Screen_Hight =dsp.getHeight();
@@ -76,8 +75,6 @@ public class Utility {
 
 
 
-/*
-
     public static void testing(Context context){
         WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
         Display dsp=wm.getDefaultDisplay();
@@ -91,53 +88,71 @@ public class Utility {
 
         int resize_width=0;
         int resize_hight=0;
-
+        Double calc_hight;
 
         if(orient==0){
             resize_width=Screen_Width/2;
+            calc_hight=new Double(resize_width*(0.6));
+            resize_hight=calc_hight.intValue();
         }
 
         else if(isTablet && orient==1){
             resize_width=Screen_Width/6;
-
+            calc_hight=new Double(resize_width*(0.6));
+            resize_hight=calc_hight.intValue();
         }
 
-    }*/
+        else if(!isTablet && orient==1){
+            resize_width=Screen_Width/3;
+            calc_hight=new Double(resize_width*(0.6));
+            resize_hight=calc_hight.intValue();
+        }
 
 
 
+    }
 
 
-
-
-
-
-
-    public static HashMap<String,Integer> Get_Prefered_Dimension(Context uContext){
+    // return the best suitable dimension to resize Refernce to current Orientation
+    public static HashMap<String,Integer> Get_Prefered_Dimension(Context context){
 
         HashMap<String,Integer> DimenMap=new HashMap<String,Integer>();
 
-        int img_dimesnsions_width[]={92,154,185,342,500,780};
-        int img_dimesnsions_hight[]={138,231,278,513,750,1170};
-        int index=0;
+        WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        Display dsp=wm.getDefaultDisplay();
 
-        int width =uContext.getResources().getDisplayMetrics().widthPixels;
-        int height=uContext.getResources().getDisplayMetrics().heightPixels;
 
-        int mid_width=width/2;
-        int ret_size=0;
+        Integer orient=getCurrentOrientation(context);
+        boolean isTablet=isTablet(context);
 
-        for( int i=0;i<img_dimesnsions_width.length;i++){
-            if(mid_width>img_dimesnsions_width[i])
-            {
-                ret_size=img_dimesnsions_width[i];
-                index=i;
-            }
+        int Screen_Width =dsp.getWidth();
+        int Screen_Hight =dsp.getHeight();
+
+        int resize_width=0;
+        int resize_hight=0;
+        Double calc_hight;
+        double hight_scale=1.5;
+
+        if(orient==0){
+            resize_width=Screen_Width/2;
+            calc_hight=new Double(resize_width*(hight_scale));
+            resize_hight=calc_hight.intValue();
         }
 
-        DimenMap.put("resize_width",mid_width);
-        DimenMap.put("resize_hight",img_dimesnsions_hight[index]);
-        DimenMap.put("Http_width",ret_size);
+        else if(isTablet && orient==1){
+            resize_width=Screen_Width/6;
+            calc_hight=new Double(resize_width*(hight_scale));
+            resize_hight=calc_hight.intValue();
+        }
+
+        else if(!isTablet && orient==1){
+            resize_width=Screen_Width/3;
+            calc_hight=new Double(resize_width*(hight_scale));
+            resize_hight=calc_hight.intValue();
+        }
+
+        DimenMap.put("resize_width",resize_width);
+        DimenMap.put("resize_hight",resize_hight);
 
         return DimenMap;
     }
