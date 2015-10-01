@@ -30,7 +30,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private static final int Image_Loader=0;
 
 
-    public static String BEST_FIT_IMAGE ="500";
+    public static String BEST_FIT_IMAGE;
 
     //projection for tables
 
@@ -67,7 +67,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     static final int ISFAV_COULMN=7;
 
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
+        Log.i("IMAGE FIT",BEST_FIT_IMAGE);
 
+    }
 
     public MainFragment() {
         setHasOptionsMenu(true);

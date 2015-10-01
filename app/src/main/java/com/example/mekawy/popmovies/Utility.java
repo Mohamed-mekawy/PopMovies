@@ -15,7 +15,6 @@ import java.util.HashMap;
 
 public class Utility {
 
-/*
     public static boolean isTablet(Context context){
         boolean xLarge=
                 ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)==
@@ -26,7 +25,7 @@ public class Utility {
                         Configuration.SCREENLAYOUT_SIZE_LARGE);
 
         return (xLarge||Large);
-    }*/
+    }
 
 
     public static Integer getCurrentOrientation(Context context){
@@ -40,7 +39,6 @@ public class Utility {
 
 
 
-/*
 
     public static String getBestFitLink(Context context){
         WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
@@ -75,7 +73,6 @@ public class Utility {
     }
 
 
-*/
 
 
 
