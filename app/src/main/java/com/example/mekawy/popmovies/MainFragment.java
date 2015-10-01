@@ -32,7 +32,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private int Selected_position=GridView.INVALID_POSITION;
     private static final String Selected_position_key="Selected_position";
 
-
     public static String BEST_FIT_IMAGE;
 
     //projection for tables
@@ -75,7 +74,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
         BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
         Log.i("IMAGE FIT",BEST_FIT_IMAGE);
-        Utility.testing(getActivity());
     }
 
     public MainFragment() {

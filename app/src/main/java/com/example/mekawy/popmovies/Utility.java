@@ -76,48 +76,6 @@ public class Utility {
         return Integer.toString(ret_size);
     }
 
-
-
-
-
-    public static void testing(Context context){
-        WindowManager wm=(WindowManager) context.getSystemService(context.WINDOW_SERVICE);
-        Display dsp=wm.getDefaultDisplay();
-
-
-        Integer orient=getCurrentOrientation(context);
-        boolean isTablet=isTablet(context);
-
-        int Screen_Width =dsp.getWidth();
-        int Screen_Hight =dsp.getHeight();
-
-        int resize_width=0;
-        int resize_hight=0;
-        Double calc_hight;
-
-        if(orient==0){
-            resize_width=Screen_Width/2;
-            calc_hight=new Double(resize_width*(0.6));
-            resize_hight=calc_hight.intValue();
-        }
-
-        else if(isTablet && orient==1){
-            resize_width=Screen_Width/6;
-            calc_hight=new Double(resize_width*(0.6));
-            resize_hight=calc_hight.intValue();
-        }
-
-        else if(!isTablet && orient==1){
-            resize_width=Screen_Width/3;
-            calc_hight=new Double(resize_width*(0.6));
-            resize_hight=calc_hight.intValue();
-        }
-
-
-
-    }
-
-
     // return the best suitable dimension to resize Refernce to current Orientation
     public static HashMap<String,Integer> Get_Prefered_Dimension(Context context){
 

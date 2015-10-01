@@ -159,7 +159,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     load(IMAGE_BASE + data.getString(POSTER_COULMN)).
                     resize(resize_width,resize_hight).
                     into(movie_poster);
-
             Release_date.setText(data.getString(DATE_COULMN));
             movie_rating.setText(data.getString(AVG_COULMN) + "/10");
             Describtion.setText(data.getString(OVERVIEW_COULMN));
