@@ -1,6 +1,7 @@
 package com.example.mekawy.popmovies;
 
 
+import android.content.Intent;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -48,6 +50,16 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
             dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
+
+
+    private final static String[] MOVIE_VIDEOS_PROJECTION={
+            dbContract.MOVIE_VIDEOS._ID,
+            dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,
+            dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME,
+            dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY,
+    };
+
+
 
     //tage used by bundle to fetch Uri of selected movie
     public final static String MOVIE_BUNDLE_TAG="mTag";
@@ -115,9 +127,31 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         mtrailerAdapter=new TrailerAdapter(getActivity(),null,0);
         Trailer_Listview.setAdapter(mtrailerAdapter);
 
-        return rootview;
 
+        Trailer_Listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Cursor sel=(Cursor) adapterView.getItemAtPosition(position);
+                Build_youtube_Link(sel.getString(sel.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY)));
+            }
+        });
+        return rootview;
     }
+
+
+
+    public void Build_youtube_Link(String link_key){
+        String Link_Base="https://www.youtube.com/watch";
+        String Link_query="v";
+        Uri link_Builder=Uri.parse(Link_Base).buildUpon().appendQueryParameter(Link_query,link_key).build();
+        Intent intent=new Intent(Intent.ACTION_VIEW);
+        intent.setData(link_Builder);
+        if(intent.resolveActivity(getActivity().getPackageManager())!=null){
+            startActivity(intent);
+        }
+    }
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -158,12 +192,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
                 return new CursorLoader(getActivity(),
                         dbContract.MOVIE_VIDEOS.CONTENT_URI,
-                        new String[]
-                                {
-                                 dbContract.MOVIE_VIDEOS._ID,
-                                 dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,
-                                 dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME
-                                },
+                        MOVIE_VIDEOS_PROJECTION,
                         dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG + " = ?",
                         new String[]{movie_tag},
                         null
@@ -173,12 +202,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
         }
         return null;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     @Override
