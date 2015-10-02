@@ -34,6 +34,7 @@ public class MoviesProvider extends ContentProvider{
     private static final int FAV_MOVIES_WITH_TAG =6;
 
     private static final int MOVIE_VIDEO=7;
+    private static final int MOVIE_VIDEO_WITH_TAG=8;
 
 
 
@@ -45,6 +46,8 @@ public class MoviesProvider extends ContentProvider{
 
     private static final String FAV_MOVIE_SELECT_BY_TAG=
             FAV_MOVIES_TABLE.TABLE_NAME+"."+FAV_MOVIES_TABLE.OWM_COLUMN_TAG+ " = ? ";
+
+
 
 
     private static UriMatcher fill_matcher(){
@@ -166,6 +169,12 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
+            case MOVIE_VIDEO_WITH_TAG:{
+                Log.i("asdsa","sad");
+                break;
+            }
+
+
 
             case POP_MOVIES_WITH_TAG:{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
@@ -203,6 +212,7 @@ public class MoviesProvider extends ContentProvider{
             case VOTE_MOVIES_WITH_TAG:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
 
             case MOVIE_VIDEO:return dbContract.MOVIE_VIDEOS.CONTENT_DIR_TYPE;
+            case MOVIE_VIDEO_WITH_TAG: return MOVIE_VIDEOS.CONTENT_DIR_TYPE;
 
             default: throw new UnsupportedOperationException("unsupported type :"+uri);
         }

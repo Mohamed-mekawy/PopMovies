@@ -37,71 +37,10 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
     final String OWM_RATE="vote_average";
     final String OWM_ISFAV="isFav";
 
-    //Movies Videos data
-    final String MOVIES_VIDEOS_TRAILER_ID="id";
-    final String MOVIES_VIDEOS_TRAILER_KEY="key";
-    final String MOVIES_VIDEOS_TRAILER_NAME="name";
-
-
     public Parser_Task(Context context){
         mContext=context;
 
     }
-
-
-
-
-    public void get_Trailers(String movie_tag){
-
-        BufferedReader reader=null;
-        String Line=null;
-        StringBuffer JSON_String=null;
-
-        final String MOVIES_VIDEOS_BASE="https://api.themoviedb.org/3/movie";
-        final String MOVIES_VIDEOS_QUERY="videos";
-        final String api_key_string="api_key";
-
-        String api_key_value=movies_api_key.API_KEY.get_API_key();
-
-        Uri trailer_query=Uri.parse(MOVIES_VIDEOS_BASE).buildUpon().appendPath(movie_tag)
-                .appendPath(MOVIES_VIDEOS_QUERY).appendQueryParameter(api_key_string,api_key_value).build();
-
-        try {
-            URL url=new URL(trailer_query.toString());
-            HttpURLConnection connection=(HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-            InputStream input_reader=connection.getInputStream();
-            reader=new BufferedReader(new InputStreamReader(input_reader));
-            JSON_String=new StringBuffer();
-            while ((Line=reader.readLine())!=null)JSON_String.append(Line);
-
-            JSONObject Movie_Object=new JSONObject(JSON_String.toString());
-            JSONArray Trailer_array=Movie_Object.getJSONArray(OWM_RESULTS);
-
-
-            for(int index=0;index<Trailer_array.length();index++){
-
-                JSONObject mTrailer=Trailer_array.getJSONObject(index);
-                String trailer_id=mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID);
-
-                ContentValues contentValues=new ContentValues();
-
-                    contentValues.put(MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,movie_tag);
-                    contentValues.put(MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID,mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID));
-                    contentValues.put(MOVIE_VIDEOS.OWM_COLUMN_KEY, mTrailer.getString(MOVIES_VIDEOS_TRAILER_KEY));
-                    contentValues.put(MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME, mTrailer.getString(MOVIES_VIDEOS_TRAILER_NAME));
-
-                  Uri entry=mContext.getContentResolver().insert(MOVIE_VIDEOS.CONTENT_URI, contentValues);
-                  Log.i("trailer_entry",entry.toString());
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
 
     public ContentValues GET_MOVIE_CONTENT(JSONObject movie_object){
         ContentValues retContent =new ContentValues();
@@ -173,8 +112,6 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                                 null
                         );
 
-                    get_Trailers(mTag);
-
                         if (!cr.moveToFirst()) {
                             Uri uri_insert = mContext.getContentResolver().insert(Content_uri, Content_array[movie_index]);
                             Log.i("insert_uri", uri_insert.toString());
@@ -197,23 +134,6 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
                     }
                 }
-
-
-                //get pre loaded trailers
-                Cursor curr = mContext.getContentResolver().query(
-                        MOVIE_VIDEOS.CONTENT_URI,
-                        new String[]{MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID,MOVIE_VIDEOS._ID},
-                        null,
-                        null,
-                        null
-                );
-
-                if(curr.moveToFirst()){
-                    do {
-                        Log.i("trailer name : "+curr.getString(curr.getColumnIndex(MOVIE_VIDEOS._ID))+"  :",curr.getString(curr.getColumnIndex(MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID)));
-                    }while (curr.moveToNext());
-                }
-
 
             } catch (JSONException e) {
                 e.printStackTrace();

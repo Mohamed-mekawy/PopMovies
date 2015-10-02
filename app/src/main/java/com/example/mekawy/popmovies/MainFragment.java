@@ -131,16 +131,24 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 if (cr != null) {
                     String table_name = Utility.get_table_name(getActivity());
                     Uri passed_uri = null;
+                    int selected_tag=0;
 
-                    if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME))
-                        passed_uri = POP_MOVIES_TABLE.builUriwithtag(
-                                cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG)));
 
-                    else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME))
-                        passed_uri = MOST_VOTED_TABLE.builUriwithtag(
-                                cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG)));
+                    if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME)) {
+                        selected_tag=cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG));
+                        passed_uri = POP_MOVIES_TABLE.builUriwithtag(selected_tag);
+                    }
+
+                    else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)){
+                        selected_tag=cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG));
+                        passed_uri = MOST_VOTED_TABLE.builUriwithtag(selected_tag);
+                    }
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
+
+                    Trailer_Parser mTrailer=new Trailer_Parser(getActivity());
+                    mTrailer.execute(Integer.toString(selected_tag));
+
                     Selected_position=position;
                 }
             }
