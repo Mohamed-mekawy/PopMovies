@@ -127,6 +127,10 @@ public class dbContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES_VIDEOS).build();
 
+
+        public final static String CONTENT_ITEM_TYPE=
+                ContentResolver.CURSOR_ITEM_BASE_TYPE+  "/" +    CONTENT_AUTHORITY   + "/" +    PATH_MOVIES_VIDEOS;
+
         public final static String CONTENT_DIR_TYPE=
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +    CONTENT_AUTHORITY   +  "/" +    PATH_MOVIES_VIDEOS;
 
@@ -137,6 +141,9 @@ public class dbContract {
         public static final String OWM_COLUMN_KEY = "key";
         public static final String OWM_COLUMN_TRAILER_NAME = "name";
 
+        public static Uri buildTrailerUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
 
 
 

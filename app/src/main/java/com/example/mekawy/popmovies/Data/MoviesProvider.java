@@ -15,6 +15,7 @@ import android.util.Log;
 import com.example.mekawy.popmovies.Data.dbContract.FAV_MOVIES_TABLE;
 import com.example.mekawy.popmovies.Data.dbContract.MOST_VOTED_TABLE;
 import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
+import com.example.mekawy.popmovies.Data.dbContract.MOVIE_VIDEOS;
 
 
 public class MoviesProvider extends ContentProvider{
@@ -31,6 +32,8 @@ public class MoviesProvider extends ContentProvider{
 
     private static final int FAV_MOVIES=5;
     private static final int FAV_MOVIES_WITH_TAG =6;
+
+    private static final int MOVIE_VIDEO=7;
 
 
 
@@ -55,6 +58,8 @@ public class MoviesProvider extends ContentProvider{
 
         mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES,VOTE_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES+"/#", VOTE_MOVIES_WITH_TAG);
+
+        mMathcer.addURI(Authority,dbContract.PATH_MOVIES_VIDEOS,MOVIE_VIDEO);
 
         return mMathcer;
     }
@@ -148,6 +153,20 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
+
+            case MOVIE_VIDEO:{
+                ret_cursor=db.query(dbContract.MOVIE_VIDEOS.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sort);
+                Log.i("success","query");
+                break;
+            }
+
+
             case POP_MOVIES_WITH_TAG:{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
                 break;
@@ -183,6 +202,8 @@ public class MoviesProvider extends ContentProvider{
             case VOTE_MOVIES:return MOST_VOTED_TABLE.CONTENT_DIR_TYPE;
             case VOTE_MOVIES_WITH_TAG:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
 
+            case MOVIE_VIDEO:return dbContract.MOVIE_VIDEOS.CONTENT_DIR_TYPE;
+
             default: throw new UnsupportedOperationException("unsupported type :"+uri);
         }
     }
@@ -214,6 +235,17 @@ public class MoviesProvider extends ContentProvider{
                 else throw new SQLException("Provider_insert_DB_NOT_VALID");
                 break;
             }
+
+            case MOVIE_VIDEO:{
+                Long ret_val=db.insert(MOVIE_VIDEOS.TABLE_NAME,null,contentValues);
+                if(ret_val!=-1) ret_uri=MOVIE_VIDEOS.buildTrailerUri(ret_val);
+                else throw new SQLException("Provider_insert_DB_NOT_VALID");
+                Log.i("success","insert");
+
+                break;
+            }
+
+
 
             default: throw new UnsupportedOperationException("error,Uri not supported");
         }

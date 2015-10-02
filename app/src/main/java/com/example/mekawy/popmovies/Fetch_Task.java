@@ -53,7 +53,7 @@ public class Fetch_Task extends AsyncTask<String,Void,String>{
             reader=new BufferedReader(new InputStreamReader(input_reader));
             JSON_String=new StringBuffer();
             while ((Line=reader.readLine())!=null)JSON_String.append(Line);
-//          Log.i("APPDEBUG", JSON_String.toString());
+//            Log.i("APPDEBUG", JSON_String.toString());
             return JSON_String.toString();
 
         } catch (MalformedURLException e) {
