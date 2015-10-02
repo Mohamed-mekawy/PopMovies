@@ -98,11 +98,4 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
         }
         return null;
     }
-
-
-
-
-
-
-
 }
