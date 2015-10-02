@@ -5,18 +5,17 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -54,7 +53,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     public final static String MOVIE_BUNDLE_TAG="mTag";
     private Uri mUri;
 
-
     static final int _ID_COULMN=0;
     static final int TAG_COULMN=1;
     static final int TITLE_COULMN=2;
@@ -71,12 +69,16 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private String http_width;
     private String IMAGE_BASE="http://image.tmdb.org/t/p/w"+MainFragment.BEST_FIT_IMAGE;
     private static final int LOADER_ID=1;
+    private static final int TRAILER_LOADER_ID=2;
 
     private TextView movie_title;
     private ImageView movie_poster;
     private TextView Release_date;
     private TextView movie_rating;
     private TextView Describtion;
+
+    private ListView Trailer_Listview;
+    private TrailerAdapter mtrailerAdapter;
 
     public Movie_Fragment() {
         setHasOptionsMenu(true);
@@ -104,11 +106,14 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         View rootview= inflater.inflate(R.layout.fragment_movie_, container, false);
 
         movie_title=(TextView) rootview.findViewById(R.id.detail_title);
-
         movie_poster=(ImageView) rootview.findViewById(R.id.detail_thumb_image);
         Release_date=(TextView) rootview.findViewById(R.id.detail_date);
         movie_rating=(TextView) rootview.findViewById(R.id.detail_rate);
         Describtion=(TextView) rootview.findViewById(R.id.detail_desc);
+
+        Trailer_Listview=(ListView) rootview.findViewById(R.id.Trailer_listview);
+        mtrailerAdapter=new TrailerAdapter(getActivity(),null,0);
+        Trailer_Listview.setAdapter(mtrailerAdapter);
 
         return rootview;
 
@@ -116,7 +121,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(LOADER_ID,null,this);
+        getLoaderManager().initLoader(LOADER_ID,null,this);               // init Movie Loader
+        getLoaderManager().restartLoader(TRAILER_LOADER_ID,null,this);    // init Trailer Loader
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -124,35 +130,63 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         if(mUri!=null) {
-            String table_name=mUri.getPathSegments().get(0);
+            if(id==LOADER_ID) {
+                String table_name = mUri.getPathSegments().get(0);
 
-            if(table_name.equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
-            return new CursorLoader(getActivity(),
-                    mUri,
-                    POP_TABLE_PROJECTION,
-                    null,
-                    null,
-                    null);
+                if (table_name.equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
+                    return new CursorLoader(getActivity(),
+                            mUri,
+                            POP_TABLE_PROJECTION,
+                            null,
+                            null,
+                            null);
 
-            else if (table_name.equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
+                else if (table_name.equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
+                    return new CursorLoader(getActivity(),
+                            mUri,
+                            VOTE_TABLE_PROJECTION,
+                            null,
+                            null,
+                            null);
+
+
+                else return null;
+            }
+
+            else if(id==TRAILER_LOADER_ID){
+                String movie_tag=mUri.getPathSegments().get(1);
+
                 return new CursorLoader(getActivity(),
-                        mUri,
-                        VOTE_TABLE_PROJECTION,
-                        null,
-                        null,
-                        null);
+                        dbContract.MOVIE_VIDEOS.CONTENT_URI,
+                        new String[]
+                                {
+                                 dbContract.MOVIE_VIDEOS._ID,
+                                 dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,
+                                 dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME
+                                },
+                        dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG + " = ?",
+                        new String[]{movie_tag},
+                        null
+                );
 
+            }
 
-
-            else return null;
         }
         return null;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.i("onfinish", "finished");
+        int id=loader.getId();
 
+        if(id==LOADER_ID){
         if(data.moveToFirst()){
             movie_title.setText(data.getString(TITLE_COULMN));
             Picasso.with(getActivity()).
@@ -164,6 +198,11 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             Describtion.setText(data.getString(OVERVIEW_COULMN));
         }
 
+        }
+
+        else if(id==TRAILER_LOADER_ID){
+            mtrailerAdapter.swapCursor(data);
+        }
 
     }
 
