@@ -92,6 +92,11 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private ListView Trailer_Listview;
     private TrailerAdapter mtrailerAdapter;
 
+    private TextView mFavText;
+    private ImageView mFavImage;
+    private String table_name;
+
+
     public Movie_Fragment() {
         setHasOptionsMenu(true);
     }
@@ -127,24 +132,96 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         mtrailerAdapter=new TrailerAdapter(getActivity(),null,0);
         Trailer_Listview.setAdapter(mtrailerAdapter);
 
+        mFavImage=(ImageView) rootview.findViewById(R.id.Movie_fav_icon);
+        mFavText=(TextView) rootview.findViewById(R.id.Movie_fav_Text);
 
         Trailer_Listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Cursor sel=(Cursor) adapterView.getItemAtPosition(position);
+                Cursor sel = (Cursor) adapterView.getItemAtPosition(position);
                 Build_youtube_Link(sel.getString(sel.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY)));
             }
         });
+
+        mFavImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckFavSatte();
+            }
+        });
+
+        get_favState();
         return rootview;
     }
 
 
+
+    public void get_favState(){
+        Cursor query=
+                getActivity().getContentResolver().query(mUri,
+                        new String[]{dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
+                        null,
+                        null,
+                        null);
+
+        if(query.moveToFirst()) {
+            int Fav_state=query.getInt(query.getColumnIndex(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE));
+            if(Fav_state==0){
+                mFavImage.setImageResource(R.drawable.favoff);
+                mFavText.setText("Add to Favorite List");
+            }
+            else if(Fav_state==1){
+                mFavImage.setImageResource(R.drawable.favon);
+                mFavText.setText("Remove from Favorite List");
+            }
+        }
+    }
+
+    public void CheckFavSatte(){
+
+        Cursor query=
+                getActivity().getContentResolver().query(mUri,
+                                new String[]{dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
+                                null,
+                                null,
+                                null);
+
+        if(query.moveToFirst()){
+            int Fav_state=query.getInt(query.getColumnIndex(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE));
+
+            if(Fav_state==0){
+                Uri update_uri=mUri.buildUpon().appendPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("1").build();
+                Log.i("update_uri_val",update_uri.toString());
+                int update_result=getActivity().getContentResolver().update(update_uri, null, null, null);
+                Log.i("update_result_val", Integer.toString(update_result));
+
+                if(update_result==1) {
+                    mFavImage.setImageResource(R.drawable.favon);
+                    mFavText.setText("Remove from Favorite List");
+                }
+            }
+
+            else if(Fav_state==1){
+                Uri update_uri=mUri.buildUpon().appendPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("0").build();
+                Log.i("update_uri_val",update_uri.toString());
+                int update_result=getActivity().getContentResolver().update(update_uri, null, null, null);
+                Log.i("update_result_val", Integer.toString(update_result));
+
+                if(update_result==1) {
+                    mFavImage.setImageResource(R.drawable.favoff);
+                    mFavText.setText("Add to Favorite List");
+                }
+            }
+        }
+
+    }
 
     public void Build_youtube_Link(String link_key){
         String Link_Base="https://www.youtube.com/watch";
         String Link_query="v";
         Uri link_Builder=Uri.parse(Link_Base).buildUpon().appendQueryParameter(Link_query,link_key).build();
         Intent intent=new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.setData(link_Builder);
         if(intent.resolveActivity(getActivity().getPackageManager())!=null){
             startActivity(intent);
@@ -165,7 +242,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
         if(mUri!=null) {
             if(id==LOADER_ID) {
-                String table_name = mUri.getPathSegments().get(0);
+                table_name = mUri.getPathSegments().get(0);
 
                 if (table_name.equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
                     return new CursorLoader(getActivity(),

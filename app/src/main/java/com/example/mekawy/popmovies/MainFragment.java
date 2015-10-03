@@ -58,7 +58,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
 
-
+    
     static final int _ID_COULMN=0;
     static final int TAG_COULMN=1;
     static final int TITLE_COULMN=2;
@@ -133,7 +133,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     Uri passed_uri = null;
                     int selected_tag=0;
 
-
                     if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME)) {
                         selected_tag=cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG));
                         passed_uri = POP_MOVIES_TABLE.builUriwithtag(selected_tag);
@@ -199,7 +198,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if(Selected_position!=GridView.INVALID_POSITION){
         Image_Grid_View.smoothScrollToPosition(Selected_position);
         }
-
     }
 
 

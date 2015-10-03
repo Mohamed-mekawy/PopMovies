@@ -19,7 +19,6 @@ public class dbContract {
     public static final String PATH_MOVIES_VIDEOS="movies_videos";
 
 
-
     public static final String OWM_COMMON_COLUMN_TAG = "id";
     public static final String OWM_COMMON_POSTER_PATH = "poster_path";
     public static final String OWM_COMMON_COLUMN_TITLE = "original_title";

@@ -26,16 +26,18 @@ public class MoviesProvider extends ContentProvider{
 
     private static final int POP_MOVIES=1;
     private static final int POP_MOVIES_WITH_TAG =2;
+    private static final int POP_MOVIES_FAV=9;
+
 
     private static final int VOTE_MOVIES=3;
     private static final int VOTE_MOVIES_WITH_TAG =4;
+    private static final int VOTE_MOVIES_FAV=10;
 
     private static final int FAV_MOVIES=5;
     private static final int FAV_MOVIES_WITH_TAG =6;
 
     private static final int MOVIE_VIDEO=7;
     private static final int MOVIE_VIDEO_WITH_TAG=8;
-
 
 
     private static final String POP_MOVIE_SELECT_BY_TAG=
@@ -53,14 +55,17 @@ public class MoviesProvider extends ContentProvider{
     private static UriMatcher fill_matcher(){
         UriMatcher mMathcer=new UriMatcher(UriMatcher.NO_MATCH);
         String Authority=dbContract.CONTENT_AUTHORITY;
+
         mMathcer.addURI(Authority,dbContract.PATH_POP_MOVIES,POP_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_POP_MOVIES+"/#", POP_MOVIES_WITH_TAG);
-
-        mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES,FAV_MOVIES);
-        mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES+"/#", FAV_MOVIES_WITH_TAG);
+        mMathcer.addURI(Authority,dbContract.PATH_POP_MOVIES+"/#/*/#",POP_MOVIES_FAV);
 
         mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES,VOTE_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES+"/#", VOTE_MOVIES_WITH_TAG);
+        mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES+"/#/*/#",VOTE_MOVIES_FAV);
+
+        mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES,FAV_MOVIES);
+        mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES+"/#", FAV_MOVIES_WITH_TAG);
 
         mMathcer.addURI(Authority,dbContract.PATH_MOVIES_VIDEOS,MOVIE_VIDEO);
 
@@ -68,6 +73,7 @@ public class MoviesProvider extends ContentProvider{
     }
 
     private Cursor get_Movie_by_TAG(Uri uri,String[] projection,String sort_order){
+
         SQLiteQueryBuilder sQueryBuilder=new SQLiteQueryBuilder();
 
         SQLiteDatabase db=mhelper.getReadableDatabase();
@@ -165,6 +171,7 @@ public class MoviesProvider extends ContentProvider{
                         null,
                         null,
                         sort);
+
                 Log.i("success","query");
                 break;
             }
@@ -173,8 +180,6 @@ public class MoviesProvider extends ContentProvider{
                 Log.i("asdsa","sad");
                 break;
             }
-
-
 
             case POP_MOVIES_WITH_TAG:{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
@@ -204,12 +209,15 @@ public class MoviesProvider extends ContentProvider{
 
             case POP_MOVIES:return POP_MOVIES_TABLE.CONTENT_DIR_TYPE;
             case POP_MOVIES_WITH_TAG:return POP_MOVIES_TABLE.CONTENT_ITEM_TYPE;
+            case POP_MOVIES_FAV:return POP_MOVIES_TABLE.CONTENT_ITEM_TYPE;
+
 
             case FAV_MOVIES:return FAV_MOVIES_TABLE.CONTENT_DIR_TYPE;
             case FAV_MOVIES_WITH_TAG:return FAV_MOVIES_TABLE.CONTENT_ITEM_TYPE;
 
             case VOTE_MOVIES:return MOST_VOTED_TABLE.CONTENT_DIR_TYPE;
             case VOTE_MOVIES_WITH_TAG:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
+            case VOTE_MOVIES_FAV:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
 
             case MOVIE_VIDEO:return dbContract.MOVIE_VIDEOS.CONTENT_DIR_TYPE;
             case MOVIE_VIDEO_WITH_TAG: return MOVIE_VIDEOS.CONTENT_DIR_TYPE;
@@ -311,10 +319,21 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
+            case POP_MOVIES_FAV:{
+                ret_val=Update_is_fav(uri);
+                break;
+            }
+
             case VOTE_MOVIES:{
                 ret_val=db.update(MOST_VOTED_TABLE.TABLE_NAME,contentValues,selection,selectionArgs);
                 break;
             }
+
+            case VOTE_MOVIES_FAV:{
+                ret_val=Update_is_fav(uri);
+                break;
+            }
+
 
             case FAV_MOVIES:{
                 ret_val=db.update(FAV_MOVIES_TABLE.TABLE_NAME,contentValues,selection,selectionArgs);
@@ -328,6 +347,49 @@ public class MoviesProvider extends ContentProvider{
             getContext().getContentResolver().notifyChange(uri,null);
         return ret_val;
     }
+
+
+    public int Update_is_fav(Uri mUri){
+
+        SQLiteQueryBuilder sQueryBuilder=new SQLiteQueryBuilder();
+        SQLiteDatabase db=mhelper.getWritableDatabase();
+
+        String table_name=mUri.getPathSegments().get(0);
+        String movie_tag=mUri.getPathSegments().get(1);
+        String Favorite_tag=mUri.getPathSegments().get(2);
+        String Favorite_value=mUri.getPathSegments().get(3);
+        int Fval=Integer.parseInt(Favorite_value);
+
+
+        String Selection;
+        String SelectionArgs[]=new String[]{movie_tag};
+        Uri mContentUri;
+
+        ContentValues contentValues=new ContentValues();
+        contentValues.put(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE,Fval);
+
+        if(table_name.equals(POP_MOVIES_TABLE.TABLE_NAME) && Favorite_tag.equals(POP_MOVIES_TABLE.OWM_COLUMN_IS_FAVORITE)){
+            Selection =POP_MOVIE_SELECT_BY_TAG;
+            mContentUri=POP_MOVIES_TABLE.CONTENT_URI;
+        }
+
+        else if(table_name.equals(MOST_VOTED_TABLE.TABLE_NAME) && Favorite_tag.equals(MOST_VOTED_TABLE.OWM_COLUMN_IS_FAVORITE)){
+            Selection =VOTE_MOVIE_SELECT_BY_TAG;
+            mContentUri=MOST_VOTED_TABLE.CONTENT_URI;
+        }
+
+        else return 0;
+
+        return
+                getContext().getContentResolver().update(mContentUri,contentValues,Selection,SelectionArgs);
+    }
+
+
+
+
+
+
+
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
