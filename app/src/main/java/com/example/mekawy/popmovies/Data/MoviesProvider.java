@@ -49,9 +49,6 @@ public class MoviesProvider extends ContentProvider{
     private static final String FAV_MOVIE_SELECT_BY_TAG=
             FAV_MOVIES_TABLE.TABLE_NAME+"."+FAV_MOVIES_TABLE.OWM_COLUMN_TAG+ " = ? ";
 
-
-
-
     private static UriMatcher fill_matcher(){
         UriMatcher mMathcer=new UriMatcher(UriMatcher.NO_MATCH);
         String Authority=dbContract.CONTENT_AUTHORITY;
@@ -333,7 +330,6 @@ public class MoviesProvider extends ContentProvider{
                 ret_val=Update_is_fav(uri);
                 break;
             }
-
 
             case FAV_MOVIES:{
                 ret_val=db.update(FAV_MOVIES_TABLE.TABLE_NAME,contentValues,selection,selectionArgs);

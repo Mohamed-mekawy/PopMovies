@@ -1,6 +1,7 @@
 package com.example.mekawy.popmovies;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -17,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -57,6 +57,16 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME,
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY,
+    };
+
+
+    private final static String[] COMMON_PROJECTION={ dbContract.OWM_COMMON_COLUMN_TAG,
+            dbContract.OWM_COMMON_COLUMN_TITLE,
+            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
+            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
+            dbContract.OWM_COMMON_POSTER_PATH,
+            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
+            dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
 
 
@@ -146,17 +156,17 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         mFavImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckFavSatte();
+                Change_FavState();
             }
         });
 
-        get_favState();
+        Check_FavState();
         return rootview;
     }
 
 
 
-    public void get_favState(){
+    public void Check_FavState(){
         Cursor query=
                 getActivity().getContentResolver().query(mUri,
                         new String[]{dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
@@ -177,11 +187,18 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
-    public void CheckFavSatte(){
+    public void Change_FavState(){
 
         Cursor query=
                 getActivity().getContentResolver().query(mUri,
-                                new String[]{dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
+                                new String[]{
+                                        dbContract.OWM_COMMON_COLUMN_TAG,
+                                        dbContract.OWM_COMMON_COLUMN_TITLE,
+                                        dbContract.OWM_COMMON_COLUMN_OVERVIEW,
+                                        dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
+                                        dbContract.OWM_COMMON_POSTER_PATH,
+                                        dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
+                                        dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
                                 null,
                                 null,
                                 null);
@@ -191,7 +208,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
             if(Fav_state==0){
                 Uri update_uri=mUri.buildUpon().appendPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("1").build();
-                Log.i("update_uri_val",update_uri.toString());
+                AddtoFavTable(query);
+                Log.i("update_uri_val", update_uri.toString());
                 int update_result=getActivity().getContentResolver().update(update_uri, null, null, null);
                 Log.i("update_result_val", Integer.toString(update_result));
 
@@ -203,7 +221,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
             else if(Fav_state==1){
                 Uri update_uri=mUri.buildUpon().appendPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("0").build();
-                Log.i("update_uri_val",update_uri.toString());
+                RemoveFromFavTable();
+                Log.i("update_uri_val", update_uri.toString());
                 int update_result=getActivity().getContentResolver().update(update_uri, null, null, null);
                 Log.i("update_result_val", Integer.toString(update_result));
 
@@ -213,8 +232,47 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 }
             }
         }
-
     }
+
+    public void RemoveFromFavTable(){
+        Uri Fav_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
+        String movie_tag=mUri.getLastPathSegment();
+
+        int Delete_val = getActivity().getContentResolver().
+                delete(Fav_Uri,dbContract.OWM_COMMON_COLUMN_TAG+" = ?",
+                new String[]{movie_tag});
+
+        Log.i("getData",Integer.toString(Delete_val));
+    }
+
+
+    public void AddtoFavTable(Cursor cur){
+        Uri Fav_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
+        ContentValues fav_record_values=new ContentValues();
+
+        int id=cur.getInt(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG));
+        String mtitle=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TITLE));
+        String mOverview=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_OVERVIEW));
+        String mRelease_date=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_RELEASE_DATE));
+        String mPoster_path=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_POSTER_PATH));
+        double mVote_avg=cur.getDouble(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE));
+
+
+        if(cur.moveToFirst()){
+
+        fav_record_values.put(dbContract.OWM_COMMON_COLUMN_TAG,id);
+        fav_record_values.put(dbContract.OWM_COMMON_COLUMN_TITLE,mtitle);
+        fav_record_values.put(dbContract.OWM_COMMON_COLUMN_OVERVIEW,mOverview);
+        fav_record_values.put(dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,mRelease_date);
+        fav_record_values.put(dbContract.OWM_COMMON_POSTER_PATH,mPoster_path);
+        fav_record_values.put(dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,mVote_avg);
+
+        Uri as=getActivity().getContentResolver().insert(Fav_Uri,fav_record_values);
+            Log.i("getData",as.toString());
+        }
+    }
+
+
 
     public void Build_youtube_Link(String link_key){
         String Link_Base="https://www.youtube.com/watch";
@@ -232,8 +290,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(LOADER_ID,null,this);               // init Movie Loader
-        getLoaderManager().restartLoader(TRAILER_LOADER_ID,null,this);    // init Trailer Loader
+        getLoaderManager().initLoader(LOADER_ID, null, this);               // init Movie Loader
+        getLoaderManager().restartLoader(TRAILER_LOADER_ID, null, this);    // init Trailer Loader
         super.onActivityCreated(savedInstanceState);
     }
 

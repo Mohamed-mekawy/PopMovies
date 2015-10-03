@@ -117,7 +117,6 @@ public class dbContract {
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
     }
 
 
