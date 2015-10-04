@@ -34,55 +34,33 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public static String BEST_FIT_IMAGE;
 
-    //projection for tables
-
-    private final static String []POP_TABLE_PROJECTION ={
-            POP_MOVIES_TABLE.TABLE_NAME+"."+ POP_MOVIES_TABLE._ID,
-            POP_MOVIES_TABLE.OWM_COLUMN_POSTER_PATH,
-            dbContract.OWM_COMMON_COLUMN_TAG,
-            dbContract.OWM_COMMON_COLUMN_TITLE,
-            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
-            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
-            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
-            dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
-    };
-
-    private final static String []VOTE_TABLE_PROJECTION ={
-            MOST_VOTED_TABLE.TABLE_NAME+"."+ POP_MOVIES_TABLE._ID,
-            dbContract.OWM_COMMON_POSTER_PATH,
-            dbContract.OWM_COMMON_COLUMN_TAG,
-            dbContract.OWM_COMMON_COLUMN_TITLE,
-            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
-            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
-            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
-            dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
-    };
-
-    
-    static final int _ID_COULMN=0;
-    static final int TAG_COULMN=1;
-    static final int TITLE_COULMN=2;
-    static final int OVERVIEW_COULMN=3;
-    static final int DATE_COULMN=4;
-    static final int POSTER_COULMN=5;
-    static final int AVG_COULMN=6;
-    static final int ISFAV_COULMN=7;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
-        Log.i("IMAGE FIT",BEST_FIT_IMAGE);
+//        Log.i("IMAGE FIT",BEST_FIT_IMAGE);
     }
 
     public MainFragment() {
+
         setHasOptionsMenu(true);
     }
 
+/*
     @Override
     public void onStart() {
         super.onStart();
+        Fetch_Task newFetchtask=new Fetch_Task(getActivity());
+        newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+        Log.i("LOADER_STATES ", "onStartstart");
+        getLoaderManager().restartLoader(Image_Loader, null, this);
+        Log.i("LOADER_STATES ", "onstartfinished");
+    }*/
+
+
+    public void update_Ui(){
+        Log.i("dfsdvfsd","UPDATE MOVIE UI");
         Fetch_Task newFetchtask=new Fetch_Task(getActivity());
         newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
         getLoaderManager().restartLoader(Image_Loader, null, this);
@@ -98,10 +76,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(Image_Loader, null, this);
+        Log.i("LOADER_STATES ","onActivityCreated");
         super.onActivityCreated(savedInstanceState);
     }
-
-
 
 
     public void set_Grid_Col(){
@@ -109,7 +86,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if(Orient==0)Image_Grid_View.setNumColumns(2); // if Portrait view
         else if(Orient==1)Image_Grid_View.setNumColumns(3); // if landscapeview
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,13 +96,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         set_Grid_Col();
 
         mAdapter=new MovieAdapter(getActivity(),null,0);
+
         Image_Grid_View.setAdapter(mAdapter);
 
         Image_Grid_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cr = (Cursor) adapterView.getItemAtPosition(position);
-
 
                 if (cr != null) {
                     String table_name = Utility.get_table_name(getActivity());
@@ -167,28 +143,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i("onCreateLoader","start onCreateLoader method");
+        Log.i("LOADER_STATES","start onCreateLoader method");
 
         Uri load_uri=Utility.get_content_uri(getActivity());
-        String table_name=load_uri.getPathSegments().get(0).toString();
-
-        if(table_name.equals(POP_MOVIES_TABLE.TABLE_NAME))
-            return new CursorLoader(getActivity(),
-                    load_uri,
-                    POP_TABLE_PROJECTION,
-                    null,
-                    null,
-                    null);
-
-        else if(table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)){
-            return new CursorLoader(getActivity(),
-                    load_uri,
-                    VOTE_TABLE_PROJECTION,
-                    null,
-                    null,
-                    null);
-        }
-        else return null;
+        return new CursorLoader(
+                getActivity(),
+                load_uri,
+                dbContract.COMMON_PROJECTION,
+                null,null,
+                null
+                );
     }
 
     @Override
@@ -199,9 +163,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Image_Grid_View.smoothScrollToPosition(Selected_position);
         }
     }
-
-
-
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

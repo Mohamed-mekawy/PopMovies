@@ -1,6 +1,9 @@
 package com.example.mekawy.popmovies;
 
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.preference.ListPreference;
@@ -22,7 +25,7 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
     public void bind_summary_to_view(Preference pref){
         pref.setOnPreferenceChangeListener(this);
         onPreferenceChange(pref,
-                PreferenceManager.getDefaultSharedPreferences(pref.getContext()).getString(pref.getKey(),""));
+                PreferenceManager.getDefaultSharedPreferences(pref.getContext()).getString(pref.getKey(), ""));
     }
 
 
@@ -38,6 +41,5 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         else preference.setSummary(summary);
         return true;
     }
-
 
     }
