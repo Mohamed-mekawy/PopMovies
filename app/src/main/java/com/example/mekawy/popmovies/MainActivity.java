@@ -51,7 +51,6 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
            if(mf!=null) mf.update_Ui();
         }
 
-
     }
 
     @Override
