@@ -9,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -47,25 +50,30 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         setHasOptionsMenu(true);
     }
 
-/*
     @Override
-    public void onStart() {
-        super.onStart();
-        Fetch_Task newFetchtask=new Fetch_Task(getActivity());
-        newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
-        Log.i("LOADER_STATES ", "onStartstart");
-        getLoaderManager().restartLoader(Image_Loader, null, this);
-        Log.i("LOADER_STATES ", "onstartfinished");
-    }*/
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id=item.getItemId();
+        if(id==R.id.RefreshMenue){
+            fetch_new_data();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.refreshmenue,menu);
+    }
 
     public void update_Ui(){
-        Log.i("dfsdvfsd","UPDATE MOVIE UI");
-        Fetch_Task newFetchtask=new Fetch_Task(getActivity());
-        newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+        fetch_new_data();
         getLoaderManager().restartLoader(Image_Loader, null, this);
     }
 
+    public void fetch_new_data(){
+        Fetch_Task newFetchtask=new Fetch_Task(getActivity());
+        newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

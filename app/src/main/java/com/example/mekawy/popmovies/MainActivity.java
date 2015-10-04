@@ -21,9 +21,12 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         //get the initail sort mode
         Sorted_by = Utility.getsortmethod(this);
+
+
 
         if (findViewById(R.id.movie_container) != null) {
             if (savedInstanceState == null) {
@@ -40,18 +43,18 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
     @Override
     protected void onResume() {
         super.onResume();
+
         String Current_Sort_method= PreferenceManager.getDefaultSharedPreferences(this).
                 getString(this.getString(R.string.setting_sort_key), this.getString(R.string.sort_popularity_desc));
-
-        Log.i("mydata1",Current_Sort_method);
-        Log.i("mydata2",Sorted_by);
-
         if(Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method)){
-            MainFragment mf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.movies_grid);
+            MainFragment mf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
            if(mf!=null) mf.update_Ui();
         }
-
+        Sorted_by=Current_Sort_method;
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

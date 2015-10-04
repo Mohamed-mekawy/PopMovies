@@ -41,13 +41,13 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         else preference.setSummary(summary);
         return true;
     }
-
     //to kkep the last instance when back from setting
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public Intent getParentActivityIntent() {
         return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
+
 
 
 }
