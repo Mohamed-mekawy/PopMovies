@@ -28,6 +28,22 @@ public class dbContract {
     public static final String OWM_COMMON_COLUMN_IS_FAVORITE="isFav";
 
 
+
+    public final static String[] COMMON_PROJECTION={
+            "_id",
+            dbContract.OWM_COMMON_COLUMN_TAG,
+            dbContract.OWM_COMMON_COLUMN_TITLE,
+            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
+            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
+            dbContract.OWM_COMMON_POSTER_PATH,
+            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
+            dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
+    };
+
+
+
+
+
     public static final class POP_MOVIES_TABLE implements BaseColumns {
 
         public static final Uri CONTENT_URI =
