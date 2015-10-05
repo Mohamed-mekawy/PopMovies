@@ -1,6 +1,7 @@
 package com.example.mekawy.popmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -34,6 +35,7 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
             }
             double_pane = true;
         } else double_pane = false;
+
     }
 
     @Override

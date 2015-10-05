@@ -155,15 +155,16 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 Change_FavState();
             }
         });
+
         return rootview;
     }
 
 
-
-
     public void Change_FavState(){
+
         Cursor query=
-                getActivity().getContentResolver().query(mUri,
+                getActivity().getContentResolver().query(
+                                mUri,
                                 new String[]{
                                         dbContract.OWM_COMMON_COLUMN_TAG,
                                         dbContract.OWM_COMMON_COLUMN_TITLE,
@@ -178,7 +179,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
         if(query.moveToFirst()){
             int Fav_state=query.getInt(query.getColumnIndex(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE));
-
             if(Fav_state==0){
                 Uri update_uri=mUri.buildUpon().appendPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("1").build();
                 AddtoFavTable(query);
@@ -191,6 +191,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     mFavText.setText("Remove from Favorite List");
                 }
             }
+
 
             else if(Fav_state==1){
                 Uri update_uri=mUri.buildUpon().appendPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("0").build();
@@ -208,20 +209,22 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     public void RemoveFromFavTable(){
-        Uri Fav_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
         String movie_tag=mUri.getLastPathSegment();
+        Uri Fav_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(movie_tag).build();
 
         int Delete_val = getActivity().getContentResolver().
-                delete(Fav_Uri,dbContract.OWM_COMMON_COLUMN_TAG+" = ?",
-                new String[]{movie_tag});
+                delete(Fav_Uri,null,
+                null);
 
         Log.i("getData",Integer.toString(Delete_val));
     }
 
 
     public void AddtoFavTable(Cursor cur){
+
         Uri Fav_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
         ContentValues fav_record_values=new ContentValues();
+        if(cur.moveToFirst()){
 
         int id=cur.getInt(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG));
         String mtitle=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TITLE));
@@ -229,8 +232,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         String mRelease_date=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_RELEASE_DATE));
         String mPoster_path=cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_POSTER_PATH));
         double mVote_avg=cur.getDouble(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE));
-
-        if(cur.moveToFirst()){
 
         fav_record_values.put(dbContract.OWM_COMMON_COLUMN_TAG,id);
         fav_record_values.put(dbContract.OWM_COMMON_COLUMN_TITLE,mtitle);
@@ -242,8 +243,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         Uri as=getActivity().getContentResolver().insert(Fav_Uri,fav_record_values);
             Log.i("getData",as.toString());
         }
-    }
 
+    }
 
 
     public void Build_youtube_Link(String link_key){

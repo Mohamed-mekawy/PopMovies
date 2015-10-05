@@ -164,6 +164,8 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                         for (int temp_index = 0; temp_index < temp_update.length; temp_index++) {
                             Uri update_uri=Content_uri.buildUpon().appendPath(Integer.toString(Updated_Movies.get(temp_index))).build();
                             temp_update[temp_index] = movies_parser.get(Updated_Movies.get(temp_index));
+                            temp_update[temp_index].remove(OWM_ISFAV);
+                            Log.i("UPDATED_URI",update_uri.toString());
                             int record_updated=mContext.getContentResolver().update(update_uri,temp_update[temp_index],null,null);
                             records_number++;
                         }

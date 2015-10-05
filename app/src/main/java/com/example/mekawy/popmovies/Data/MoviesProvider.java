@@ -288,7 +288,7 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
-            case VOTE_MOVIES:{
+            case VOTE_MOVIES_WITH_TAG:{
                 Selection=VOTE_MOVIE_SELECT_BY_TAG;
                 mTag=uri.getLastPathSegment();
                 ret_val=db.delete(MOST_VOTED_TABLE.TABLE_NAME,Selection,new String[]{mTag});
@@ -337,11 +337,13 @@ public class MoviesProvider extends ContentProvider{
             }
 
             case POP_MOVIES_FAV:{
+                Log.i("append_me","ok");
                 ret_val=Update_is_fav(uri);
                 break;
             }
 
             case VOTE_MOVIES_FAV:{
+                Log.i("append_me","ok");
                 ret_val=Update_is_fav(uri);
                 break;
             }
@@ -369,6 +371,7 @@ public class MoviesProvider extends ContentProvider{
         String movie_tag=mUri.getPathSegments().get(1);
         String Favorite_tag=mUri.getPathSegments().get(2);
         String Favorite_value=mUri.getPathSegments().get(3);
+
         int Fval=Integer.parseInt(Favorite_value);
 
 
@@ -377,22 +380,22 @@ public class MoviesProvider extends ContentProvider{
         Uri mContentUri;
 
         ContentValues contentValues=new ContentValues();
-        contentValues.put(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE,Fval);
+
+        contentValues.put(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE, Fval);
+        contentValues.put(dbContract.OWM_COMMON_COLUMN_TAG, movie_tag);
 
         if(table_name.equals(POP_MOVIES_TABLE.TABLE_NAME) && Favorite_tag.equals(POP_MOVIES_TABLE.OWM_COLUMN_IS_FAVORITE)){
-            Selection =POP_MOVIE_SELECT_BY_TAG;
-            mContentUri=POP_MOVIES_TABLE.CONTENT_URI;
+            mContentUri=POP_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(movie_tag).build();
         }
 
         else if(table_name.equals(MOST_VOTED_TABLE.TABLE_NAME) && Favorite_tag.equals(MOST_VOTED_TABLE.OWM_COLUMN_IS_FAVORITE)){
-            Selection =VOTE_MOVIE_SELECT_BY_TAG;
-            mContentUri=MOST_VOTED_TABLE.CONTENT_URI;
+            mContentUri=MOST_VOTED_TABLE.CONTENT_URI.buildUpon().appendPath(movie_tag).build();
         }
 
         else return 0;
 
-        return
-                getContext().getContentResolver().update(mContentUri,contentValues,Selection,SelectionArgs);
+        mContentUri.buildUpon().appendPath(movie_tag).build();
+            return getContext().getContentResolver().update(mContentUri,contentValues,null,null);
     }
 
 
