@@ -3,6 +3,7 @@ package com.example.mekawy.popmovies;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,7 +14,6 @@ public class Movie_Activity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
-
         if(savedInstanceState==null){
             Bundle movie_bundle=new Bundle();
             movie_bundle.putParcelable(Movie_Fragment.MOVIE_BUNDLE_TAG, getIntent().getData());
@@ -25,10 +25,6 @@ public class Movie_Activity extends ActionBarActivity {
                     add(R.id.movie_container,
                             mFragment).commit();
         }
-
-
-
-
     }
 
 

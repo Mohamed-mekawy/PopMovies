@@ -21,13 +21,9 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         //get the initail sort mode
         Sorted_by = Utility.getsortmethod(this);
-
-
-
         if (findViewById(R.id.movie_container) != null) {
             if (savedInstanceState == null) {
                 Movie_Fragment mf = new Movie_Fragment();
@@ -47,14 +43,18 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         String Current_Sort_method= PreferenceManager.getDefaultSharedPreferences(this).
                 getString(this.getString(R.string.setting_sort_key), this.getString(R.string.sort_popularity_desc));
         if(Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method)){
-            MainFragment mf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
-           if(mf!=null) mf.update_Ui();
+
+            MainFragment mainf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
+            if(mainf!=null) mainf.update_Ui();
+
+            //Remove movie fragment in case of changing the sortmethod to fix TABLET BUG;
+            Movie_Fragment movief=(Movie_Fragment) getSupportFragmentManager().findFragmentByTag(MOVIE_FRAG_TAG);
+            if(double_pane) {
+                getSupportFragmentManager().beginTransaction().remove(movief).commit();
+            }
         }
         Sorted_by=Current_Sort_method;
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,7 +100,5 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         else if(!double_pane){
             startActivity(new Intent(this,Movie_Activity.class).setData(movie_uri));
         }
-
-
     }
 }
