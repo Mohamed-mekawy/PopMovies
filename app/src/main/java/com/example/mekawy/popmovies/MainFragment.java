@@ -1,9 +1,7 @@
 package com.example.mekawy.popmovies;
 
 
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -31,9 +29,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private GridView Image_Grid_View;
     private static MovieAdapter mAdapter;
     private static final int Image_Loader=0;
-    
+
     private int Selected_position=GridView.INVALID_POSITION;
     private static final String Selected_position_key="Selected_position";
+    boolean RESET_POSITION_FLAG=false;
 
     public static String BEST_FIT_IMAGE;
 
@@ -41,12 +40,18 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
-//        Log.i("IMAGE FIT",BEST_FIT_IMAGE);
+
     }
 
     public MainFragment() {
-
         setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Selected_position_key, Selected_position);
     }
 
     @Override
@@ -61,11 +66,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.refreshmenue,menu);
+    inflater.inflate(R.menu.refreshmenue, menu);
     }
 
     public void update_Ui(){
         fetch_new_data();
+        RESET_POSITION_FLAG=true;
         getLoaderManager().restartLoader(Image_Loader, null, this);
     }
 
@@ -74,11 +80,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(Selected_position_key,Selected_position);
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -114,23 +115,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 if (cr != null) {
                     String table_name = Utility.get_table_name(getActivity());
                     Uri passed_uri = null;
-                    int selected_tag=0;
+                    int selected_tag = 0;
 
                     if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME)) {
-                        selected_tag=cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG));
+                        selected_tag = cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG));
                         passed_uri = POP_MOVIES_TABLE.builUriwithtag(selected_tag);
-                    }
-
-                    else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)){
-                        selected_tag=cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG));
+                    } else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)) {
+                        selected_tag = cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG));
                         passed_uri = MOST_VOTED_TABLE.builUriwithtag(selected_tag);
                     }
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
 
-                    Trailer_Parser mTrailer=new Trailer_Parser(getActivity());
+                    Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
                     mTrailer.execute(Integer.toString(selected_tag));
-
                     Selected_position=position;
                 }
             }
@@ -138,7 +136,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         if(savedInstanceState!=null && savedInstanceState.containsKey(Selected_position_key))
             Selected_position=savedInstanceState.getInt(Selected_position_key);
-
         return rootview;
     }
 
@@ -146,12 +143,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         public void  onMovieSelected(Uri movie_uri);
     }
 
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i("LOADER_STATES","start onCreateLoader method");
-
         Uri load_uri=Utility.get_content_uri(getActivity());
         return new CursorLoader(
                 getActivity(),
@@ -165,9 +159,18 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
-        //Scroll to the saved position
-        if(Selected_position!=GridView.INVALID_POSITION){
-        Image_Grid_View.smoothScrollToPosition(Selected_position);
+        // to return to first of Gridview after restarting upon changing of the sort method;
+
+        Log.i("restartd",Boolean.toString(RESET_POSITION_FLAG));
+
+        if (!RESET_POSITION_FLAG){
+            if(Selected_position!=GridView.INVALID_POSITION){
+                Image_Grid_View.smoothScrollToPosition(Selected_position);
+            }
+        }
+
+        else if(RESET_POSITION_FLAG){
+            Image_Grid_View.smoothScrollToPosition(0);
         }
     }
 

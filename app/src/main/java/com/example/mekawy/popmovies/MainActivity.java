@@ -46,9 +46,11 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
 
             MainFragment mainf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
             if(mainf!=null) mainf.update_Ui();
+            mainf.onDestroyView();
 
             //Remove movie fragment in case of changing the sortmethod to fix TABLET BUG;
             Movie_Fragment movief=(Movie_Fragment) getSupportFragmentManager().findFragmentByTag(MOVIE_FRAG_TAG);
+
             if(double_pane) {
                 getSupportFragmentManager().beginTransaction().remove(movief).commit();
             }
