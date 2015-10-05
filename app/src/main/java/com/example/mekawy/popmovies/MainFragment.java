@@ -37,7 +37,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public static String BEST_FIT_IMAGE;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

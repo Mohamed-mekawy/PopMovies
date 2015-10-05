@@ -271,27 +271,34 @@ public class MoviesProvider extends ContentProvider{
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+
         SQLiteDatabase db=mhelper.getWritableDatabase();
         int match_val=sUriMatcher.match(uri);
-        int ret_val;
 
-        if(selection==null)
-            selection="1"; //return the number of rows deleted in case of null selection
+        int ret_val;
+        String Selection;
+        String mTag;
 
         switch (match_val){
 
-            case POP_MOVIES:{
-                ret_val=db.delete(POP_MOVIES_TABLE.TABLE_NAME, selection, selectionArgs);
-                break;
-            }
-
-            case FAV_MOVIES:{
-                ret_val=db.delete(FAV_MOVIES_TABLE.TABLE_NAME, selection, selectionArgs);
+            case POP_MOVIES_WITH_TAG:{
+                Selection=POP_MOVIE_SELECT_BY_TAG;
+                mTag=uri.getLastPathSegment();
+                ret_val=db.delete(POP_MOVIES_TABLE.TABLE_NAME,Selection,new String[]{mTag});
                 break;
             }
 
             case VOTE_MOVIES:{
-                ret_val=db.delete(MOST_VOTED_TABLE.TABLE_NAME, selection, selectionArgs);
+                Selection=VOTE_MOVIE_SELECT_BY_TAG;
+                mTag=uri.getLastPathSegment();
+                ret_val=db.delete(MOST_VOTED_TABLE.TABLE_NAME,Selection,new String[]{mTag});
+                break;
+            }
+
+            case FAV_MOVIES_WITH_TAG:{
+                Selection=FAV_MOVIE_SELECT_BY_TAG;
+                mTag=uri.getLastPathSegment();
+                ret_val=db.delete(FAV_MOVIES_TABLE.TABLE_NAME,Selection,new String[]{mTag});
                 break;
             }
 
@@ -303,26 +310,34 @@ public class MoviesProvider extends ContentProvider{
         return ret_val;
     }
 
+
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         SQLiteDatabase db=mhelper.getWritableDatabase();
         int match_val=sUriMatcher.match(uri);
         int ret_val;
 
+        String Selection;
+        String mTag;
+
         switch (match_val){
 
-            case POP_MOVIES:{
-                ret_val=db.update(POP_MOVIES_TABLE.TABLE_NAME,contentValues,selection,selectionArgs);
+            case POP_MOVIES_WITH_TAG:{
+                Selection=POP_MOVIE_SELECT_BY_TAG;
+                mTag=uri.getLastPathSegment();
+                ret_val=db.update(POP_MOVIES_TABLE.TABLE_NAME,contentValues,Selection,new String[]{mTag});
+                break;
+            }
+
+            case VOTE_MOVIES_WITH_TAG:{
+                Selection=VOTE_MOVIE_SELECT_BY_TAG;
+                mTag=uri.getLastPathSegment();
+                ret_val=db.update(MOST_VOTED_TABLE.TABLE_NAME,contentValues,Selection,new String[]{mTag});
                 break;
             }
 
             case POP_MOVIES_FAV:{
                 ret_val=Update_is_fav(uri);
-                break;
-            }
-
-            case VOTE_MOVIES:{
-                ret_val=db.update(MOST_VOTED_TABLE.TABLE_NAME,contentValues,selection,selectionArgs);
                 break;
             }
 
@@ -379,12 +394,6 @@ public class MoviesProvider extends ContentProvider{
         return
                 getContext().getContentResolver().update(mContentUri,contentValues,Selection,SelectionArgs);
     }
-
-
-
-
-
-
 
 
     @Override
