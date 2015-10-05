@@ -127,6 +127,9 @@ public class Utility {
             return  dbContract.POP_MOVIES_TABLE.TABLE_NAME;
         else if(uri.getPathSegments().get(0).equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
             return dbContract.MOST_VOTED_TABLE.TABLE_NAME;
+        else if(uri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
+            return dbContract.FAV_MOVIES_TABLE.TABLE_NAME;
+
         return null;
     }
 
@@ -146,6 +149,10 @@ public class Utility {
 
         else if(mode.equals(context.getString(R.string.sort_vote_average_desc)))
             ret_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
+
+        else if(mode.equals(context.getString(R.string.sort_fav))){
+            ret_uri=dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
+        }
 
         return ret_uri;
     }

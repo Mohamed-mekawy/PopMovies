@@ -41,6 +41,7 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         else preference.setSummary(summary);
         return true;
     }
+
     //to kkep the last instance when back from setting
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override

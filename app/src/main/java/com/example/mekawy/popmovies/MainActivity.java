@@ -42,21 +42,25 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
     protected void onResume() {
         super.onResume();
 
-        String Current_Sort_method= PreferenceManager.getDefaultSharedPreferences(this).
-                getString(this.getString(R.string.setting_sort_key), this.getString(R.string.sort_popularity_desc));
-        if(Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method)){
+        String Current_Sort_method= Utility.getsortmethod(this);
+
+        if( Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method) ){
 
             MainFragment mainf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
-            if(mainf!=null) mainf.update_Ui();
-            mainf.onDestroyView();
+            if(mainf!=null)
+                mainf.update_Ui();
 
             //Remove movie fragment in case of changing the sortmethod to fix TABLET BUG;
             Movie_Fragment movief=(Movie_Fragment) getSupportFragmentManager().findFragmentByTag(MOVIE_FRAG_TAG);
-
+            // change to replace to fix Tablet Bug
             if(double_pane) {
-                getSupportFragmentManager().beginTransaction().remove(movief).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.movie_container,
+                        new Movie_Fragment(),
+                        MOVIE_FRAG_TAG).commit();
             }
+
         }
+
         Sorted_by=Current_Sort_method;
     }
 

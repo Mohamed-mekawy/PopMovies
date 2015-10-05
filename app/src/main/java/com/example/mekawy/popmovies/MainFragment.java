@@ -40,6 +40,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
+        Log.i("FRAGMENT_STATE", "onCreate");
 
     }
 
@@ -52,6 +53,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(Selected_position_key, Selected_position);
+        Log.i("FRAGMENT_STATE", "onSaveInstanceState");
     }
 
     @Override
@@ -76,16 +78,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     public void fetch_new_data(){
-        Fetch_Task newFetchtask=new Fetch_Task(getActivity());
-        newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+        String c=Utility.getsortmethod(getActivity());
+        Log.i("Mycurrent_state",c);
+        if(!c.equals(getString(R.string.sort_fav))) {
+            Fetch_Task newFetchtask = new Fetch_Task(getActivity());
+            newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
+        }
+
     }
 
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(Image_Loader, null, this);
-        Log.i("LOADER_STATES ","onActivityCreated");
+        Log.i("LOADER_STATES ", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
+        Log.i("FRAGMENT_STATE", "onActivityCreated");
+
     }
 
 
@@ -120,9 +129,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME)) {
                         selected_tag = cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG));
                         passed_uri = POP_MOVIES_TABLE.builUriwithtag(selected_tag);
+
                     } else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)) {
                         selected_tag = cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG));
                         passed_uri = MOST_VOTED_TABLE.builUriwithtag(selected_tag);
+                    }
+
+                    else if(table_name.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
+                        selected_tag = cr.getInt(cr.getColumnIndex(dbContract.FAV_MOVIES_TABLE.OWM_COLUMN_TAG));
+                        passed_uri = dbContract.FAV_MOVIES_TABLE.builUriwithtag(selected_tag);
                     }
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
@@ -136,6 +151,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         if(savedInstanceState!=null && savedInstanceState.containsKey(Selected_position_key))
             Selected_position=savedInstanceState.getInt(Selected_position_key);
+
         return rootview;
     }
 
@@ -146,23 +162,49 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i("LOADER_STATES","start onCreateLoader method");
+
         Uri load_uri=Utility.get_content_uri(getActivity());
-        return new CursorLoader(
-                getActivity(),
-                load_uri,
-                dbContract.COMMON_PROJECTION,
-                null,null,
-                null
-                );
+        Log.i("asdsaasdd",load_uri.toString());
+        if(!load_uri.equals(dbContract.FAV_MOVIES_TABLE.CONTENT_URI)) {
+            return new CursorLoader(
+                    getActivity(),
+                    load_uri,
+                    dbContract.COMMON_PROJECTION,
+                    null, null,
+                    null
+            );
+        }
+
+        else if(load_uri.equals(dbContract.FAV_MOVIES_TABLE.CONTENT_URI)){
+
+            return new CursorLoader(
+                    getActivity(),
+                    load_uri,
+                    dbContract.FAVORITE_PROJECTION,
+                    null, null,
+                    null
+            );
+        }
+
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
+        Log.i("LOADER_STATES","start onLoadFinished method");
+
+        if (data.moveToFirst())
+            mAdapter.swapCursor(data);
+        else if(!data.moveToFirst())
+            mAdapter.swapCursor(null);
+
+
+
+        if(Selected_position!=GridView.INVALID_POSITION){
+            Image_Grid_View.smoothScrollToPosition(Selected_position);
+        }
+
         // to return to first of Gridview after restarting upon changing of the sort method;
-
-        Log.i("restartd",Boolean.toString(RESET_POSITION_FLAG));
-
         if (!RESET_POSITION_FLAG){
             if(Selected_position!=GridView.INVALID_POSITION){
                 Image_Grid_View.smoothScrollToPosition(Selected_position);
@@ -172,10 +214,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         else if(RESET_POSITION_FLAG){
             Image_Grid_View.smoothScrollToPosition(0);
         }
+
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
         mAdapter.swapCursor(null);
     }
 }

@@ -41,6 +41,18 @@ public class dbContract {
     };
 
 
+    public final static String[] FAVORITE_PROJECTION={
+            "_id",
+            dbContract.OWM_COMMON_COLUMN_TAG,
+            dbContract.OWM_COMMON_COLUMN_TITLE,
+            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
+            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
+            dbContract.OWM_COMMON_POSTER_PATH,
+            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
+    };
+
+
+
 
 
 
@@ -132,6 +144,10 @@ public class dbContract {
 
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri builUriwithtag(int tag){
+            return CONTENT_URI.buildUpon().appendPath(Integer.toString(tag)).build();
         }
     }
 
