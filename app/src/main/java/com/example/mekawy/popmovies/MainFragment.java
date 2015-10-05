@@ -185,7 +185,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     null
             );
         }
-
         return null;
     }
 
