@@ -30,8 +30,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         dbContract.POP_MOVIES_TABLE.OWM_COLUMN_OVERVIEW +" TEXT NOT NULL, " +
                         dbContract.POP_MOVIES_TABLE.OWM_COLUMN_RELEASE_DATE+ " TEXT NOT NULL, "+
                         dbContract.POP_MOVIES_TABLE.OWM_COLUMN_POSTER_PATH + " TEXT NOT NULL, "+
-                        dbContract.POP_MOVIES_TABLE.OWM_COLUMN_VOTE_AVERAGE+ " REAL NOT NULL, "+
-                        dbContract.POP_MOVIES_TABLE.OWM_COLUMN_IS_FAVORITE+ " INTEGER NOT NULL);";
+                        dbContract.POP_MOVIES_TABLE.OWM_COLUMN_VOTE_AVERAGE+ " REAL NOT NULL);";
 
         final String SQL_VOTE_MOVIES_TABLE=
                 "CREATE TABLE "+ dbContract.MOST_VOTED_TABLE.TABLE_NAME +" ( "+
@@ -41,8 +40,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         dbContract.MOST_VOTED_TABLE.OWM_COLUMN_OVERVIEW +" TEXT NOT NULL, " +
                         dbContract.MOST_VOTED_TABLE.OWM_COLUMN_RELEASE_DATE+ " TEXT NOT NULL, "+
                         dbContract.MOST_VOTED_TABLE.OWM_COLUMN_POSTER_PATH + " TEXT NOT NULL, "+
-                        dbContract.MOST_VOTED_TABLE.OWM_COLUMN_VOTE_AVERAGE+ " REAL NOT NULL, "+
-                        dbContract.MOST_VOTED_TABLE.OWM_COLUMN_IS_FAVORITE+ " INTEGER NOT NULL);";
+                        dbContract.MOST_VOTED_TABLE.OWM_COLUMN_VOTE_AVERAGE+ " REAL NOT NULL); ";
 
         final String SQL_FAV_MOVIES_TABLE=
                 "CREATE TABLE "+ FAV_MOVIES_TABLE.TABLE_NAME +" ( "+

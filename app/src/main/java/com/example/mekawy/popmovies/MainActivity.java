@@ -18,7 +18,6 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
     public static boolean double_pane;
     private String Sorted_by;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         Sorted_by = Utility.getsortmethod(this);
 
         if (findViewById(R.id.movie_container) != null) {
+
             if (savedInstanceState == null) {
                 Movie_Fragment mf = new Movie_Fragment();
                 getSupportFragmentManager().beginTransaction().
@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
                                 mf,
                                 MOVIE_FRAG_TAG).commit();
             }
+
             double_pane = true;
         } else double_pane = false;
 

@@ -78,22 +78,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     public void fetch_new_data(){
-        String c=Utility.getsortmethod(getActivity());
-        Log.i("Mycurrent_state",c);
-        if(!c.equals(getString(R.string.sort_fav))) {
+        if(!Utility.getsortmethod(getActivity()).equals(getString(R.string.sort_fav))) {
             Fetch_Task newFetchtask = new Fetch_Task(getActivity());
             newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
         }
-
     }
-
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(Image_Loader, null, this);
-        Log.i("LOADER_STATES ", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
-        Log.i("FRAGMENT_STATE", "onActivityCreated");
     }
 
 
@@ -108,9 +102,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                              Bundle savedInstanceState) {
         View rootview= inflater.inflate(R.layout.movies_grid, container, false);
         Image_Grid_View=(GridView) rootview.findViewById(R.id.movies_grid);
-
         set_Grid_Col();
-
         mAdapter=new MovieAdapter(getActivity(),null,0);
 
         Image_Grid_View.setAdapter(mAdapter);
@@ -161,11 +153,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i("LOADER_STATES","start onCreateLoader method");
-
         Uri load_uri=Utility.get_content_uri(getActivity());
-        Log.i("asdsaasdd",load_uri.toString());
-        if(!load_uri.equals(dbContract.FAV_MOVIES_TABLE.CONTENT_URI)) {
             return new CursorLoader(
                     getActivity(),
                     load_uri,
@@ -173,19 +161,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     null, null,
                     null
             );
-        }
-
-        else if(load_uri.equals(dbContract.FAV_MOVIES_TABLE.CONTENT_URI)){
-
-            return new CursorLoader(
-                    getActivity(),
-                    load_uri,
-                    dbContract.FAVORITE_PROJECTION,
-                    null, null,
-                    null
-            );
-        }
-        return null;
     }
 
     @Override
@@ -204,18 +179,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 Image_Grid_View.smoothScrollToPosition(Selected_position);
             }
         }
-
         else if(RESET_POSITION_FLAG){
-            Image_Grid_View.smoothScrollToPosition(0);
+        Image_Grid_View.smoothScrollToPosition(0);
 
         }
 
-
+        Image_Grid_View.setSelection(0);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
         mAdapter.swapCursor(null);
     }
 }

@@ -25,7 +25,6 @@ public class dbContract {
     public static final String OWM_COMMON_COLUMN_OVERVIEW = "overview";
     public static final String OWM_COMMON_COLUMN_RELEASE_DATE = "release_date";
     public static final String OWM_COMMON_COLUMN_VOTE_AVERAGE = "vote_average";
-    public static final String OWM_COMMON_COLUMN_IS_FAVORITE="isFav";
 
 
 
@@ -37,24 +36,15 @@ public class dbContract {
             dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
             dbContract.OWM_COMMON_POSTER_PATH,
             dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
-            dbContract.OWM_COMMON_COLUMN_IS_FAVORITE
     };
 
 
-    public final static String[] FAVORITE_PROJECTION={
-            "_id",
-            dbContract.OWM_COMMON_COLUMN_TAG,
-            dbContract.OWM_COMMON_COLUMN_TITLE,
-            dbContract.OWM_COMMON_COLUMN_OVERVIEW,
-            dbContract.OWM_COMMON_COLUMN_RELEASE_DATE,
-            dbContract.OWM_COMMON_POSTER_PATH,
-            dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE,
+    public final static String[] MOVIE_TRAILER_PROJECTION ={
+            dbContract.MOVIE_VIDEOS._ID,
+            dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,
+            dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME,
+            dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY,
     };
-
-
-
-
-
 
     public static final class POP_MOVIES_TABLE implements BaseColumns {
 
@@ -76,7 +66,6 @@ public class dbContract {
         public static final String OWM_COLUMN_RELEASE_DATE = "release_date";
         public static final String OWM_COLUMN_POSTER_PATH = "poster_path";
         public static final String OWM_COLUMN_VOTE_AVERAGE = "vote_average";
-        public static final String OWM_COLUMN_IS_FAVORITE="isFav";
 
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -85,7 +74,6 @@ public class dbContract {
         public static Uri builUriwithtag(int tag){
             return CONTENT_URI.buildUpon().appendPath(Integer.toString(tag)).build();
         }
-
 
     }
 
@@ -109,12 +97,10 @@ public class dbContract {
         public static final String OWM_COLUMN_RELEASE_DATE = "release_date";
         public static final String OWM_COLUMN_POSTER_PATH = "poster_path";
         public static final String OWM_COLUMN_VOTE_AVERAGE = "vote_average";
-        public static final String OWM_COLUMN_IS_FAVORITE="isFav";
 
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
 
         public static Uri builUriwithtag(int tag){
             return CONTENT_URI.buildUpon().appendPath(Integer.toString(tag)).build();

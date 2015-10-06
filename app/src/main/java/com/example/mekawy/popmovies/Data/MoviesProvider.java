@@ -22,22 +22,17 @@ public class MoviesProvider extends ContentProvider{
     private static dbOpenHelper mhelper;
     private static final UriMatcher sUriMatcher=fill_matcher();
 
-
-
     private static final int POP_MOVIES=1;
     private static final int POP_MOVIES_WITH_TAG =2;
-    private static final int POP_MOVIES_FAV=9;
-
 
     private static final int VOTE_MOVIES=3;
     private static final int VOTE_MOVIES_WITH_TAG =4;
-    private static final int VOTE_MOVIES_FAV=10;
 
     private static final int FAV_MOVIES=5;
     private static final int FAV_MOVIES_WITH_TAG =6;
 
-    private static final int MOVIE_VIDEO=7;
-    private static final int MOVIE_VIDEO_WITH_TAG=8;
+    private static final int MOVIE_TRAILER =7;
+    private static final int MOVIE_TRAILER_WITH_TAG =8;
 
 
     private static final String POP_MOVIE_SELECT_BY_TAG=
@@ -55,16 +50,14 @@ public class MoviesProvider extends ContentProvider{
 
         mMathcer.addURI(Authority,dbContract.PATH_POP_MOVIES,POP_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_POP_MOVIES+"/#", POP_MOVIES_WITH_TAG);
-        mMathcer.addURI(Authority,dbContract.PATH_POP_MOVIES+"/#/*/#",POP_MOVIES_FAV);
 
         mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES,VOTE_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES+"/#", VOTE_MOVIES_WITH_TAG);
-        mMathcer.addURI(Authority,dbContract.PATH_VOTE_MOVIES+"/#/*/#",VOTE_MOVIES_FAV);
 
         mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES,FAV_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES+"/#", FAV_MOVIES_WITH_TAG);
 
-        mMathcer.addURI(Authority,dbContract.PATH_MOVIES_VIDEOS,MOVIE_VIDEO);
+        mMathcer.addURI(Authority,dbContract.PATH_MOVIES_VIDEOS, MOVIE_TRAILER);
 
         return mMathcer;
     }
@@ -159,7 +152,7 @@ public class MoviesProvider extends ContentProvider{
             }
 
 
-            case MOVIE_VIDEO:{
+            case MOVIE_TRAILER:{
                 ret_cursor=db.query(dbContract.MOVIE_VIDEOS.TABLE_NAME,
                         projection,
                         selection,
@@ -167,13 +160,6 @@ public class MoviesProvider extends ContentProvider{
                         null,
                         null,
                         sort);
-
-                Log.i("success","query");
-                break;
-            }
-
-            case MOVIE_VIDEO_WITH_TAG:{
-                Log.i("asdsa","sad");
                 break;
             }
 
@@ -205,18 +191,15 @@ public class MoviesProvider extends ContentProvider{
 
             case POP_MOVIES:return POP_MOVIES_TABLE.CONTENT_DIR_TYPE;
             case POP_MOVIES_WITH_TAG:return POP_MOVIES_TABLE.CONTENT_ITEM_TYPE;
-            case POP_MOVIES_FAV:return POP_MOVIES_TABLE.CONTENT_ITEM_TYPE;
-
 
             case FAV_MOVIES:return FAV_MOVIES_TABLE.CONTENT_DIR_TYPE;
             case FAV_MOVIES_WITH_TAG:return FAV_MOVIES_TABLE.CONTENT_ITEM_TYPE;
 
             case VOTE_MOVIES:return MOST_VOTED_TABLE.CONTENT_DIR_TYPE;
             case VOTE_MOVIES_WITH_TAG:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
-            case VOTE_MOVIES_FAV:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
 
-            case MOVIE_VIDEO:return dbContract.MOVIE_VIDEOS.CONTENT_DIR_TYPE;
-            case MOVIE_VIDEO_WITH_TAG: return MOVIE_VIDEOS.CONTENT_DIR_TYPE;
+            case MOVIE_TRAILER:return dbContract.MOVIE_VIDEOS.CONTENT_DIR_TYPE;
+            case MOVIE_TRAILER_WITH_TAG: return MOVIE_VIDEOS.CONTENT_DIR_TYPE;
 
             default: throw new UnsupportedOperationException("unsupported type :"+uri);
         }
@@ -250,21 +233,16 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
-            case MOVIE_VIDEO:{
-                Long ret_val=db.insert(MOVIE_VIDEOS.TABLE_NAME,null,contentValues);
-                if(ret_val!=-1) ret_uri=MOVIE_VIDEOS.buildTrailerUri(ret_val);
+            case MOVIE_TRAILER: {
+                Long ret_val = db.insert(MOVIE_VIDEOS.TABLE_NAME, null, contentValues);
+                if (ret_val != -1) ret_uri = MOVIE_VIDEOS.buildTrailerUri(ret_val);
                 else throw new SQLException("Provider_insert_DB_NOT_VALID");
-                Log.i("success","insert");
-
                 break;
             }
-
-
-
             default: throw new UnsupportedOperationException("error,Uri not supported");
         }
 
-        getContext().getContentResolver().notifyChange(uri,null);
+        getContext().getContentResolver().notifyChange(uri, null);
         return ret_uri;
     }
 
@@ -335,18 +313,6 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
-            case POP_MOVIES_FAV:{
-                Log.i("append_me","ok");
-                ret_val=Update_is_fav(uri);
-                break;
-            }
-
-            case VOTE_MOVIES_FAV:{
-                Log.i("append_me","ok");
-                ret_val=Update_is_fav(uri);
-                break;
-            }
-
             case FAV_MOVIES:{
                 ret_val=db.update(FAV_MOVIES_TABLE.TABLE_NAME,contentValues,selection,selectionArgs);
                 break;
@@ -354,47 +320,9 @@ public class MoviesProvider extends ContentProvider{
 
             default:throw new UnsupportedOperationException("unsupported update command : "+uri);
         }
-        //notify only in case of rows deleted
         if(ret_val!=0)
             getContext().getContentResolver().notifyChange(uri,null);
         return ret_val;
-    }
-
-
-    public int Update_is_fav(Uri mUri){
-
-        SQLiteQueryBuilder sQueryBuilder=new SQLiteQueryBuilder();
-        SQLiteDatabase db=mhelper.getWritableDatabase();
-
-        String table_name=mUri.getPathSegments().get(0);
-        String movie_tag=mUri.getPathSegments().get(1);
-        String Favorite_tag=mUri.getPathSegments().get(2);
-        String Favorite_value=mUri.getPathSegments().get(3);
-
-        int Fval=Integer.parseInt(Favorite_value);
-
-
-        String Selection;
-        String SelectionArgs[]=new String[]{movie_tag};
-        Uri mContentUri;
-
-        ContentValues contentValues=new ContentValues();
-
-        contentValues.put(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE, Fval);
-        contentValues.put(dbContract.OWM_COMMON_COLUMN_TAG, movie_tag);
-
-        if(table_name.equals(POP_MOVIES_TABLE.TABLE_NAME) && Favorite_tag.equals(POP_MOVIES_TABLE.OWM_COLUMN_IS_FAVORITE)){
-            mContentUri=POP_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(movie_tag).build();
-        }
-
-        else if(table_name.equals(MOST_VOTED_TABLE.TABLE_NAME) && Favorite_tag.equals(MOST_VOTED_TABLE.OWM_COLUMN_IS_FAVORITE)){
-            mContentUri=MOST_VOTED_TABLE.CONTENT_URI.buildUpon().appendPath(movie_tag).build();
-        }
-
-        else return 0;
-
-        mContentUri.buildUpon().appendPath(movie_tag).build();
-            return getContext().getContentResolver().update(mContentUri,contentValues,null,null);
     }
 
 

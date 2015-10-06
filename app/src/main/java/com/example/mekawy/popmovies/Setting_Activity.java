@@ -19,7 +19,6 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.movies_setting);
         bind_summary_to_view(findPreference(getString(R.string.setting_sort_key)));
-
     }
 
     public void bind_summary_to_view(Preference pref){
@@ -27,7 +26,6 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         onPreferenceChange(pref,
                 PreferenceManager.getDefaultSharedPreferences(pref.getContext()).getString(pref.getKey(), ""));
     }
-
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {
@@ -48,7 +46,5 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
     public Intent getParentActivityIntent() {
         return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
-
-
 
 }
