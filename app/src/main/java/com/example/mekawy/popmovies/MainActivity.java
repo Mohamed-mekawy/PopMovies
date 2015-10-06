@@ -14,7 +14,7 @@ import com.example.mekawy.popmovies.Data.dbContract;
 
 public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback{
 
-    private final static String MOVIE_FRAG_TAG ="MFTAG";
+    public final static String MOVIE_FRAG_TAG ="MFTAG";
     public static boolean double_pane;
     private String Sorted_by;
 
@@ -57,10 +57,7 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
                         new Movie_Fragment(),
                         MOVIE_FRAG_TAG).commit();
             }
-
-
         }
-
         Sorted_by=Current_Sort_method;
     }
 

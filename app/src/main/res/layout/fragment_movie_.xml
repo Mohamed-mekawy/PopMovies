@@ -12,7 +12,6 @@
             android:id="@+id/detail.title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_Green"
             android:textColor="#FFFFFF"
             android:layout_gravity="center_vertical"
             android:textSize="@dimen/movie_text_size"

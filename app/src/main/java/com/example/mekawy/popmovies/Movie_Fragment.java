@@ -3,6 +3,8 @@ package com.example.mekawy.popmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
@@ -19,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -58,8 +61,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME,
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY,
     };
-
-
 
 
     //tage used by bundle to fetch Uri of selected movie
@@ -174,8 +175,16 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                         int _update=getActivity().getContentResolver().update(update_isFav,null,null,null);
                         Log.i("Update_isFAV",Integer.toString(_update));
                     }
+
                     _delete=getActivity().getContentResolver().delete(mUri,null,null);
                     Log.i("Delete_fav_Record",Integer.toString(_delete));
+
+                    getFragmentManager().beginTransaction().
+                            replace(R.id.movie_container,
+                                    new Movie_Fragment(),
+                                    MainActivity.MOVIE_FRAG_TAG).commit();
+                    Toast.makeText(getActivity(), "Movie has been Removed from Favorite List", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "You Can Back to Favorite List", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -398,6 +407,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 if(data.moveToFirst()){
                     Log.i("mine record","record founded");
                     movie_title.setText(data.getString(TITLE_COULMN));
+                    movie_title.setBackgroundColor(Color.GREEN);
                     Picasso.with(getActivity()).
                             load(IMAGE_BASE + data.getString(POSTER_COULMN)).
                             resize(resize_width,resize_hight).
