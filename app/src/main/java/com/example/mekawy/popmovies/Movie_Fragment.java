@@ -64,7 +64,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
     //tage used by bundle to fetch Uri of selected movie
     public final static String MOVIE_BUNDLE_TAG="mTag";
-    private Uri mUri;
+    private Uri mUri=null;
 
     static final int _ID_COULMN=0;
     static final int TAG_COULMN=1;
@@ -74,7 +74,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     static final int POSTER_COULMN=5;
     static final int AVG_COULMN=6;
     static final int ISFAV_COULMN=7;
-
 
 
     private int resize_width;
@@ -124,7 +123,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             mUri=movie_arguments.getParcelable(MOVIE_BUNDLE_TAG);
             Log.i("rec_uri",mUri.toString());
         }
-        final String Current_table=mUri.getPathSegments().get(0);
+
 
         View rootview= inflater.inflate(R.layout.fragment_movie_, container, false);
 
@@ -149,9 +148,12 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
 
-        if(Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
+
+        if(mUri!=null) {
+        if(mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
             mFavImage.setImageResource(R.drawable.favdelete);
             mFavText.setText(" Remove form favorite List ");
+        }
         }
 
         mFavImage.setOnClickListener(new View.OnClickListener() {
@@ -317,18 +319,17 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        String Current_table=mUri.getPathSegments().get(0);
-        getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);               // init Movie Loader
-        getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
-        if(!Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
-            getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+        if (mUri != null) {
+            String Current_table = mUri.getPathSegments().get(0);
+            getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);               // init Movie Loader
+            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
+            if (!Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
+            } else if (Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+            }
         }
-
-        else if(Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
-        }
-            super.onActivityCreated(savedInstanceState);
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

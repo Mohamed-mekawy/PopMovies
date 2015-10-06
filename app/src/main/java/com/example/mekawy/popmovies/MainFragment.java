@@ -94,7 +94,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Log.i("LOADER_STATES ", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         Log.i("FRAGMENT_STATE", "onActivityCreated");
-
     }
 
 
@@ -199,11 +198,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             mAdapter.swapCursor(null);
 
 
-
-        if(Selected_position!=GridView.INVALID_POSITION){
-            Image_Grid_View.smoothScrollToPosition(Selected_position);
-        }
-
         // to return to first of Gridview after restarting upon changing of the sort method;
         if (!RESET_POSITION_FLAG){
             if(Selected_position!=GridView.INVALID_POSITION){
@@ -213,6 +207,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         else if(RESET_POSITION_FLAG){
             Image_Grid_View.smoothScrollToPosition(0);
+
         }
 
 

@@ -25,6 +25,7 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         setContentView(R.layout.activity_main);
         //get the initail sort mode
         Sorted_by = Utility.getsortmethod(this);
+
         if (findViewById(R.id.movie_container) != null) {
             if (savedInstanceState == null) {
                 Movie_Fragment mf = new Movie_Fragment();
@@ -35,15 +36,6 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
             }
             double_pane = true;
         } else double_pane = false;
-
-        Cursor aS=getContentResolver().query(dbContract.MOST_VOTED_TABLE.CONTENT_URI,dbContract.COMMON_PROJECTION,null,null,null);
-
-        if(aS.moveToFirst()){
-            do {
-                Log.i("TITLE ME",aS.getString(aS.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG)));
-            }while (aS.moveToNext());
-        }
-
 
     }
 
@@ -59,14 +51,13 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
             if(mainf!=null)
                 mainf.update_Ui();
 
-            //Remove movie fragment in case of changing the sortmethod to fix TABLET BUG;
-            Movie_Fragment movief=(Movie_Fragment) getSupportFragmentManager().findFragmentByTag(MOVIE_FRAG_TAG);
             // change to replace to fix Tablet Bug
             if(double_pane) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.movie_container,
                         new Movie_Fragment(),
                         MOVIE_FRAG_TAG).commit();
             }
+
 
         }
 
