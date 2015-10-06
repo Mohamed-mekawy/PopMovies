@@ -36,6 +36,15 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
             double_pane = true;
         } else double_pane = false;
 
+        Cursor aS=getContentResolver().query(dbContract.MOST_VOTED_TABLE.CONTENT_URI,dbContract.COMMON_PROJECTION,null,null,null);
+
+        if(aS.moveToFirst()){
+            do {
+                Log.i("TITLE ME",aS.getString(aS.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG)));
+            }while (aS.moveToNext());
+        }
+
+
     }
 
     @Override
@@ -90,7 +99,6 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
 
     @Override
     public void onMovieSelected(Uri movie_uri) {
-
         if(double_pane){
         // make new Bundle and put Uri as parcable form , then set Argument of the new Instance to that Bundle
         // and Replace the current one

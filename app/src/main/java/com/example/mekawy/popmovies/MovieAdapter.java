@@ -3,6 +3,7 @@ package com.example.mekawy.popmovies;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +49,21 @@ public class MovieAdapter extends CursorAdapter {
         String image_path =
                     cursor.getString(cursor.getColumnIndex(dbContract.OWM_COMMON_POSTER_PATH));
 
-        Picasso.with(mContext).
-                load(IMAGE_BASE+image_path).
-                resize(resize_width, resize_hight).
-                into(mImageview);
+        if(!image_path.equals("null")) {
+            Picasso.with(mContext).
+                    load(IMAGE_BASE + image_path).
+                    resize(resize_width, resize_hight).
+                    into(mImageview);
+        }
+
+        //image has no poster
+        else if(image_path.equals("null")){
+            Picasso.with(mContext).
+                    load(R.drawable.noposter).
+                    resize(resize_width, resize_hight).
+                    into(mImageview);
+        }
+
     }
 
 }

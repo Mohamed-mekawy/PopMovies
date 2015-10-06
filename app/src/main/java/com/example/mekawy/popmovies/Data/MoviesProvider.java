@@ -112,7 +112,6 @@ public class MoviesProvider extends ContentProvider{
     }
 
 
-
     @Override
     public boolean onCreate() {
         mhelper =new dbOpenHelper(getContext());
@@ -185,14 +184,14 @@ public class MoviesProvider extends ContentProvider{
 
             case VOTE_MOVIES_WITH_TAG:{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
-                Log.i("sad","ddddd");
                 break;
             }
-//
-//            case FAV_MOVIES_WITH_TAG:{
-//                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
-//                break;
-//            }
+
+            case FAV_MOVIES_WITH_TAG:{
+                ret_cursor=get_Movie_by_TAG(uri, projection,sort);
+                break;
+            }
+
             default:throw  new UnsupportedOperationException("unsupported Query "+uri);
         }
         ret_cursor.setNotificationUri(getContext().getContentResolver(),uri);

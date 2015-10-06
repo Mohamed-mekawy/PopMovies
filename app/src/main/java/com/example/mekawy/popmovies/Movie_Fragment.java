@@ -84,8 +84,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final int MOVIE_BASIC_LOADER =1;
     private static final int MOVIE_TRAILER_LOADER =2;
-    private static final int MOVIE_FAV_LOADER =3;
-
+    private static final int MOVIE_ISFAV_LOADER =3;
+    private static final int MOVIE_FAV_LOADER=4;
 
     private TextView movie_title;
     private ImageView movie_poster;
@@ -99,7 +99,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mFavText;
     private ImageView mFavImage;
     private String table_name;
-
 
 
     public Movie_Fragment() {
@@ -125,6 +124,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             mUri=movie_arguments.getParcelable(MOVIE_BUNDLE_TAG);
             Log.i("rec_uri",mUri.toString());
         }
+        final String Current_table=mUri.getPathSegments().get(0);
 
         View rootview= inflater.inflate(R.layout.fragment_movie_, container, false);
 
@@ -149,15 +149,70 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
 
+        if(Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
+            mFavImage.setImageResource(R.drawable.favdelete);
+            mFavText.setText(" Remove form favorite List ");
+        }
+
         mFavImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String table=mUri.getPathSegments().get(0);
+
+                if(!table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
                 Change_FavState();
+
+                else {
+                    int _delete=0;
+                    Uri table_uri=Check_is_Avail();
+
+                    //Record still existed in POP/VOTE Table;
+                    if(table_uri!=null){
+                        Uri update_isFav=table_uri.buildUpon().appendPath(mUri.getLastPathSegment()).appendEncodedPath(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE).appendPath("0").build();
+                        int _update=getActivity().getContentResolver().update(update_isFav,null,null,null);
+                        Log.i("Update_isFAV",Integer.toString(_update));
+                    }
+                    _delete=getActivity().getContentResolver().delete(mUri,null,null);
+                    Log.i("Delete_fav_Record",Integer.toString(_delete));
+                }
             }
         });
 
         return rootview;
     }
+
+
+    public Uri Check_is_Avail(){
+        Uri Founded_in=null;
+
+        Cursor POP_cur =
+                getActivity().getContentResolver().query(
+                        dbContract.POP_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build(),
+                        new String[]{dbContract.OWM_COMMON_COLUMN_TAG},
+                        null,
+                        null,
+                        null
+                );
+        if (POP_cur.moveToFirst()) Founded_in = dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+
+        else if (!POP_cur.moveToFirst()) {
+            Cursor VOTE_cur =
+                    getActivity().getContentResolver().query(
+                            dbContract.MOST_VOTED_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build(),
+                            new String[]{dbContract.OWM_COMMON_COLUMN_TAG},
+                            null,
+                            null,
+                            null
+                    );
+            if (VOTE_cur.moveToFirst())Founded_in = dbContract.MOST_VOTED_TABLE.CONTENT_URI;
+        }
+        return Founded_in;
+    }
+
+
+
+
+
 
 
     public void Change_FavState(){
@@ -260,14 +315,18 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     }
 
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        String Current_table=mUri.getPathSegments().get(0);
         getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);               // init Movie Loader
         getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
-        getLoaderManager().initLoader(MOVIE_FAV_LOADER,null,this);
+        if(!Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+            getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
+        }
 
-        super.onActivityCreated(savedInstanceState);
+        else if(Current_table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+        }
+            super.onActivityCreated(savedInstanceState);
     }
 
 
@@ -276,22 +335,31 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
         if(mUri!=null) {
             table_name = mUri.getPathSegments().get(0);
+            String Projection[]=null;
+
+            if(table_name.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                Projection=new String[dbContract.FAVORITE_PROJECTION.length];
+                Projection = dbContract.FAVORITE_PROJECTION;
+            }
+
+           else if(!table_name.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                Projection=new String[dbContract.COMMON_PROJECTION.length];
+                Projection = dbContract.COMMON_PROJECTION;
+            }
 
             switch (id){
+
                 case MOVIE_BASIC_LOADER:{
-                    return new CursorLoader(getActivity(),
-                            mUri,
-                            dbContract.COMMON_PROJECTION,
-                            null,
-                            null,
-                            null);
+                        return new CursorLoader(getActivity(),
+                                mUri,
+                                Projection,
+                                null,
+                                null,
+                                null);
                 }
 
                 case MOVIE_TRAILER_LOADER:{
-                    String[] mProjection=dbContract.COMMON_PROJECTION;
                     String movie_tag=mUri.getPathSegments().get(1);
-                    mProjection[7]=null;
-
                     return new CursorLoader(getActivity(),
                             dbContract.MOVIE_VIDEOS.CONTENT_URI,
                             MOVIE_VIDEOS_PROJECTION,
@@ -301,16 +369,19 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     );
                 }
 
-                case MOVIE_FAV_LOADER:{
+                case MOVIE_ISFAV_LOADER:{
 
-                    return new CursorLoader(
-                            getActivity(),
-                            mUri,
-                            new String[]{dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
-                            null,
-                            null,
-                            null);
+                        return new CursorLoader(
+                                getActivity(),
+                                mUri,
+                                new String[]{dbContract.OWM_COMMON_COLUMN_IS_FAVORITE},
+                                null,
+                                null,
+                                null);
                 }
+
+
+
             }
         }
 
@@ -324,6 +395,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
             case MOVIE_BASIC_LOADER:{
                 if(data.moveToFirst()){
+                    Log.i("mine record","record founded");
                     movie_title.setText(data.getString(TITLE_COULMN));
                     Picasso.with(getActivity()).
                             load(IMAGE_BASE + data.getString(POSTER_COULMN)).
@@ -336,7 +408,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 break;
             }
 
-            case MOVIE_FAV_LOADER:{
+            case MOVIE_ISFAV_LOADER:{
                 if(data.moveToFirst()) {
                     int Fav_state=data.getInt(data.getColumnIndex(dbContract.OWM_COMMON_COLUMN_IS_FAVORITE));
                     if(Fav_state==0){
