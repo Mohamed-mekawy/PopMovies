@@ -54,7 +54,7 @@ public class movie_detailsAdapter extends CursorAdapter{
        String type=c.getString(c.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE));
        if(type.equals(dbContract.DETAILS_TYPE_TRAILER)) return TRAILER_TYPE;
         else if(type.equals(dbContract.DETAILS_TYPE_REVIEWS)) return REVIEW_TYPE;
-        else return -1;
+        else return 0;
     }
 
     public movie_detailsAdapter(Context context, Cursor c, int flags) {
@@ -90,7 +90,6 @@ public class movie_detailsAdapter extends CursorAdapter{
             Review_ViewHolder rHolder=new Review_ViewHolder(view);
             view.setTag(rHolder);
         }
-
         return view;
     }
 
@@ -107,6 +106,7 @@ public class movie_detailsAdapter extends CursorAdapter{
         else if((ViewType==REVIEW_TYPE)){
             Review_ViewHolder mHolder=(Review_ViewHolder) view.getTag();
             mHolder.review_author.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
+
         }
 
     }

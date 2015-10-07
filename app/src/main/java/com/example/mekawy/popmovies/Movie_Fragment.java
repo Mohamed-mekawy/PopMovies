@@ -16,9 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -54,12 +56,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private static final int TRAILER_REVIEW=5;
 
 
-
-    private TextView mFavText;
-    private ImageView mFavImage;
-    private String table_name;
-
-
     private Cursor Current_movie_Cursor;
 
 
@@ -67,7 +63,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private ListView movielv;
 
 
-    private View main_describtion;
+    private View Header_layout;
     private ViewHolder Header_viewHolder;
 
 
@@ -120,94 +116,59 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         }
 
         View rootview= inflater.inflate(R.layout.movie_fragment, container, false);
-        main_describtion=(View) getActivity().getLayoutInflater().inflate(R.layout.movie_details, null);
-        Header_viewHolder =new ViewHolder(main_describtion);
-        main_describtion.setTag(Header_viewHolder);
-        mFavImage=(ImageView) rootview.findViewById(R.id.Movie_fav_icon);
-        mFavText=(TextView) rootview.findViewById(R.id.Movie_fav_Text);
+        Header_layout =(View) getActivity().getLayoutInflater().inflate(R.layout.movie_details, null);
+        Header_viewHolder =new ViewHolder(Header_layout);
+        Header_layout.setTag(Header_viewHolder);
 
         movielv=(ListView) rootview.findViewById(R.id.movie_details_lv);
-//        movielv.addHeaderView(main_describtion);
-        movielv.addHeaderView(main_describtion,null,false);
+        movielv.addHeaderView(Header_layout,null,false);
         movieAdapter=new movie_detailsAdapter(getActivity(),null,0);
         movielv.setAdapter(movieAdapter);
+        update_Reviews_Trailers();
 
-/*
+        movielv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                int Cursor_type=movieAdapter.getItemViewType(position-1);
+                    if(Cursor_type==0){ //youtube Link
+                        Cursor cursor=(Cursor) movieAdapter.getItem(position-1);
+                        Build_youtube_Link(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
+                    }
+            }
+        });
+
+
+        if(mUri!=null) {
+            if(mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
+            Header_viewHolder.isFavimage.setImageResource(R.drawable.favdelete);
+            Header_viewHolder.isFavtext.setText(" Remove form favorite List ");
+            }
+        }
 
         Header_viewHolder.isFavimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("s32432d","ok");
-            }
-        });
-*/
+                String table = mUri.getPathSegments().get(0);
 
-/*
-        movielv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    int x=movieAdapter.getItemViewType(i);
-
-                    Cursor cursor=(Cursor) adapterView.getItemAtPosition(i);
-
-                *//*
-                if(x==0){
-                                Cursor youtube_Cursor=(Cursor) adapterView.getItemAtPosition(i);
-                                if(youtube_Cursor.moveToFirst())
-                                Log.i("my link",Integer.toString(i));
-                            }
-                *//*
-
-                   if(cursor.moveToFirst()){
-                    Log.i("current TYPE",cursor.getString(cursor.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME)));
-                   }
-            }
-        });
-        */
-
-
-/*
-
-        Trailer_Listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Cursor sel = (Cursor) adapterView.getItemAtPosition(position);
-                Build_youtube_Link(sel.getString(sel.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY)));
-            }
-        });
-*/
-/*
-
-        if(mUri!=null) {
-            if(mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
-            mFavImage.setImageResource(R.drawable.favdelete);
-            mFavText.setText(" Remove form favorite List ");
-            }
-        }
-
-        mFavImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String table=mUri.getPathSegments().get(0);
-
-                if(!table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
-                    Uri Favorite_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build();
-                    Cursor query_cursor=
+                if (!table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                    Uri Favorite_Uri = dbContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build();
+                    Cursor query_cursor =
                             getActivity().getContentResolver().query(
                                     Favorite_Uri,
                                     dbContract.COMMON_SORT_PROJECTION,
                                     null,
                                     null,
                                     null);
-                    if(query_cursor.moveToFirst()) RemoveFromFavTable(Favorite_Uri);
-                    else if(!query_cursor.moveToFirst()) AddtoFavTable(Current_movie_Cursor);
+                    if (query_cursor.moveToFirst())
+                        RemoveFromFavTable(Favorite_Uri);
+                    else if (!query_cursor.moveToFirst())
+                        AddtoFavTable(Current_movie_Cursor);
                 }
 
-                else if(table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
-                    int _delete=0;
-                    _delete=getActivity().getContentResolver().delete(mUri,null,null);
-                    Log.i("Delete_fav_Record",Integer.toString(_delete));
+                else if (table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                    int _delete = 0;
+                    _delete = getActivity().getContentResolver().delete(mUri, null, null);
+                    Log.i("Delete_fav_Record", Integer.toString(_delete));
 
                     getFragmentManager().beginTransaction().
                             replace(R.id.movie_container,
@@ -220,15 +181,26 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         }
         );
-*/
 
         return rootview;
     }
 
+
+    public void update_Reviews_Trailers(){
+    if (mUri!=null) {
+        Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
+        mTrailer.execute(mUri.getLastPathSegment());
+
+        Review_Parser mParser = new Review_Parser(getActivity());
+        mParser.execute(mUri.getLastPathSegment());
+    }
+    }
+
+
     public void RemoveFromFavTable(Uri _remove){
         int Fav_Delete = getActivity().getContentResolver().delete(_remove,null, null);
-        mFavImage.setImageResource(R.drawable.favoff);
-        mFavText.setText(" Remove form favorite List ");
+        Header_viewHolder.isFavimage.setImageResource(R.drawable.favoff);
+        Header_viewHolder.isFavtext.setText(" Remove form favorite List ");
     }
 
 
@@ -329,7 +301,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             case MOVIE_BASIC_LOADER:{
                 if(data.moveToFirst()){
                     Current_movie_Cursor=data;
-                    ViewHolder movie_holder=(ViewHolder)main_describtion.getTag();
+                    ViewHolder movie_holder=(ViewHolder) Header_layout.getTag();
                     movie_holder.movie_title.setText(data.getString(TITLE_COULMN));
 
                     movie_holder.movie_title.setBackgroundColor(Color.GREEN);
@@ -354,19 +326,18 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 break;
             }
 
-//
-//            case MOVIE_ISFAV_LOADER:{
-//                if(data.moveToFirst()) {
-//                        mFavImage.setImageResource(R.drawable.favon);
-//                        mFavText.setText("Remove from Favorite List");
-//                }
-//
-//                else if(!data.moveToFirst()) {
-//                    mFavImage.setImageResource(R.drawable.favoff);
-//                    mFavText.setText("Add to Favorite List");
-//                }
-//                break;
-//            }
+            case MOVIE_ISFAV_LOADER:{
+                if(data.moveToFirst()) {
+                        Header_viewHolder.isFavimage.setImageResource(R.drawable.favon);
+                        Header_viewHolder.isFavtext.setText("Remove from Favorite List");
+                }
+
+                else if(!data.moveToFirst()) {
+                    Header_viewHolder.isFavimage.setImageResource(R.drawable.favoff);
+                    Header_viewHolder.isFavtext.setText("Add to Favorite List");
+                }
+                break;
+            }
 
             case TRAILER_REVIEW:
             {

@@ -128,15 +128,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         selected_tag = cr.getInt(cr.getColumnIndex(dbContract.FAV_MOVIES_TABLE.OWM_COLUMN_TAG));
                         passed_uri = dbContract.FAV_MOVIES_TABLE.builUriwithtag(selected_tag);
                     }
-
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
-
-                    Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
-                    mTrailer.execute(Integer.toString(selected_tag));
-
-                    Review_Parser rParser=new Review_Parser(getActivity());
-                    rParser.execute(Integer.toString(selected_tag));
-
                     Selected_position=position;
                 }
             }
