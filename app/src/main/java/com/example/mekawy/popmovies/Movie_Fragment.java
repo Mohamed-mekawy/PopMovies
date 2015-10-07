@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,11 +52,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private static final int MOVIE_TRAILER_LOADER =2;
     private static final int MOVIE_ISFAV_LOADER =3;
 
-    private TextView movie_title;
-    private ImageView movie_poster;
-    private TextView Release_date;
-    private TextView movie_rating;
-    private TextView Describtion;
 
     private ListView Trailer_Listview;
     private TrailerAdapter mtrailerAdapter;
@@ -68,6 +62,15 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
 
     private Cursor Current_movie_Cursor;
+
+
+    private movie_detailsAdapter movieAdapter;
+    private ListView movielv;
+
+
+    private View main_describtion;
+    private ViewHolder viewHolder;
+
 
     public Movie_Fragment() {
         setHasOptionsMenu(true);
@@ -81,6 +84,24 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         resize_hight=Dimen.get("resize_hight");
     }
 
+    public static class ViewHolder{
+
+        public final TextView movie_title;
+        public final ImageView movie_poster;
+        public final TextView Release_date;
+        public final TextView movie_rating;
+        public final TextView Describtion;
+
+        public ViewHolder(View rootview){
+            movie_title=(TextView) rootview.findViewById(R.id.detail_title);
+            movie_poster=(ImageView) rootview.findViewById(R.id.detail_thumb_image);
+            Release_date=(TextView) rootview.findViewById(R.id.detail_date);
+            movie_rating=(TextView) rootview.findViewById(R.id.detail_rate);
+            Describtion=(TextView) rootview.findViewById(R.id.detail_desc);
+        }
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,19 +113,26 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             Log.i("rec_uri",mUri.toString());
         }
 
-        View rootview= inflater.inflate(R.layout.fragment_movie_, container, false);
-        movie_title=(TextView) rootview.findViewById(R.id.detail_title);
-        movie_poster=(ImageView) rootview.findViewById(R.id.detail_thumb_image);
-        Release_date=(TextView) rootview.findViewById(R.id.detail_date);
-        movie_rating=(TextView) rootview.findViewById(R.id.detail_rate);
-        Describtion=(TextView) rootview.findViewById(R.id.detail_desc);
-
-        Trailer_Listview=(ListView) rootview.findViewById(R.id.Trailer_listview);
-        mtrailerAdapter=new TrailerAdapter(getActivity(),null,0);
-        Trailer_Listview.setAdapter(mtrailerAdapter);
-
+        View rootview= inflater.inflate(R.layout.movie_fragment, container, false);
+        main_describtion=(View) getActivity().getLayoutInflater().inflate(R.layout.movie_details, null);
+        viewHolder=new ViewHolder(main_describtion);
+        main_describtion.setTag(viewHolder);
         mFavImage=(ImageView) rootview.findViewById(R.id.Movie_fav_icon);
         mFavText=(TextView) rootview.findViewById(R.id.Movie_fav_Text);
+
+        movielv=(ListView) rootview.findViewById(R.id.movie_details_lv);
+        movielv.addHeaderView(main_describtion);
+        movieAdapter=new movie_detailsAdapter(getActivity(),null,0);
+        movielv.setAdapter(movieAdapter);
+
+
+
+
+
+
+
+
+/*
 
         Trailer_Listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,6 +141,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 Build_youtube_Link(sel.getString(sel.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY)));
             }
         });
+*/
+/*
 
         if(mUri!=null) {
             if(mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
@@ -155,6 +185,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         }
         );
+*/
 
         return rootview;
     }
@@ -208,9 +239,9 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         if (mUri != null) {
             String Current_table = mUri.getPathSegments().get(0);
             getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);      // init Movie Loader
-            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
-                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
-            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
+//            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
+//                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
+//            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
         }
     }
 
@@ -263,26 +294,27 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             case MOVIE_BASIC_LOADER:{
                 if(data.moveToFirst()){
                     Current_movie_Cursor=data;
-                    movie_title.setText(data.getString(TITLE_COULMN));
-                    movie_title.setBackgroundColor(Color.GREEN);
+                    ViewHolder movie_holder=(ViewHolder)main_describtion.getTag();
+                    movie_holder.movie_title.setText(data.getString(TITLE_COULMN));
+
+                    movie_holder.movie_title.setBackgroundColor(Color.GREEN);
                     String mPoster_Path=data.getString(POSTER_COULMN);
 
                     if(!mPoster_Path.equals("null")){
                     Picasso.with(getActivity()).
                             load(IMAGE_BASE + data.getString(POSTER_COULMN)).
                             resize(resize_width,resize_hight).
-                            into(movie_poster);
+                            into(movie_holder.movie_poster);
                     }
                     else if(mPoster_Path.equals("null")){
                         Picasso.with(getActivity()).
                                 load(R.drawable.noposter).
                                 resize(resize_width,resize_hight).
-                                into(movie_poster);
+                                into(movie_holder.movie_poster);
                     }
-
-                    Release_date.setText(data.getString(DATE_COULMN));
-                    movie_rating.setText(data.getString(AVG_COULMN) + "/10");
-                    Describtion.setText(data.getString(OVERVIEW_COULMN));
+                    movie_holder.Release_date.setText(data.getString(DATE_COULMN));
+                    movie_holder.movie_rating.setText(data.getString(AVG_COULMN) + "/10");
+                    movie_holder.Describtion.setText(data.getString(OVERVIEW_COULMN));
                 }
                 break;
             }
