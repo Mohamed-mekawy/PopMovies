@@ -57,6 +57,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         dbContract.TRAILER_REVIEWS_TABLE._ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG + " TEXT NOT NULL, "+
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID + " TEXT UNIQUE NOT NULL, "+
+                        TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME+" TEXT ,"+
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT+ " TEXT, "+
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" INTEGER );";
 

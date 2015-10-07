@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/review_author"
-        android:textColor="#000000"
+        android:textColor="#0000FF"
+        android:textSize="@dimen/abc_text_size_headline_material"
+        android:layout_marginLeft="10dp"
         />
 
     <TextView
@@ -18,7 +20,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:id="@+id/review_content"
-        android:textColor="#FF0000"
+        android:textColor="#000000"
         />
 
 

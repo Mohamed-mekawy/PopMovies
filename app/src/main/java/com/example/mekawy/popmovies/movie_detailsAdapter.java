@@ -103,13 +103,13 @@ public class movie_detailsAdapter extends CursorAdapter{
 
         if(ViewType==TRAILER_TYPE) {
             TRAILER_ViewHolder mHolder=(TRAILER_ViewHolder) view.getTag();
-            mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
+            mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
         }
 
         else if((ViewType==REVIEW_TYPE)){
             Review_ViewHolder mHolder=(Review_ViewHolder) view.getTag();
-            mHolder.review_author.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
-
+            mHolder.review_author.setText("Review by : "+cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
+            mHolder.review_content.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
         }
 
     }

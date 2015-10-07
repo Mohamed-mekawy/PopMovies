@@ -38,7 +38,8 @@ public class dbContract {
             TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,
             TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,
             TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT,
-            TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE
+            TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,
+            TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME
 };
     public static final int DETAILS_TYPE_TRAILER=0;
     public static final int DETAILS_TYPE_REVIEWS=1;
@@ -149,6 +150,7 @@ public class dbContract {
         public static final String OWM_COLUMN_ITEM_ID = "item_id";
         public static final String OWM_COLUMN_CONTENT = "content";
         public static final String OWM_COLUMN_TYPE = "item_type";
+        public static final String OWM_COLUM_ITEM_NAME="item_name";
 
         public static Uri buildTrailerUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);

@@ -90,8 +90,10 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
                     ContentValues contentValues=new ContentValues();
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mReview.getString(OWM_ID));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME,mReview.getString(OWM_AUTHOR));
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mReview.getString(OWM_CONTENT));
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,dbContract.DETAILS_TYPE_REVIEWS);
+
                     Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
 //                    Log.i("Inserted Review", entry.toString());
                 }

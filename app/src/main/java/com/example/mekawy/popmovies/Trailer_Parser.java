@@ -90,6 +90,7 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
                     ContentValues contentValues=new ContentValues();
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME,mTrailer.getString(MOVIES_VIDEOS_TRAILER_NAME));
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mTrailer.getString(MOVIES_VIDEOS_TRAILER_KEY));
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,dbContract.DETAILS_TYPE_TRAILER);
                     Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
