@@ -17,7 +17,7 @@ public class dbContract {
     public static final String PATH_POP_MOVIES = "pop_movies";
     public static final String PATH_VOTE_MOVIES = "vote_movies";
     public static final String PATH_MOVIES_VIDEOS="movies_videos";
-
+    public static final String PATH_MOVIES_REVIEWS="movies_reviews";
 
     public static final String OWM_COMMON_COLUMN_TAG = "id";
     public static final String OWM_COMMON_POSTER_PATH = "poster_path";
@@ -45,6 +45,16 @@ public class dbContract {
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME,
             dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY,
     };
+
+    public final static String[] MOVIE_REVIEWS_PROJECTION={
+            MOVIES_REVIEWS_TABLE._ID,
+            MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,
+            MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_ID,
+            MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_AUTHOR,
+            MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_CONTENT
+    };
+
+
 
     public static final class POP_MOVIES_TABLE implements BaseColumns {
 
@@ -160,12 +170,28 @@ public class dbContract {
         public static Uri buildTrailerUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
-
-
     }
 
+    public static class MOVIES_REVIEWS_TABLE implements BaseColumns{
 
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES_REVIEWS).build();
+
+        public final static String CONTENT_DIR_TYPE=
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +    CONTENT_AUTHORITY   +  "/" +    PATH_MOVIES_REVIEWS;
+
+        public static final String TABLE_NAME = PATH_MOVIES_REVIEWS;
+
+        public static final String OWM_COLUMN_MOVIE_TAG = "id";
+        public static final String OWM_COLUMN_REVIEW_ID = "review_id";
+        public static final String OWM_COLUMN_REVIEW_AUTHOR = "author";
+        public static final String OWM_COLUMN_REVIEW_CONTENT = "content";
+
+
+        public static Uri buildTrailerUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
 
 
 

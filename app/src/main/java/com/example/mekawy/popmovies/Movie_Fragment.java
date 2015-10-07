@@ -53,9 +53,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private static final int MOVIE_ISFAV_LOADER =3;
 
 
-    private ListView Trailer_Listview;
-    private TrailerAdapter mtrailerAdapter;
-
     private TextView mFavText;
     private ImageView mFavImage;
     private String table_name;
@@ -99,7 +96,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             movie_rating=(TextView) rootview.findViewById(R.id.detail_rate);
             Describtion=(TextView) rootview.findViewById(R.id.detail_desc);
         }
-
     }
 
     @Override
@@ -241,7 +237,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);      // init Movie Loader
 //            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
 //                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
-//            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
+            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
         }
     }
 
@@ -319,7 +315,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 break;
             }
 
-
             case MOVIE_ISFAV_LOADER:{
                 if(data.moveToFirst()) {
                         mFavImage.setImageResource(R.drawable.favon);
@@ -334,7 +329,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
 
             case MOVIE_TRAILER_LOADER:{
-                mtrailerAdapter.swapCursor(data);
+                movieAdapter.swapCursor(data);
                 break;
             }
 

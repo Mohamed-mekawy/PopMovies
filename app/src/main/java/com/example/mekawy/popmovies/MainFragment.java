@@ -135,6 +135,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
                     mTrailer.execute(Integer.toString(selected_tag));
 
+                    Review_Parser mReviews=new Review_Parser(getActivity());
+                    mReviews.execute(Integer.toString(selected_tag));
+
                     Selected_position=position;
                 }
             }
