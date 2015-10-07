@@ -105,9 +105,8 @@ public class movie_detailsAdapter extends CursorAdapter{
         }
 
         else if((ViewType==REVIEW_TYPE)){
-
             Review_ViewHolder mHolder=(Review_ViewHolder) view.getTag();
-            mHolder.review_author.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE)));
+            mHolder.review_author.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
         }
 
     }

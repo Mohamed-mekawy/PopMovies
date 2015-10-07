@@ -89,7 +89,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onActivityCreated(savedInstanceState);
     }
 
-
     public void set_Grid_Col(){
         int Orient=Utility.getCurrentOrientation(getActivity());
         if(Orient==0)Image_Grid_View.setNumColumns(2); // if Portrait view
@@ -132,19 +131,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
 
-//                    Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
-//                    mTrailer.execute(Integer.toString(selected_tag));
-//
-//                    Review_Parser mReviews=new Review_Parser(getActivity());
-//                    mReviews.execute(Integer.toString(selected_tag));
-
-
                     Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
                     mTrailer.execute(Integer.toString(selected_tag));
 
                     Review_Parser rParser=new Review_Parser(getActivity());
                     rParser.execute(Integer.toString(selected_tag));
-
 
                     Selected_position=position;
                 }
@@ -167,7 +158,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             return new CursorLoader(
                     getActivity(),
                     load_uri,
-                    dbContract.COMMON_PROJECTION,
+                    dbContract.COMMON_SORT_PROJECTION,
                     null, null,
                     null
             );

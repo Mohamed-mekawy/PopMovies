@@ -15,8 +15,7 @@ import android.util.Log;
 import com.example.mekawy.popmovies.Data.dbContract.FAV_MOVIES_TABLE;
 import com.example.mekawy.popmovies.Data.dbContract.MOST_VOTED_TABLE;
 import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
-import com.example.mekawy.popmovies.Data.dbContract.MOVIE_VIDEOS;
-
+import com.example.mekawy.popmovies.Data.dbContract.TRAILER_REVIEWS_TABLE;
 
 public class MoviesProvider extends ContentProvider{
     private static dbOpenHelper mhelper;
@@ -31,11 +30,6 @@ public class MoviesProvider extends ContentProvider{
     private static final int FAV_MOVIES=5;
     private static final int FAV_MOVIES_WITH_TAG =6;
 
-    private static final int MOVIE_TRAILER =7;
-    private static final int MOVIE_TRAILER_WITH_TAG =8;
-
-    private static final int MOVIE_REVIEWS=9;
-
     private static final int TRAILER_REVIEWS=10;
 
 
@@ -47,6 +41,11 @@ public class MoviesProvider extends ContentProvider{
 
     private static final String FAV_MOVIE_SELECT_BY_TAG=
             FAV_MOVIES_TABLE.TABLE_NAME+"."+FAV_MOVIES_TABLE.OWM_COLUMN_TAG+ " = ? ";
+
+    private static final String TRAILERS_REVIES_SELECT_BY_TAG=
+            TRAILER_REVIEWS_TABLE.TABLE_NAME+"."+TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG+ " = ? ";
+
+
 
     private static UriMatcher fill_matcher(){
         UriMatcher mMathcer=new UriMatcher(UriMatcher.NO_MATCH);
@@ -60,10 +59,6 @@ public class MoviesProvider extends ContentProvider{
 
         mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES,FAV_MOVIES);
         mMathcer.addURI(Authority,dbContract.PATH_FAV_MOVIES+"/#", FAV_MOVIES_WITH_TAG);
-
-        mMathcer.addURI(Authority,dbContract.PATH_MOVIES_VIDEOS, MOVIE_TRAILER);
-
-        mMathcer.addURI(Authority,dbContract.PATH_MOVIES_REVIEWS,MOVIE_REVIEWS);
 
         mMathcer.addURI(Authority,dbContract.PATH_TRAILERS_REVIEWS,TRAILER_REVIEWS);
 
@@ -159,30 +154,6 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
-            case MOVIE_TRAILER:{
-                ret_cursor=db.query(dbContract.MOVIE_VIDEOS.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sort);
-                break;
-            }
-
-            case MOVIE_REVIEWS:{
-                ret_cursor=db.query(dbContract.MOVIES_REVIEWS_TABLE.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sort
-                        );
-                break;
-            }
-
-
             case TRAILER_REVIEWS:{
                 ret_cursor=db.query(dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME,
                         projection,
@@ -209,10 +180,6 @@ public class MoviesProvider extends ContentProvider{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
                 break;
             }
-
-
-
-
             default:throw  new UnsupportedOperationException("unsupported Query "+uri);
         }
         ret_cursor.setNotificationUri(getContext().getContentResolver(),uri);
@@ -232,11 +199,6 @@ public class MoviesProvider extends ContentProvider{
 
             case VOTE_MOVIES:return MOST_VOTED_TABLE.CONTENT_DIR_TYPE;
             case VOTE_MOVIES_WITH_TAG:return MOST_VOTED_TABLE.CONTENT_ITEM_TYPE;
-
-            case MOVIE_TRAILER:return dbContract.MOVIE_VIDEOS.CONTENT_DIR_TYPE;
-            case MOVIE_TRAILER_WITH_TAG: return MOVIE_VIDEOS.CONTENT_DIR_TYPE;
-
-            case MOVIE_REVIEWS:return dbContract.MOVIES_REVIEWS_TABLE.CONTENT_DIR_TYPE;
 
             case TRAILER_REVIEWS:return dbContract.TRAILER_REVIEWS_TABLE.CONTENT_DIR_TYPE;
 
@@ -272,29 +234,12 @@ public class MoviesProvider extends ContentProvider{
                 break;
             }
 
-            case MOVIE_TRAILER: {
-                Long ret_val = db.insert(MOVIE_VIDEOS.TABLE_NAME, null, contentValues);
-                if (ret_val != -1) ret_uri = MOVIE_VIDEOS.buildTrailerUri(ret_val);
-                else throw new SQLException("Provider_insert_DB_NOT_VALID");
-                break;
-            }
-
-            case MOVIE_REVIEWS:{
-                Long ret_val = db.insert(dbContract.MOVIES_REVIEWS_TABLE.TABLE_NAME, null, contentValues);
-                if (ret_val != -1) ret_uri = dbContract.MOVIES_REVIEWS_TABLE.buildTrailerUri(ret_val);
-                else throw new SQLException("Provider_insert_DB_NOT_VALID");
-                break;
-
-            }
-
             case TRAILER_REVIEWS:{
                 Long ret_val = db.insert(dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME, null, contentValues);
                 if (ret_val != -1) ret_uri = dbContract.TRAILER_REVIEWS_TABLE.buildTrailerUri(ret_val);
                 else throw new SQLException("Provider_insert_DB_NOT_VALID");
                 break;
             }
-
-
 
             default: throw new UnsupportedOperationException("error,Uri not supported");
         }
@@ -333,6 +278,13 @@ public class MoviesProvider extends ContentProvider{
                 Selection=FAV_MOVIE_SELECT_BY_TAG;
                 mTag=uri.getLastPathSegment();
                 ret_val=db.delete(FAV_MOVIES_TABLE.TABLE_NAME, Selection, new String[]{mTag});
+                break;
+            }
+
+            case TRAILER_REVIEWS:{
+                Selection=TRAILERS_REVIES_SELECT_BY_TAG;
+                mTag=uri.getLastPathSegment();
+                ret_val=db.delete(TRAILER_REVIEWS_TABLE.TABLE_NAME, Selection, new String[]{mTag});
                 break;
             }
 

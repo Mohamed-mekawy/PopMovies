@@ -38,9 +38,6 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
             double_pane = true;
         } else double_pane = false;
 
-
-
-
     }
 
 

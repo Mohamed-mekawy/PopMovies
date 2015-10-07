@@ -16,11 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -70,7 +68,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
 
     private View main_describtion;
-    private ViewHolder viewHolder;
+    private ViewHolder Header_viewHolder;
 
 
     public static int Current_type=-1;
@@ -123,8 +121,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
         View rootview= inflater.inflate(R.layout.movie_fragment, container, false);
         main_describtion=(View) getActivity().getLayoutInflater().inflate(R.layout.movie_details, null);
-        viewHolder=new ViewHolder(main_describtion);
-        main_describtion.setTag(viewHolder);
+        Header_viewHolder =new ViewHolder(main_describtion);
+        main_describtion.setTag(Header_viewHolder);
         mFavImage=(ImageView) rootview.findViewById(R.id.Movie_fav_icon);
         mFavText=(TextView) rootview.findViewById(R.id.Movie_fav_Text);
 
@@ -136,7 +134,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
 /*
 
-        viewHolder.isFavimage.setOnClickListener(new View.OnClickListener() {
+        Header_viewHolder.isFavimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("s32432d","ok");
@@ -198,7 +196,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     Cursor query_cursor=
                             getActivity().getContentResolver().query(
                                     Favorite_Uri,
-                                    dbContract.COMMON_PROJECTION,
+                                    dbContract.COMMON_SORT_PROJECTION,
                                     null,
                                     null,
                                     null);
@@ -276,10 +274,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         if (mUri != null) {
             String Current_table = mUri.getPathSegments().get(0);
             getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);      // init Movie Loader
-//            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
-//                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
-//            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
-//            getLoaderManager().initLoader(MOVIE_REVIEW,null,this);
+            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
+                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
                 getLoaderManager().initLoader(TRAILER_REVIEW,null,this);
         }
     }
@@ -292,22 +288,10 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 case MOVIE_BASIC_LOADER:{
                         return new CursorLoader(getActivity(),
                                 mUri,
-                                dbContract.COMMON_PROJECTION,
+                                dbContract.COMMON_SORT_PROJECTION,
                                 null,
                                 null,
                                 null);
-                }
-
-                case MOVIE_TRAILER_LOADER:{
-                    String movie_tag=mUri.getPathSegments().get(1);
-                    return new CursorLoader(getActivity(),
-                            dbContract.MOVIE_VIDEOS.CONTENT_URI,
-                            dbContract.MOVIE_TRAILER_PROJECTION,
-                            dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG + " = ?",
-                            new String[]{movie_tag},
-                            null
-                    );
-
                 }
 
                 case MOVIE_ISFAV_LOADER:{
@@ -315,21 +299,10 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                         return new CursorLoader(
                                 getActivity(),
                                 Favorite_query,
-                                dbContract.COMMON_PROJECTION,
+                                dbContract.COMMON_SORT_PROJECTION,
                                 null,
                                 null,
                                 null);
-                }
-
-                case MOVIE_REVIEW:{
-                    String movie_tag=mUri.getPathSegments().get(1);
-                    return new CursorLoader(getActivity(),
-                            dbContract.MOVIES_REVIEWS_TABLE.CONTENT_URI,
-                            dbContract.MOVIE_REVIEWS_PROJECTION,
-                            dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG + " = ?",
-                            new String[]{movie_tag},
-                            null
-                    );
                 }
 
                 case TRAILER_REVIEW:{
@@ -341,13 +314,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                             new String[]{movie_tag},
                             null
                     );
-
-
                 }
-
-
-
-
             }
         }
         return null;
@@ -387,45 +354,28 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 break;
             }
 
-            case MOVIE_ISFAV_LOADER:{
-                if(data.moveToFirst()) {
-                        mFavImage.setImageResource(R.drawable.favon);
-                        mFavText.setText("Remove from Favorite List");
-                }
+//
+//            case MOVIE_ISFAV_LOADER:{
+//                if(data.moveToFirst()) {
+//                        mFavImage.setImageResource(R.drawable.favon);
+//                        mFavText.setText("Remove from Favorite List");
+//                }
+//
+//                else if(!data.moveToFirst()) {
+//                    mFavImage.setImageResource(R.drawable.favoff);
+//                    mFavText.setText("Add to Favorite List");
+//                }
+//                break;
+//            }
 
-                else if(!data.moveToFirst()) {
-                    mFavImage.setImageResource(R.drawable.favoff);
-                    mFavText.setText("Add to Favorite List");
-                }
-                break;
-            }
-
-            case MOVIE_TRAILER_LOADER:{
-                if(data.moveToFirst()){
-                Current_type=0;
-                movieAdapter.swapCursor(data);
-
-                }
-                break;
-            }
-/*
-            case MOVIE_REVIEW:{
-                if(data.moveToFirst()){
-                    Current_type=1;
-                    movieAdapter.changeCursor(data);
-                    movieAdapter.swapCursor(data);
-                }
-                break;
-            }*/
-
-
-            case TRAILER_REVIEW:{
+            case TRAILER_REVIEW:
+            {
                movieAdapter.swapCursor(data);
                 break;
             }
-
-            }
         }
+
+    }
 
 
     @Override

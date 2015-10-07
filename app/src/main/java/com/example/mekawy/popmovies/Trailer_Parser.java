@@ -75,12 +75,12 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
                     Selectionargs,
                     null
             );
-
+/*
             if(cur.moveToFirst()){
                 do {
                     Log.i("Trailer Avail :",cur.getString(cur.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
                 }while (cur.moveToNext());
-            }
+            }*/
 
             if(!cur.moveToFirst()){
                 for(int index=0;index<Trailer_array.length();index++){
@@ -97,7 +97,7 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
 
                 Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
 
-                Log.i("Inserted trailers", entry.toString());
+//                Log.i("Inserted trailers", entry.toString());
                 }
             }
 

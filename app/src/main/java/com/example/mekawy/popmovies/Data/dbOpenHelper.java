@@ -52,26 +52,6 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         FAV_MOVIES_TABLE.OWM_COLUMN_POSTER_PATH + " TEXT NOT NULL, "+
                         FAV_MOVIES_TABLE.OWM_COLUMN_VOTE_AVERAGE+ " REAL NOT NULL);";
 
-
-
-        final String SQL_MOVIES_VIDEOS_TABLE=
-                "CREATE TABLE "+ dbContract.MOVIE_VIDEOS.TABLE_NAME+" ( "+
-                       MOVIE_VIDEOS._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                       MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG +" TEXT NOT NULL, " +
-                       MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID +" TEXT UNIQUE NOT NULL, "+
-                       MOVIE_VIDEOS.OWM_COLUMN_KEY+ " TEXT NOT NULL, "+
-                       MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME+ " TEXT NOT NULL);";
-
-
-        final String SQL_MOVIES_REVIEWS_TABLE=
-                "CREATE TABLE "+ MOVIES_REVIEWS_TABLE.TABLE_NAME+" ( "+
-                        MOVIES_REVIEWS_TABLE._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
-                        MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG+ " TEXT NOT NULL, "+
-                        MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_ID+ " TEXT UNIQUE NOT NULL, "+
-                        MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_AUTHOR +" TEXT ,"+
-                        MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_CONTENT + " TEXT );";
-
-
         final String SQL_TRAILER_REVIEWS_TABLE=
                 "CREATE TABLE "+ dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+" ( "+
                         dbContract.TRAILER_REVIEWS_TABLE._ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
@@ -85,11 +65,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_POP_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_FAV_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_VOTE_MOVIES_TABLE);
-        sqLiteDatabase.execSQL(SQL_MOVIES_VIDEOS_TABLE);
-        sqLiteDatabase.execSQL(SQL_MOVIES_REVIEWS_TABLE);
         sqLiteDatabase.execSQL(SQL_TRAILER_REVIEWS_TABLE);
-
-
     }
 
     @Override
@@ -97,8 +73,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ MOST_VOTED_TABLE.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ FAV_MOVIES_TABLE.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ POP_MOVIES_TABLE.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ MOVIE_VIDEOS.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ MOVIES_REVIEWS_TABLE.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TRAILER_REVIEWS_TABLE.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }
