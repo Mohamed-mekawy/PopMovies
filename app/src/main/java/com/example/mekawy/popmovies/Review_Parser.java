@@ -60,17 +60,25 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
             JSONObject Review_Object=new JSONObject(JSON_String.toString());
             JSONArray Reviews_array=Review_Object.getJSONArray(OWM_RESULTS);
 
+
+            String SelectionQuery=
+                    dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+"."+ dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG +" = ? AND "+
+                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
+
+            String[] Selectionargs=
+                    new String[]{movie_tag[0], dbContract.DETAILS_TYPE_REVIEWS};
+
             Cursor cur=context.getContentResolver().query(
-                    dbContract.MOVIES_REVIEWS_TABLE.CONTENT_URI,
-                    new String[]{dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_ID,dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG},
-                    dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG +" = ?",
-                    new String[]{movie_tag[0]},
+                    dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
+                    dbContract.TRAILER_REVIEW_PROJECTION,
+                    SelectionQuery,
+                    Selectionargs,
                     null
             );
 
             if(cur.moveToFirst()){
                 do {
-                    Log.i("REVIEW Avail :",cur.getString(cur.getColumnIndex(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_ID)));
+                    Log.i("REVIEW Avail :",cur.getString(cur.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
                 }while (cur.moveToNext());
             }
 
@@ -83,12 +91,13 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
 
                     ContentValues contentValues=new ContentValues();
 
-                    contentValues.put(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
-                    contentValues.put(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_ID,mReview.getString(OWM_ID));
-                    contentValues.put(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_AUTHOR, mReview.getString(OWM_AUTHOR));
-                    contentValues.put(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_CONTENT, mReview.getString(OWM_CONTENT));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mReview.getString(OWM_ID));
+//                    contentValues.put(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_AUTHOR, mReview.getString(OWM_AUTHOR));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mReview.getString(OWM_CONTENT));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,dbContract.DETAILS_TYPE_REVIEWS);
 
-                    Uri entry=context.getContentResolver().insert(dbContract.MOVIES_REVIEWS_TABLE.CONTENT_URI, contentValues);
+                    Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
 
                     Log.i("Inserted Review", entry.toString());
                 }

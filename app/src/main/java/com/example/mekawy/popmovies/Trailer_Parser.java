@@ -57,37 +57,45 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
             reader=new BufferedReader(new InputStreamReader(input_reader));
             JSON_String=new StringBuffer();
             while ((Line=reader.readLine())!=null)JSON_String.append(Line);
-
             JSONObject Movie_Object=new JSONObject(JSON_String.toString());
             JSONArray Trailer_array=Movie_Object.getJSONArray(OWM_RESULTS);
 
-            Cursor cur=context.getContentResolver().query(
-                    dbContract.MOVIE_VIDEOS.CONTENT_URI,
-                    new String[]{dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID,dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG},
-                    dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG +" = ?",
-                    new String[]{movie_tag[0]},
+
+            String SelectionQuery=
+                   dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+"."+ dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG +" = ? AND "+
+                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
+
+            String[] Selectionargs=
+                            new String[]{movie_tag[0], dbContract.DETAILS_TYPE_TRAILER};
+
+                    Cursor cur=context.getContentResolver().query(
+                    dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
+                    dbContract.TRAILER_REVIEW_PROJECTION,
+                    SelectionQuery,
+                    Selectionargs,
                     null
             );
 
             if(cur.moveToFirst()){
                 do {
-                    Log.i("Trailer Avail :",cur.getString(cur.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID)));
+                    Log.i("Trailer Avail :",cur.getString(cur.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
                 }while (cur.moveToNext());
             }
 
             if(!cur.moveToFirst()){
                 for(int index=0;index<Trailer_array.length();index++){
+
                     JSONObject mTrailer=Trailer_array.getJSONObject(index);
                     String trailer_id=mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID);
 
                     ContentValues contentValues=new ContentValues();
 
-                    contentValues.put(dbContract.MOVIE_VIDEOS.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
-                    contentValues.put(dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_ID,mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID));
-                    contentValues.put(dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY, mTrailer.getString(MOVIES_VIDEOS_TRAILER_KEY));
-                    contentValues.put(dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME, mTrailer.getString(MOVIES_VIDEOS_TRAILER_NAME));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mTrailer.getString(MOVIES_VIDEOS_TRAILER_KEY));
+                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,dbContract.DETAILS_TYPE_TRAILER);
 
-                Uri entry=context.getContentResolver().insert(dbContract.MOVIE_VIDEOS.CONTENT_URI, contentValues);
+                Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
 
                 Log.i("Inserted trailers", entry.toString());
                 }

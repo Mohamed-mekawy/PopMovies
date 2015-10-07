@@ -46,15 +46,15 @@ public class movie_detailsAdapter extends CursorAdapter{
         return TYPES_COUNT;
     }
 
-    /*@Override
-    public int getItemViewType(int position) {
-       return   (Movie_Fragment.Current_type==0)?TRAILER_TYPE:REVIEW_TYPE;
-    }
-*/
+
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+       Cursor c=(Cursor) getItem(position);
+       String type=c.getString(c.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE));
+       if(type.equals(dbContract.DETAILS_TYPE_TRAILER)) return TRAILER_TYPE;
+        else if(type.equals(dbContract.DETAILS_TYPE_REVIEWS)) return REVIEW_TYPE;
+        else return -1;
     }
 
     public movie_detailsAdapter(Context context, Cursor c, int flags) {
@@ -79,7 +79,6 @@ public class movie_detailsAdapter extends CursorAdapter{
             }
         }
 
-
         View view= LayoutInflater.from(context).inflate(layid,viewGroup,false);
 
         if(ViewType==TRAILER_TYPE){
@@ -102,15 +101,13 @@ public class movie_detailsAdapter extends CursorAdapter{
 
         if(ViewType==TRAILER_TYPE) {
             TRAILER_ViewHolder mHolder=(TRAILER_ViewHolder) view.getTag();
-            mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_KEY)));
+            mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
         }
 
         else if((ViewType==REVIEW_TYPE)){
 
-            Log.i("sadsadsadsadsa",cursor.getString(2));
-
             Review_ViewHolder mHolder=(Review_ViewHolder) view.getTag();
-            mHolder.review_author.setText(cursor.getString(cursor.getColumnIndex(dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_CONTENT)));
+            mHolder.review_author.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE)));
         }
 
     }

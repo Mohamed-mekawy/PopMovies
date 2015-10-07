@@ -132,11 +132,19 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
 
+//                    Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
+//                    mTrailer.execute(Integer.toString(selected_tag));
+//
+//                    Review_Parser mReviews=new Review_Parser(getActivity());
+//                    mReviews.execute(Integer.toString(selected_tag));
+
+
                     Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
                     mTrailer.execute(Integer.toString(selected_tag));
 
-                    Review_Parser mReviews=new Review_Parser(getActivity());
-                    mReviews.execute(Integer.toString(selected_tag));
+                    Review_Parser rParser=new Review_Parser(getActivity());
+                    rParser.execute(Integer.toString(selected_tag));
+
 
                     Selected_position=position;
                 }

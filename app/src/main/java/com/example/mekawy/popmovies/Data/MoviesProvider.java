@@ -36,6 +36,7 @@ public class MoviesProvider extends ContentProvider{
 
     private static final int MOVIE_REVIEWS=9;
 
+    private static final int TRAILER_REVIEWS=10;
 
 
     private static final String POP_MOVIE_SELECT_BY_TAG=
@@ -63,6 +64,9 @@ public class MoviesProvider extends ContentProvider{
         mMathcer.addURI(Authority,dbContract.PATH_MOVIES_VIDEOS, MOVIE_TRAILER);
 
         mMathcer.addURI(Authority,dbContract.PATH_MOVIES_REVIEWS,MOVIE_REVIEWS);
+
+        mMathcer.addURI(Authority,dbContract.PATH_TRAILERS_REVIEWS,TRAILER_REVIEWS);
+
         return mMathcer;
     }
 
@@ -179,6 +183,18 @@ public class MoviesProvider extends ContentProvider{
             }
 
 
+            case TRAILER_REVIEWS:{
+                ret_cursor=db.query(dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sort
+                        );
+                break;
+            }
+
             case POP_MOVIES_WITH_TAG:{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
                 break;
@@ -193,6 +209,9 @@ public class MoviesProvider extends ContentProvider{
                 ret_cursor=get_Movie_by_TAG(uri, projection,sort);
                 break;
             }
+
+
+
 
             default:throw  new UnsupportedOperationException("unsupported Query "+uri);
         }
@@ -218,6 +237,8 @@ public class MoviesProvider extends ContentProvider{
             case MOVIE_TRAILER_WITH_TAG: return MOVIE_VIDEOS.CONTENT_DIR_TYPE;
 
             case MOVIE_REVIEWS:return dbContract.MOVIES_REVIEWS_TABLE.CONTENT_DIR_TYPE;
+
+            case TRAILER_REVIEWS:return dbContract.TRAILER_REVIEWS_TABLE.CONTENT_DIR_TYPE;
 
             default: throw new UnsupportedOperationException("unsupported type :"+uri);
         }
@@ -265,6 +286,15 @@ public class MoviesProvider extends ContentProvider{
                 break;
 
             }
+
+            case TRAILER_REVIEWS:{
+                Long ret_val = db.insert(dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME, null, contentValues);
+                if (ret_val != -1) ret_uri = dbContract.TRAILER_REVIEWS_TABLE.buildTrailerUri(ret_val);
+                else throw new SQLException("Provider_insert_DB_NOT_VALID");
+                break;
+            }
+
+
 
             default: throw new UnsupportedOperationException("error,Uri not supported");
         }

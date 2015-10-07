@@ -71,11 +71,25 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_AUTHOR +" TEXT ,"+
                         MOVIES_REVIEWS_TABLE.OWM_COLUMN_REVIEW_CONTENT + " TEXT );";
 
+
+        final String SQL_TRAILER_REVIEWS_TABLE=
+                "CREATE TABLE "+ dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+" ( "+
+                        dbContract.TRAILER_REVIEWS_TABLE._ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                        dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG + " TEXT NOT NULL, "+
+                        dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID + " TEXT UNIQUE NOT NULL, "+
+                        dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT+ " TEXT, "+
+                        dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" TEXT );";
+
+
+
         sqLiteDatabase.execSQL(SQL_POP_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_FAV_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_VOTE_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_MOVIES_VIDEOS_TABLE);
         sqLiteDatabase.execSQL(SQL_MOVIES_REVIEWS_TABLE);
+        sqLiteDatabase.execSQL(SQL_TRAILER_REVIEWS_TABLE);
+
+
     }
 
     @Override

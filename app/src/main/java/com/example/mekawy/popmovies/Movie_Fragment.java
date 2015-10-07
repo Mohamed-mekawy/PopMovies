@@ -53,6 +53,9 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private static final int MOVIE_TRAILER_LOADER =2;
     private static final int MOVIE_ISFAV_LOADER =3;
     private static final int MOVIE_REVIEW=4;
+    private static final int TRAILER_REVIEW=5;
+
+
 
     private TextView mFavText;
     private ImageView mFavImage;
@@ -275,8 +278,9 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);      // init Movie Loader
 //            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
 //                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
-            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
-            getLoaderManager().initLoader(MOVIE_REVIEW,null,this);
+//            getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
+//            getLoaderManager().initLoader(MOVIE_REVIEW,null,this);
+                getLoaderManager().initLoader(TRAILER_REVIEW,null,this);
         }
     }
 
@@ -326,8 +330,23 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                             new String[]{movie_tag},
                             null
                     );
+                }
+
+                case TRAILER_REVIEW:{
+                    String movie_tag=mUri.getPathSegments().get(1);
+                    return new CursorLoader(getActivity(),
+                            dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
+                            dbContract.TRAILER_REVIEW_PROJECTION,
+                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG+ " = ?",
+                            new String[]{movie_tag},
+                            null
+                    );
+
 
                 }
+
+
+
 
             }
         }
@@ -389,17 +408,25 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 }
                 break;
             }
-
+/*
             case MOVIE_REVIEW:{
                 if(data.moveToFirst()){
                     Current_type=1;
+                    movieAdapter.changeCursor(data);
                     movieAdapter.swapCursor(data);
                 }
                 break;
+            }*/
+
+
+            case TRAILER_REVIEW:{
+               movieAdapter.swapCursor(data);
+                break;
             }
 
+            }
         }
-    }
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
