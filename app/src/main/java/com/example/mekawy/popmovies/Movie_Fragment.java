@@ -170,10 +170,11 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     _delete = getActivity().getContentResolver().delete(mUri, null, null);
                     Log.i("Delete_fav_Record", Integer.toString(_delete));
 
-                    getFragmentManager().beginTransaction().
-                            replace(R.id.movie_container,
-                                    new Movie_Fragment(),
-                                    MainActivity.MOVIE_FRAG_TAG).commit();
+
+                    if(Utility.isTablet(getActivity()) && Utility.getCurrentOrientation(getActivity())==1){
+                        ((Remove_TwoPane) getActivity()).Remove_movieFragment();
+                    }
+
 
                     Toast.makeText(getActivity(), "Movie has been Removed from Favorite List", Toast.LENGTH_SHORT).show();
                     Toast.makeText(getActivity(), "You Can Back to Favorite List", Toast.LENGTH_SHORT).show();
@@ -181,8 +182,12 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         }
         );
-
         return rootview;
+    }
+
+
+    public interface Remove_TwoPane{
+        public void Remove_movieFragment();
     }
 
 
@@ -284,7 +289,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                             dbContract.TRAILER_REVIEW_PROJECTION,
                             dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG+ " = ?",
                             new String[]{movie_tag},
-                            null
+                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" ASC "
                     );
                 }
             }

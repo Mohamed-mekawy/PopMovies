@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.example.mekawy.popmovies.Data.dbContract;
 
-public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback{
+public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback,Movie_Fragment.Remove_TwoPane{
 
     public final static String MOVIE_FRAG_TAG ="MFTAG";
     public static boolean double_pane;
@@ -106,5 +106,13 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         else if(!double_pane){
             startActivity(new Intent(this,Movie_Activity.class).setData(movie_uri));
         }
+    }
+
+    @Override
+    public void Remove_movieFragment() {
+        getSupportFragmentManager().beginTransaction().
+                replace(R.id.movie_container,
+                        new Movie_Fragment(),
+                        MOVIE_FRAG_TAG).commit();
     }
 }

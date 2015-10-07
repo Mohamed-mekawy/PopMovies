@@ -51,10 +51,13 @@ public class movie_detailsAdapter extends CursorAdapter{
     @Override
     public int getItemViewType(int position) {
        Cursor c=(Cursor) getItem(position);
-       String type=c.getString(c.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE));
-       if(type.equals(dbContract.DETAILS_TYPE_TRAILER)) return TRAILER_TYPE;
-        else if(type.equals(dbContract.DETAILS_TYPE_REVIEWS)) return REVIEW_TYPE;
-        else return 0;
+
+        int type=c.getInt(c.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE));
+
+        if(type==dbContract.DETAILS_TYPE_TRAILER) return TRAILER_TYPE;
+        else if(type==dbContract.DETAILS_TYPE_REVIEWS) return REVIEW_TYPE;
+
+       else return -1;
     }
 
     public movie_detailsAdapter(Context context, Cursor c, int flags) {

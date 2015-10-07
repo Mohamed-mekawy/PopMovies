@@ -66,7 +66,7 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
                             dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
 
             String[] Selectionargs=
-                            new String[]{movie_tag[0], dbContract.DETAILS_TYPE_TRAILER};
+                            new String[]{movie_tag[0], Integer.toString(dbContract.DETAILS_TYPE_TRAILER)};
 
                     Cursor cur=context.getContentResolver().query(
                     dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
@@ -92,8 +92,7 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mTrailer.getString(MOVIES_VIDEOS_TRAILER_ID));
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mTrailer.getString(MOVIES_VIDEOS_TRAILER_KEY));
                     contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,dbContract.DETAILS_TYPE_TRAILER);
-                Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
-
+                    Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
 //                Log.i("Inserted trailers", entry.toString());
                 }
             }

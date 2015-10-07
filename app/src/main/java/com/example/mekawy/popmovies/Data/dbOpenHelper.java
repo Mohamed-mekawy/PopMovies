@@ -58,9 +58,7 @@ public class dbOpenHelper extends SQLiteOpenHelper {
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG + " TEXT NOT NULL, "+
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID + " TEXT UNIQUE NOT NULL, "+
                         dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT+ " TEXT, "+
-                        dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" TEXT );";
-
-
+                        dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" INTEGER );";
 
         sqLiteDatabase.execSQL(SQL_POP_MOVIES_TABLE);
         sqLiteDatabase.execSQL(SQL_FAV_MOVIES_TABLE);

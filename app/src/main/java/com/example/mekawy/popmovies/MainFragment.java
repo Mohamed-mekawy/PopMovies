@@ -134,8 +134,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         });
 
-        if(savedInstanceState!=null && savedInstanceState.containsKey(Selected_position_key))
-            Selected_position=savedInstanceState.getInt(Selected_position_key);
+        if(savedInstanceState!=null && savedInstanceState.containsKey(Selected_position_key)) {
+
+            Selected_position = savedInstanceState.getInt(Selected_position_key);
+            Log.i("mySelection",Integer.toString(Selected_position));
+        }
 
         return rootview;
     }
@@ -165,19 +168,31 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         else if(!data.moveToFirst())
             mAdapter.swapCursor(null);
 
-
         // to return to first of Gridview after restarting upon changing of the sort method;
-        if (!RESET_POSITION_FLAG){
+       /* if (!RESET_POSITION_FLAG){
             if(Selected_position!=GridView.INVALID_POSITION){
                 Image_Grid_View.smoothScrollToPosition(Selected_position);
             }
         }
+
         else if(RESET_POSITION_FLAG){
         Image_Grid_View.smoothScrollToPosition(0);
 
+        }*/
+
+
+        if (!RESET_POSITION_FLAG && Selected_position!=GridView.INVALID_POSITION){
+            Image_Grid_View.smoothScrollToPosition(Selected_position);
         }
 
+
+        if(RESET_POSITION_FLAG){
+        Image_Grid_View.smoothScrollToPosition(0);
         Image_Grid_View.setSelection(0);
+        Selected_position=0;
+        RESET_POSITION_FLAG=false;
+        }
+
     }
 
     @Override

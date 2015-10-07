@@ -66,7 +66,7 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
                             dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
 
             String[] Selectionargs=
-                    new String[]{movie_tag[0], dbContract.DETAILS_TYPE_REVIEWS};
+                    new String[]{movie_tag[0], Integer.toString(dbContract.DETAILS_TYPE_REVIEWS)};
 
             Cursor cur=context.getContentResolver().query(
                     dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,

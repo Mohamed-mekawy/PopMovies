@@ -40,8 +40,8 @@ public class dbContract {
             TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT,
             TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE
 };
-    public static final String DETAILS_TYPE_TRAILER="trailer";
-    public static final String DETAILS_TYPE_REVIEWS="review";
+    public static final int DETAILS_TYPE_TRAILER=0;
+    public static final int DETAILS_TYPE_REVIEWS=1;
 
 
     public static final class POP_MOVIES_TABLE implements BaseColumns {
@@ -149,7 +149,6 @@ public class dbContract {
         public static final String OWM_COLUMN_ITEM_ID = "item_id";
         public static final String OWM_COLUMN_CONTENT = "content";
         public static final String OWM_COLUMN_TYPE = "item_type";
-
 
         public static Uri buildTrailerUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
