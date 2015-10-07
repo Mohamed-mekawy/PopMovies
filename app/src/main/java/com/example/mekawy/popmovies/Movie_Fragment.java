@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,7 +52,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private static final int MOVIE_BASIC_LOADER =1;
     private static final int MOVIE_TRAILER_LOADER =2;
     private static final int MOVIE_ISFAV_LOADER =3;
-
+    private static final int MOVIE_REVIEW=4;
 
     private TextView mFavText;
     private ImageView mFavImage;
@@ -68,6 +69,9 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private View main_describtion;
     private ViewHolder viewHolder;
 
+
+    public static int Current_type=-1;
+    Cursor statsh;
 
     public Movie_Fragment() {
         setHasOptionsMenu(true);
@@ -88,6 +92,9 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         public final TextView Release_date;
         public final TextView movie_rating;
         public final TextView Describtion;
+        public final ImageView isFavimage;
+        public final TextView isFavtext;
+
 
         public ViewHolder(View rootview){
             movie_title=(TextView) rootview.findViewById(R.id.detail_title);
@@ -95,6 +102,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             Release_date=(TextView) rootview.findViewById(R.id.detail_date);
             movie_rating=(TextView) rootview.findViewById(R.id.detail_rate);
             Describtion=(TextView) rootview.findViewById(R.id.detail_desc);
+            isFavimage=(ImageView) rootview.findViewById(R.id.Movie_fav_icon);
+            isFavtext=(TextView) rootview.findViewById(R.id.Movie_fav_Text);
         }
     }
 
@@ -117,15 +126,44 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         mFavText=(TextView) rootview.findViewById(R.id.Movie_fav_Text);
 
         movielv=(ListView) rootview.findViewById(R.id.movie_details_lv);
-        movielv.addHeaderView(main_describtion);
+//        movielv.addHeaderView(main_describtion);
+        movielv.addHeaderView(main_describtion,null,false);
         movieAdapter=new movie_detailsAdapter(getActivity(),null,0);
         movielv.setAdapter(movieAdapter);
 
+/*
 
+        viewHolder.isFavimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("s32432d","ok");
+            }
+        });
+*/
 
+/*
+        movielv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
 
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    int x=movieAdapter.getItemViewType(i);
 
+                    Cursor cursor=(Cursor) adapterView.getItemAtPosition(i);
 
+                *//*
+                if(x==0){
+                                Cursor youtube_Cursor=(Cursor) adapterView.getItemAtPosition(i);
+                                if(youtube_Cursor.moveToFirst())
+                                Log.i("my link",Integer.toString(i));
+                            }
+                *//*
+
+                   if(cursor.moveToFirst()){
+                    Log.i("current TYPE",cursor.getString(cursor.getColumnIndex(dbContract.MOVIE_VIDEOS.OWM_COLUMN_TRAILER_NAME)));
+                   }
+            }
+        });
+        */
 
 
 /*
@@ -238,6 +276,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 //            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
 //                getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
             getLoaderManager().initLoader(MOVIE_TRAILER_LOADER, null, this);    // init Trailer Loader
+            getLoaderManager().initLoader(MOVIE_REVIEW,null,this);
         }
     }
 
@@ -264,6 +303,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                             new String[]{movie_tag},
                             null
                     );
+
                 }
 
                 case MOVIE_ISFAV_LOADER:{
@@ -276,6 +316,19 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                                 null,
                                 null);
                 }
+
+                case MOVIE_REVIEW:{
+                    String movie_tag=mUri.getPathSegments().get(1);
+                    return new CursorLoader(getActivity(),
+                            dbContract.MOVIES_REVIEWS_TABLE.CONTENT_URI,
+                            dbContract.MOVIE_REVIEWS_PROJECTION,
+                            dbContract.MOVIES_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG + " = ?",
+                            new String[]{movie_tag},
+                            null
+                    );
+
+                }
+
             }
         }
         return null;
@@ -329,7 +382,19 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
 
             case MOVIE_TRAILER_LOADER:{
+                if(data.moveToFirst()){
+                Current_type=0;
                 movieAdapter.swapCursor(data);
+
+                }
+                break;
+            }
+
+            case MOVIE_REVIEW:{
+                if(data.moveToFirst()){
+                    Current_type=1;
+                    movieAdapter.swapCursor(data);
+                }
                 break;
             }
 
