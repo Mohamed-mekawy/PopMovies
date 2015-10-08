@@ -44,15 +44,9 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
     @Override
     protected void onResume() {
         super.onResume();
-
         String Current_Sort_method= Utility.getsortmethod(this);
 
         if( Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method) ){
-
-            MainFragment mainf=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
-            if(mainf!=null)
-                mainf.update_Ui();
-
             // change to replace to fix Tablet Bug
             if(double_pane) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.movie_container,
@@ -70,6 +64,8 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -83,7 +79,6 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
             startActivity(resolver);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

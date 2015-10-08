@@ -55,28 +55,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Log.i("FRAGMENT_STATE", "onSaveInstanceState");
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id=item.getItemId();
-        if(id==R.id.RefreshMenue){
-            fetch_new_data();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.refreshmenue, menu);
-    }
-
     public void update_Ui(){
-        fetch_new_data();
         RESET_POSITION_FLAG=true;
+        fetch_new_data();
         getLoaderManager().restartLoader(Image_Loader, null, this);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        update_Ui();
+    }
+
     public void fetch_new_data(){
+        Log.i("mine_selection","fetch data");
         if(!Utility.getsortmethod(getActivity()).equals(getString(R.string.sort_fav))) {
             Fetch_Task newFetchtask = new Fetch_Task(getActivity());
             newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
@@ -168,29 +160,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         else if(!data.moveToFirst())
             mAdapter.swapCursor(null);
 
-        // to return to first of Gridview after restarting upon changing of the sort method;
-       /* if (!RESET_POSITION_FLAG){
-            if(Selected_position!=GridView.INVALID_POSITION){
-                Image_Grid_View.smoothScrollToPosition(Selected_position);
-            }
-        }
-
-        else if(RESET_POSITION_FLAG){
-        Image_Grid_View.smoothScrollToPosition(0);
-
-        }*/
-
-
-        if (!RESET_POSITION_FLAG && Selected_position!=GridView.INVALID_POSITION){
+        if (Selected_position!=GridView.INVALID_POSITION){
             Image_Grid_View.smoothScrollToPosition(Selected_position);
-        }
-
-
-        if(RESET_POSITION_FLAG){
-        Image_Grid_View.smoothScrollToPosition(0);
-        Image_Grid_View.setSelection(0);
-        Selected_position=0;
-        RESET_POSITION_FLAG=false;
         }
 
     }
@@ -199,4 +170,5 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
+
 }

@@ -109,7 +109,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         //Receive Bundle parcable data from bundle
         Bundle movie_arguments=getArguments();
-
         if(movie_arguments!=null){
             mUri=movie_arguments.getParcelable(MOVIE_BUNDLE_TAG);
             Log.i("rec_uri",mUri.toString());
@@ -136,7 +135,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                     }
             }
         });
-
 
         if(mUri!=null) {
             if(mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
