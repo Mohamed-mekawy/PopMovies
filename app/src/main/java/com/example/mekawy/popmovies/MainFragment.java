@@ -41,6 +41,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public MainFragment() {
         setHasOptionsMenu(true);
+
     }
 
 
