@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.example.mekawy.popmovies.Data.dbContract;
+import com.example.mekawy.popmovies.Data.MoviesContract;
 
 
 import org.json.JSONArray;
@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class Parser_Task extends AsyncTask<String,Void,Integer>{
 
@@ -94,10 +93,10 @@ public class Parser_Task extends AsyncTask<String,Void,Integer>{
                     Uri Content_uri = null;
 
                     if (sort_mode.equals(mContext.getString(R.string.sort_popularity_desc)))
-                        Content_uri = dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+                        Content_uri = MoviesContract.POP_MOVIES_TABLE.CONTENT_URI;
 
                     else if (sort_mode.equals(mContext.getString(R.string.sort_vote_average_desc)))
-                        Content_uri = dbContract.MOST_VOTED_TABLE.CONTENT_URI;
+                        Content_uri = MoviesContract.VOTE_DESC_TABLE.CONTENT_URI;
 
                     //get Current Avail Movies
                     Cursor get_movies=mContext.getContentResolver().query(

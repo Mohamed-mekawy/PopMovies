@@ -1,16 +1,11 @@
 package com.example.mekawy.popmovies;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.example.mekawy.popmovies.Data.dbContract;
 
 public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback,Movie_Fragment.Remove_TwoPane{
 

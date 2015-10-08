@@ -3,13 +3,12 @@ package com.example.mekawy.popmovies;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.mekawy.popmovies.Data.dbContract;
+import com.example.mekawy.popmovies.Data.MoviesContract;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -47,7 +46,7 @@ public class MovieAdapter extends CursorAdapter {
         ImageView mImageview=(ImageView)view;
 
         String image_path =
-                    cursor.getString(cursor.getColumnIndex(dbContract.OWM_COMMON_POSTER_PATH));
+                    cursor.getString(cursor.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_POSTER_PATH));
 
         if(!image_path.equals("null")) {
             Picasso.with(mContext).

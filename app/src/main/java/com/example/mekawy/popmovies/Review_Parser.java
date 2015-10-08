@@ -6,9 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.example.mekawy.popmovies.Data.dbContract;
+import com.example.mekawy.popmovies.Data.MoviesContract;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,15 +61,15 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
 
 
             String Selection_statment =
-                    dbContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+"."+ dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG +" = ? AND "+
-                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
+                    MoviesContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+"."+ MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG +" = ? AND "+
+                            MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
 
             String[] Selectionargs=
-                    new String[]{movie_tag[0], Integer.toString(dbContract.DETAILS_TYPE_REVIEWS)};
+                    new String[]{movie_tag[0], Integer.toString(MoviesContract.DETAILS_TYPE_REVIEWS)};
 
             Cursor cur=context.getContentResolver().query(
-                    dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
-                    dbContract.TRAILER_REVIEW_PROJECTION,
+                    MoviesContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
+                    MoviesContract.TRAILER_REVIEW_PROJECTION,
                     Selection_statment,
                     Selectionargs,
                     null
@@ -78,7 +77,7 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
 //
 //            if(cur.moveToFirst()){
 //                do {
-//                    Log.i("REVIEW Avail :",cur.getString(cur.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
+//                    Log.i("REVIEW Avail :",cur.getString(cur.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
 //                }while (cur.moveToNext());
 //            }
 
@@ -88,13 +87,13 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
                     JSONObject mReview=Reviews_array.getJSONObject(index);
                     String Review_id=mReview.getString(OWM_ID);
                     ContentValues contentValues=new ContentValues();
-                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
-                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mReview.getString(OWM_ID));
-                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME,mReview.getString(OWM_AUTHOR));
-                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mReview.getString(OWM_CONTENT));
-                    contentValues.put(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE,dbContract.DETAILS_TYPE_REVIEWS);
+                    contentValues.put(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG,movie_tag[0]);
+                    contentValues.put(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID,mReview.getString(OWM_ID));
+                    contentValues.put(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME,mReview.getString(OWM_AUTHOR));
+                    contentValues.put(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT, mReview.getString(OWM_CONTENT));
+                    contentValues.put(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE, MoviesContract.DETAILS_TYPE_REVIEWS);
 
-                    Uri entry=context.getContentResolver().insert(dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
+                    Uri entry=context.getContentResolver().insert(MoviesContract.TRAILER_REVIEWS_TABLE.CONTENT_URI, contentValues);
 //                    Log.i("Inserted Review", entry.toString());
                 }
 

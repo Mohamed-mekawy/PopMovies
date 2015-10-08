@@ -3,14 +3,13 @@ package com.example.mekawy.popmovies;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.example.mekawy.popmovies.Data.dbContract;
+import com.example.mekawy.popmovies.Data.MoviesContract;
 
 public class movie_detailsAdapter extends CursorAdapter{
 
@@ -52,10 +51,10 @@ public class movie_detailsAdapter extends CursorAdapter{
     public int getItemViewType(int position) {
        Cursor c=(Cursor) getItem(position);
 
-        int type=c.getInt(c.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE));
+        int type=c.getInt(c.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE));
 
-        if(type==dbContract.DETAILS_TYPE_TRAILER) return TRAILER_TYPE;
-        else if(type==dbContract.DETAILS_TYPE_REVIEWS) return REVIEW_TYPE;
+        if(type== MoviesContract.DETAILS_TYPE_TRAILER) return TRAILER_TYPE;
+        else if(type== MoviesContract.DETAILS_TYPE_REVIEWS) return REVIEW_TYPE;
 
        else return -1;
     }
@@ -103,13 +102,13 @@ public class movie_detailsAdapter extends CursorAdapter{
 
         if(ViewType==TRAILER_TYPE) {
             TRAILER_ViewHolder mHolder=(TRAILER_ViewHolder) view.getTag();
-            mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
+            mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
         }
 
         else if((ViewType==REVIEW_TYPE)){
             Review_ViewHolder mHolder=(Review_ViewHolder) view.getTag();
-            mHolder.review_author.setText("Review by : "+cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
-            mHolder.review_content.setText(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
+            mHolder.review_author.setText("Review by : "+cursor.getString(cursor.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
+            mHolder.review_content.setText(cursor.getString(cursor.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
         }
 
     }

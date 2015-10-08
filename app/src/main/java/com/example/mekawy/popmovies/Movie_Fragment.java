@@ -22,11 +22,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mekawy.popmovies.Data.MoviesContract;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
-
-import com.example.mekawy.popmovies.Data.dbContract;
 
 public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -131,13 +130,13 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 int Cursor_type=movieAdapter.getItemViewType(position-1);
                     if(Cursor_type==0){ //youtube Link
                         Cursor cursor=(Cursor) movieAdapter.getItem(position-1);
-                        Build_youtube_Link(cursor.getString(cursor.getColumnIndex(dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
+                        Build_youtube_Link(cursor.getString(cursor.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_CONTENT)));
                     }
             }
         });
 
         if(mUri!=null) {
-            if(mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
+            if(mUri.getPathSegments().get(0).equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME)){
             Header_viewHolder.isFavimage.setImageResource(R.drawable.favdelete);
             Header_viewHolder.isFavtext.setText(" Remove form favorite List ");
             }
@@ -148,12 +147,12 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             public void onClick(View view) {
                 String table = mUri.getPathSegments().get(0);
 
-                if (!table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
-                    Uri Favorite_Uri = dbContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build();
+                if (!table.equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                    Uri Favorite_Uri = MoviesContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build();
                     Cursor query_cursor =
                             getActivity().getContentResolver().query(
                                     Favorite_Uri,
-                                    dbContract.COMMON_SORT_PROJECTION,
+                                    MoviesContract.COMMON_SORT_PROJECTION,
                                     null,
                                     null,
                                     null);
@@ -163,7 +162,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                         AddtoFavTable(Current_movie_Cursor);
                 }
 
-                else if (table.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
+                else if (table.equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
                     int _delete = 0;
                     _delete = getActivity().getContentResolver().delete(mUri, null, null);
                     Log.i("Delete_fav_Record", Integer.toString(_delete));
@@ -208,22 +207,22 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
 
     public void AddtoFavTable(Cursor cur){
-        Uri Fav_Uri= dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
+        Uri Fav_Uri= MoviesContract.FAV_MOVIES_TABLE.CONTENT_URI;
         ContentValues fav_record_values=new ContentValues();
         if(cur.moveToFirst()) {
-            int id = cur.getInt(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TAG));
-            String mtitle = cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_TITLE));
-            String mOverview = cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_OVERVIEW));
-            String mRelease_date = cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_RELEASE_DATE));
-            String mPoster_path = cur.getString(cur.getColumnIndex(dbContract.OWM_COMMON_POSTER_PATH));
-            double mVote_avg = cur.getDouble(cur.getColumnIndex(dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE));
+            int id = cur.getInt(cur.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_TAG));
+            String mtitle = cur.getString(cur.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_TITLE));
+            String mOverview = cur.getString(cur.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_OVERVIEW));
+            String mRelease_date = cur.getString(cur.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_RELEASE_DATE));
+            String mPoster_path = cur.getString(cur.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_POSTER_PATH));
+            double mVote_avg = cur.getDouble(cur.getColumnIndex(MoviesContract.MOVIE_COMMON_COLUMN_VOTE_AVERAGE));
 
-            fav_record_values.put(dbContract.OWM_COMMON_COLUMN_TAG, id);
-            fav_record_values.put(dbContract.OWM_COMMON_COLUMN_TITLE, mtitle);
-            fav_record_values.put(dbContract.OWM_COMMON_COLUMN_OVERVIEW, mOverview);
-            fav_record_values.put(dbContract.OWM_COMMON_COLUMN_RELEASE_DATE, mRelease_date);
-            fav_record_values.put(dbContract.OWM_COMMON_POSTER_PATH, mPoster_path);
-            fav_record_values.put(dbContract.OWM_COMMON_COLUMN_VOTE_AVERAGE, mVote_avg);
+            fav_record_values.put(MoviesContract.MOVIE_COMMON_COLUMN_TAG, id);
+            fav_record_values.put(MoviesContract.MOVIE_COMMON_COLUMN_TITLE, mtitle);
+            fav_record_values.put(MoviesContract.MOVIE_COMMON_COLUMN_OVERVIEW, mOverview);
+            fav_record_values.put(MoviesContract.MOVIE_COMMON_COLUMN_RELEASE_DATE, mRelease_date);
+            fav_record_values.put(MoviesContract.MOVIE_COMMON_COLUMN_POSTER_PATH, mPoster_path);
+            fav_record_values.put(MoviesContract.MOVIE_COMMON_COLUMN_VOTE_AVERAGE, mVote_avg);
 
             Uri Fav_insert = getActivity().getContentResolver().insert(Fav_Uri, fav_record_values);
         }
@@ -249,7 +248,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         if (mUri != null) {
             String Current_table = mUri.getPathSegments().get(0);
             getLoaderManager().initLoader(MOVIE_BASIC_LOADER, null, this);      // init Movie Loader
-            if(!mUri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
+            if(!mUri.getPathSegments().get(0).equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME))
                 getLoaderManager().initLoader(MOVIE_ISFAV_LOADER, null, this);
                 getLoaderManager().initLoader(TRAILER_REVIEW,null,this);
         }
@@ -263,18 +262,18 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 case MOVIE_BASIC_LOADER:{
                         return new CursorLoader(getActivity(),
                                 mUri,
-                                dbContract.COMMON_SORT_PROJECTION,
+                                MoviesContract.COMMON_SORT_PROJECTION,
                                 null,
                                 null,
                                 null);
                 }
 
                 case MOVIE_ISFAV_LOADER:{
-                    Uri Favorite_query= dbContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build();
+                    Uri Favorite_query= MoviesContract.FAV_MOVIES_TABLE.CONTENT_URI.buildUpon().appendPath(mUri.getLastPathSegment()).build();
                         return new CursorLoader(
                                 getActivity(),
                                 Favorite_query,
-                                dbContract.COMMON_SORT_PROJECTION,
+                                MoviesContract.COMMON_SORT_PROJECTION,
                                 null,
                                 null,
                                 null);
@@ -283,11 +282,11 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 case TRAILER_REVIEW:{
                     String movie_tag=mUri.getPathSegments().get(1);
                     return new CursorLoader(getActivity(),
-                            dbContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
-                            dbContract.TRAILER_REVIEW_PROJECTION,
-                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG+ " = ?",
+                            MoviesContract.TRAILER_REVIEWS_TABLE.CONTENT_URI,
+                            MoviesContract.TRAILER_REVIEW_PROJECTION,
+                            MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG+ " = ?",
                             new String[]{movie_tag},
-                            dbContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" ASC "
+                            MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE +" ASC "
                     );
                 }
             }

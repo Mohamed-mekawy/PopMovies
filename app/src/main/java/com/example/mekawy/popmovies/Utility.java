@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.example.mekawy.popmovies.Data.dbContract;
+import com.example.mekawy.popmovies.Data.MoviesContract;
 
 import java.util.HashMap;
 
@@ -123,12 +122,12 @@ public class Utility {
 
     public static String get_table_name(Context context){
         Uri uri=get_content_uri(context);
-        if(uri.getPathSegments().get(0).equals(dbContract.POP_MOVIES_TABLE.TABLE_NAME))
-            return  dbContract.POP_MOVIES_TABLE.TABLE_NAME;
-        else if(uri.getPathSegments().get(0).equals(dbContract.MOST_VOTED_TABLE.TABLE_NAME))
-            return dbContract.MOST_VOTED_TABLE.TABLE_NAME;
-        else if(uri.getPathSegments().get(0).equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME))
-            return dbContract.FAV_MOVIES_TABLE.TABLE_NAME;
+        if(uri.getPathSegments().get(0).equals(MoviesContract.POP_MOVIES_TABLE.TABLE_NAME))
+            return  MoviesContract.POP_MOVIES_TABLE.TABLE_NAME;
+        else if(uri.getPathSegments().get(0).equals(MoviesContract.VOTE_DESC_TABLE.TABLE_NAME))
+            return MoviesContract.VOTE_DESC_TABLE.TABLE_NAME;
+        else if(uri.getPathSegments().get(0).equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME))
+            return MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME;
 
         return null;
     }
@@ -145,13 +144,13 @@ public class Utility {
         Uri ret_uri=null;
 
         if(mode.equals(context.getString(R.string.sort_popularity_desc)))
-            ret_uri=dbContract.POP_MOVIES_TABLE.CONTENT_URI;
+            ret_uri= MoviesContract.POP_MOVIES_TABLE.CONTENT_URI;
 
         else if(mode.equals(context.getString(R.string.sort_vote_average_desc)))
-            ret_uri=dbContract.MOST_VOTED_TABLE.CONTENT_URI;
+            ret_uri= MoviesContract.VOTE_DESC_TABLE.CONTENT_URI;
 
         else if(mode.equals(context.getString(R.string.sort_fav))){
-            ret_uri=dbContract.FAV_MOVIES_TABLE.CONTENT_URI;
+            ret_uri= MoviesContract.FAV_MOVIES_TABLE.CONTENT_URI;
         }
 
         return ret_uri;

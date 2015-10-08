@@ -7,9 +7,6 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,9 +17,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 
-import com.example.mekawy.popmovies.Data.dbContract;
-import com.example.mekawy.popmovies.Data.dbContract.POP_MOVIES_TABLE;
-import com.example.mekawy.popmovies.Data.dbContract.MOST_VOTED_TABLE;
+import com.example.mekawy.popmovies.Data.MoviesContract;
+import com.example.mekawy.popmovies.Data.MoviesContract.POP_MOVIES_TABLE;
+import com.example.mekawy.popmovies.Data.MoviesContract.VOTE_DESC_TABLE;
 
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -109,16 +106,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     if (table_name.equals(POP_MOVIES_TABLE.TABLE_NAME)) {
                         selected_tag = cr.getInt(cr.getColumnIndex(POP_MOVIES_TABLE.OWM_COLUMN_TAG));
-                        passed_uri = POP_MOVIES_TABLE.builUriwithtag(selected_tag);
+                        passed_uri = POP_MOVIES_TABLE.buildUriwithtag(selected_tag);
 
-                    } else if (table_name.equals(MOST_VOTED_TABLE.TABLE_NAME)) {
-                        selected_tag = cr.getInt(cr.getColumnIndex(MOST_VOTED_TABLE.OWM_COLUMN_TAG));
-                        passed_uri = MOST_VOTED_TABLE.builUriwithtag(selected_tag);
+                    } else if (table_name.equals(VOTE_DESC_TABLE.TABLE_NAME)) {
+                        selected_tag = cr.getInt(cr.getColumnIndex(VOTE_DESC_TABLE.OWM_COLUMN_TAG));
+                        passed_uri = VOTE_DESC_TABLE.buildUriwithtag(selected_tag);
                     }
 
-                    else if(table_name.equals(dbContract.FAV_MOVIES_TABLE.TABLE_NAME)){
-                        selected_tag = cr.getInt(cr.getColumnIndex(dbContract.FAV_MOVIES_TABLE.OWM_COLUMN_TAG));
-                        passed_uri = dbContract.FAV_MOVIES_TABLE.builUriwithtag(selected_tag);
+                    else if(table_name.equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME)){
+                        selected_tag = cr.getInt(cr.getColumnIndex(MoviesContract.FAV_MOVIES_TABLE.OWM_COLUMN_TAG));
+                        passed_uri = MoviesContract.FAV_MOVIES_TABLE.builUriwithtag(selected_tag);
                     }
                     ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
                     Selected_position=position;
@@ -145,7 +142,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             return new CursorLoader(
                     getActivity(),
                     load_uri,
-                    dbContract.COMMON_SORT_PROJECTION,
+                    MoviesContract.COMMON_SORT_PROJECTION,
                     null, null,
                     null
             );
