@@ -41,6 +41,9 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         String Current_Sort_method= Utility.getsortmethod(this);
 
         if( Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method) ){
+            MainFragment mainFragment=(MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_movie_fragment);
+                if(mainFragment!=null) mainFragment.restartLoader();
+
             // replace to current Moviedetails fragment in case of Tablet to fix view bug
             if(double_pane) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.movie_container,

@@ -51,18 +51,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         outState.putInt(Selected_position_key, Selected_position);
     }
 
-
-    /*update the current view and restartLoader*/
-    public void update_Ui(){
-        RESET_POSITION_FLAG=true;
-        fetch_new_data();
+    //restart Loader upon change in sort type
+    public void restartLoader(){
         getLoaderManager().restartLoader(Image_Loader, null, this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        update_Ui();
+        fetch_new_data();
     }
 
     //fetch the data only if sort method is pop/vote
