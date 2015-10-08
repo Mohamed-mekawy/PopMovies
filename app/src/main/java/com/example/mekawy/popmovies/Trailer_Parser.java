@@ -20,11 +20,18 @@ import java.net.URL;
 
 public class Trailer_Parser extends AsyncTask<String,Void,Void>{
 
+
+    /*this task insert the available movies trailers into movies_trailers_reviews table ,
+    * with identify that item is trailer by setting the Item_type field of record to 0
+    */
+
+
     //Movies Videos data
     final String MOVIES_VIDEOS_TRAILER_ID="id";
     final String MOVIES_VIDEOS_TRAILER_KEY="key";
     final String MOVIES_VIDEOS_TRAILER_NAME="name";
     final String OWM_RESULTS="results";
+
 
     private Context context;
 
@@ -34,6 +41,8 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
 
     @Override
     protected Void doInBackground(String... movie_tag) {
+    //    task has argument as movie_tag to save available triler for this tag into trailer_movie_table*
+
         BufferedReader reader=null;
         String Line=null;
         StringBuffer JSON_String=null;
@@ -59,7 +68,7 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
             JSONObject Movie_Object=new JSONObject(JSON_String.toString());
             JSONArray Trailer_array=Movie_Object.getJSONArray(OWM_RESULTS);
 
-
+//            find if there is available records with this movie_tag and it's type is trailer
             String SelectionQuery=
                    MoviesContract.TRAILER_REVIEWS_TABLE.TABLE_NAME+"."+ MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_MOVIE_TAG +" = ? AND "+
                             MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_TYPE + " = ? ";
@@ -74,13 +83,22 @@ public class Trailer_Parser extends AsyncTask<String,Void,Void>{
                     Selectionargs,
                     null
             );
-/*
+            /*
             if(cur.moveToFirst()){
                 do {
                     Log.i("Trailer Avail :",cur.getString(cur.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
                 }while (cur.moveToNext());
             }*/
 
+            // if there's not available it will insert into db
+
+
+            /* the parameter of
+            * @param id         the id of the trailer
+            * @param content    the key of trailer link will be saved into Content table field
+            * @param name       the name of the trailer
+            * @param type       will be 0 to represent trailer
+            */
             if(!cur.moveToFirst()){
                 for(int index=0;index<Trailer_array.length();index++){
 

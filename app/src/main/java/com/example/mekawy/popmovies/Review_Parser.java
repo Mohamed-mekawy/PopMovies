@@ -20,10 +20,17 @@ import java.net.URL;
 
 public class Review_Parser extends AsyncTask<String,Void,Void> {
 
+
+    /*this task insert the available movies reviews into movies_trailers_reviews table ,
+    * with identify that item is review by setting the Item_type field of record to 1
+    */
+
     final String OWM_ID="id";
     final String OWM_RESULTS="results";
     final String OWM_AUTHOR="author";
     final String OWM_CONTENT="content";
+
+
 
     private Context context;
 
@@ -74,13 +81,19 @@ public class Review_Parser extends AsyncTask<String,Void,Void> {
                     Selectionargs,
                     null
             );
-//
-//            if(cur.moveToFirst()){
-//                do {
-//                    Log.i("REVIEW Avail :",cur.getString(cur.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
-//                }while (cur.moveToNext());
-//            }
 
+            /*if(cur.moveToFirst()){
+                do {
+                    Log.i("REVIEW Avail :",cur.getString(cur.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUMN_ITEM_ID)));
+                }while (cur.moveToNext());
+            }*/
+
+            /* the parameter of
+            * @param id         the id of the review
+            * @param content    the Describtion text will be saved into Content table field
+            * @param name       the name of the author
+            * @param type       will be 1 to represent review
+            */
             if(!cur.moveToFirst()){
 
                 for(int index=0;index<Reviews_array.length();index++){
