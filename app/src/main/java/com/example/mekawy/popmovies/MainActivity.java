@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback,Movie_Fragment.Remove_TwoPane{
+public class MainActivity extends ActionBarActivity implements MainFragment.movie_Callback,MovieDetailedFragment.Remove_TwoPane{
 
     public final static String MOVIE_FRAG_TAG ="MFTAG";
     public static boolean double_pane;
@@ -21,12 +21,11 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         Sorted_by = Utility.getsortmethod(this);
 
         if (findViewById(R.id.movie_container) != null) {
-
             if (savedInstanceState == null) {
-                Movie_Fragment mf = new Movie_Fragment();
+                MovieDetailedFragment detailed_fragment = new MovieDetailedFragment();
                 getSupportFragmentManager().beginTransaction().
                         replace(R.id.movie_container,
-                                mf,
+                                detailed_fragment,
                                 MOVIE_FRAG_TAG).commit();
             }
 
@@ -42,10 +41,10 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         String Current_Sort_method= Utility.getsortmethod(this);
 
         if( Current_Sort_method!=null && !Sorted_by.equals(Current_Sort_method) ){
-            // change to replace to fix Tablet Bug
+            // replace to current Moviedetails fragment in case of Tablet to fix view bug
             if(double_pane) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.movie_container,
-                        new Movie_Fragment(),
+                        new MovieDetailedFragment(),
                         MOVIE_FRAG_TAG).commit();
             }
         }
@@ -83,8 +82,8 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
         // make new Bundle and put Uri as parcable form , then set Argument of the new Instance to that Bundle
         // and Replace the current one
         Bundle Double_Pane_Bundle=new Bundle();
-        Double_Pane_Bundle.putParcelable(Movie_Fragment.MOVIE_BUNDLE_TAG, movie_uri);
-        Movie_Fragment new_movieFragment=new Movie_Fragment();
+        Double_Pane_Bundle.putParcelable(MovieDetailedFragment.MOVIE_BUNDLE_TAG, movie_uri);
+        MovieDetailedFragment new_movieFragment=new MovieDetailedFragment();
         new_movieFragment.setArguments(Double_Pane_Bundle);
 
         getSupportFragmentManager().beginTransaction().
@@ -92,17 +91,19 @@ public class MainActivity extends ActionBarActivity implements MainFragment.movi
                         new_movieFragment,
                         MOVIE_FRAG_TAG).commit();
         }
-
+        //start intent in case of pone
         else if(!double_pane){
-            startActivity(new Intent(this,Movie_Activity.class).setData(movie_uri));
+            startActivity(new Intent(this,MovieDetailedActivity.class).setData(movie_uri));
         }
     }
 
+    /* Remove the Moviedetailsfragment in case of user tap on remove icon*/
     @Override
     public void Remove_movieFragment() {
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.movie_container,
-                        new Movie_Fragment(),
+                        new MovieDetailedFragment(),
                         MOVIE_FRAG_TAG).commit();
     }
+
 }

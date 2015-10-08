@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".Movie_Activity"
+            android:name=".MovieDetailedActivity"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

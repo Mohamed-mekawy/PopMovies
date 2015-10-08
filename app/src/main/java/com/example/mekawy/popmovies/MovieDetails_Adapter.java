@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.example.mekawy.popmovies.Data.MoviesContract;
 
-public class movie_detailsAdapter extends CursorAdapter{
+public class MovieDetails_Adapter extends CursorAdapter{
 
-
+    // the total number of types is 2 , trailer / Review
     private final static int TYPES_COUNT=2;
 
     private final static int TRAILER_TYPE=0;
@@ -31,7 +31,6 @@ public class movie_detailsAdapter extends CursorAdapter{
     }
 
 
-
     public static class TRAILER_ViewHolder{
         public final TextView Trailer_name;
 
@@ -40,13 +39,15 @@ public class movie_detailsAdapter extends CursorAdapter{
         }
     }
 
+
+    /*override this method to return the count of Associated types*/
     @Override
     public int getViewTypeCount() {
         return TYPES_COUNT;
     }
 
 
-
+    /* get Item is depended on the Cursor it self if Field OWM_COLUMN_TYPE of Cursor is 0> trailer,1>review*/
     @Override
     public int getItemViewType(int position) {
        Cursor c=(Cursor) getItem(position);
@@ -55,17 +56,16 @@ public class movie_detailsAdapter extends CursorAdapter{
 
         if(type== MoviesContract.DETAILS_TYPE_TRAILER) return TRAILER_TYPE;
         else if(type== MoviesContract.DETAILS_TYPE_REVIEWS) return REVIEW_TYPE;
-
+        // if other it's not Valid
        else return -1;
     }
 
-    public movie_detailsAdapter(Context context, Cursor c, int flags) {
+    public MovieDetails_Adapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        //why
 
         int ViewType=getItemViewType(cursor.getPosition());
         int layid=-1;
@@ -83,6 +83,8 @@ public class movie_detailsAdapter extends CursorAdapter{
 
         View view= LayoutInflater.from(context).inflate(layid,viewGroup,false);
 
+        /* set the View Holder after inflating Layout to easily use it in bindview method*/
+
         if(ViewType==TRAILER_TYPE){
             TRAILER_ViewHolder tHolder=new TRAILER_ViewHolder(view);
             view.setTag(tHolder);
@@ -92,6 +94,7 @@ public class movie_detailsAdapter extends CursorAdapter{
             Review_ViewHolder rHolder=new Review_ViewHolder(view);
             view.setTag(rHolder);
         }
+
         return view;
     }
 
@@ -100,11 +103,13 @@ public class movie_detailsAdapter extends CursorAdapter{
 
         int ViewType=getItemViewType(cursor.getPosition());
 
+        /*viw the Trailer name */
         if(ViewType==TRAILER_TYPE) {
             TRAILER_ViewHolder mHolder=(TRAILER_ViewHolder) view.getTag();
             mHolder.Trailer_name.setText(cursor.getString(cursor.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));
         }
 
+        /*View the Author name and Review itself*/
         else if((ViewType==REVIEW_TYPE)){
             Review_ViewHolder mHolder=(Review_ViewHolder) view.getTag();
             mHolder.review_author.setText("Review by : "+cursor.getString(cursor.getColumnIndex(MoviesContract.TRAILER_REVIEWS_TABLE.OWM_COLUM_ITEM_NAME)));

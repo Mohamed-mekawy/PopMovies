@@ -37,7 +37,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BEST_FIT_IMAGE=Utility.getBestFitLink(getActivity());
-        Log.i("FRAGMENT_STATE", "onCreate");
     }
 
     public MainFragment() {
@@ -48,10 +47,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        //save the Selected item position to back to this position again
         outState.putInt(Selected_position_key, Selected_position);
-        Log.i("FRAGMENT_STATE", "onSaveInstanceState");
     }
 
+
+    /*update the current view and restartLoader*/
     public void update_Ui(){
         RESET_POSITION_FLAG=true;
         fetch_new_data();
@@ -64,8 +65,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         update_Ui();
     }
 
+    //fetch the data only if sort method is pop/vote
     public void fetch_new_data(){
-        Log.i("mine_selection","fetch data");
         if(!Utility.getsortmethod(getActivity()).equals(getString(R.string.sort_fav))) {
             Fetch_Task newFetchtask = new Fetch_Task(getActivity());
             newFetchtask.execute(movies_api_key.API_KEY.get_API_key());
@@ -80,8 +81,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public void set_Grid_Col(){
         int Orient=Utility.getCurrentOrientation(getActivity());
-        if(Orient==0)Image_Grid_View.setNumColumns(2); // if Portrait view
-        else if(Orient==1)Image_Grid_View.setNumColumns(3); // if landscapeview
+        if(Orient==0)Image_Grid_View.setNumColumns(2); // if Portrait mode set to 2 horizontal postrs
+        else if(Orient==1)Image_Grid_View.setNumColumns(3); // if landscape mode set to 3 horizontal posters
     }
 
     @Override
@@ -90,6 +91,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         View rootview= inflater.inflate(R.layout.movies_grid, container, false);
         Image_Grid_View=(GridView) rootview.findViewById(R.id.movies_grid);
         set_Grid_Col();
+//        get instance of Adapter
         mAdapter=new MovieAdapter(getActivity(),null,0);
 
         Image_Grid_View.setAdapter(mAdapter);
@@ -117,16 +119,17 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         selected_tag = cr.getInt(cr.getColumnIndex(MoviesContract.FAV_MOVIES_TABLE.OWM_COLUMN_TAG));
                         passed_uri = MoviesContract.FAV_MOVIES_TABLE.builUriwithtag(selected_tag);
                     }
-                    ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
+                    //save the Selected psition
                     Selected_position=position;
+//                  use interface to start fragment MovieDetailsFragment , depends on current mode
+                    ((movie_Callback) getActivity()).onMovieSelected(passed_uri);
                 }
             }
         });
 
         if(savedInstanceState!=null && savedInstanceState.containsKey(Selected_position_key)) {
-
             Selected_position = savedInstanceState.getInt(Selected_position_key);
-            Log.i("mySelection",Integer.toString(Selected_position));
+//            Log.i("LastSelection",Integer.toString(Selected_position));
         }
 
         return rootview;
@@ -150,8 +153,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.i("LOADER_STATES","start onLoadFinished method");
-
+        /* swap the Adapter with new Cursor data*/
         if (data.moveToFirst())
             mAdapter.swapCursor(data);
         else if(!data.moveToFirst())

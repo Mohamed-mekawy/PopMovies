@@ -3,12 +3,14 @@ package com.example.mekawy.popmovies;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class Movie_Activity extends ActionBarActivity {
+public class MovieDetailedActivity extends ActionBarActivity {
+
+
+    /*in case of device is Phone this Activity will be responsible for create the fragment */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,9 +18,9 @@ public class Movie_Activity extends ActionBarActivity {
         setContentView(R.layout.activity_movie);
         if(savedInstanceState==null){
             Bundle movie_bundle=new Bundle();
-            movie_bundle.putParcelable(Movie_Fragment.MOVIE_BUNDLE_TAG, getIntent().getData());
+            movie_bundle.putParcelable(MovieDetailedFragment.MOVIE_BUNDLE_TAG, getIntent().getData());
 
-            Movie_Fragment mFragment=new Movie_Fragment();
+            MovieDetailedFragment mFragment=new MovieDetailedFragment();
             mFragment.setArguments(movie_bundle);
 
             getSupportFragmentManager().beginTransaction().

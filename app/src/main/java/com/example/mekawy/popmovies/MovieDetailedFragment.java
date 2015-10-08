@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +26,18 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MovieDetailedFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    //tage used by bundle to fetch Uri of selected movie
+    /*
+    * this fragment shows the details of selected movie from MainFragment , this details include the info from
+    * this movie table and the Trailers , Reviews if available from trailer_reviews_table
+    */
+
+    //tag used by bundle to fetch Uri of selected movie
     public final static String MOVIE_BUNDLE_TAG="mTag";
     private Uri mUri=null;
 
-    static final int _ID_COULMN=0;
-    static final int TAG_COULMN=1;
+    // column index used by cursor instead of finding column by name
     static final int TITLE_COULMN=2;
     static final int OVERVIEW_COULMN=3;
     static final int DATE_COULMN=4;
@@ -48,17 +51,26 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     private String http_width;
     private String IMAGE_BASE="http://image.tmdb.org/t/p/w"+MainFragment.BEST_FIT_IMAGE;
 
+    /*Loader used to Load data to the Fragment*/
+
+    /*
+    Basic Loader used to load the basic movie info from the movie table (pop/vote/fav)
+    */
     private static final int MOVIE_BASIC_LOADER =1;
-    private static final int MOVIE_TRAILER_LOADER =2;
+
+    /* MOVIE_ISFAV_LOADER used to check is the movie in favorite table or not,it's used only if current sort method is not
+    by favorite saved movies
+    */
     private static final int MOVIE_ISFAV_LOADER =3;
-    private static final int MOVIE_REVIEW=4;
+
+    /*TRAILER_REVIEW Loader will be used to fetch current movie Reviews and Trailers */
     private static final int TRAILER_REVIEW=5;
 
-
+    // Hold Cursor for the Current Movie
     private Cursor Current_movie_Cursor;
 
-
-    private movie_detailsAdapter movieAdapter;
+    private MovieDetails_Adapter movieAdapter;
+    //the main listview of fragment
     private ListView movielv;
 
 
@@ -69,7 +81,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     public static int Current_type=-1;
     Cursor statsh;
 
-    public Movie_Fragment() {
+    public MovieDetailedFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -81,6 +93,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         resize_hight=Dimen.get("resize_hight");
     }
 
+    /* View holder for Header of listview which display data stored in movie table*/
     public static class ViewHolder{
 
         public final TextView movie_title;
@@ -90,7 +103,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         public final TextView Describtion;
         public final ImageView isFavimage;
         public final TextView isFavtext;
-
 
         public ViewHolder(View rootview){
             movie_title=(TextView) rootview.findViewById(R.id.detail_title);
@@ -106,23 +118,32 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //Receive Bundle parcable data from bundle
+        //Receive Bundle parcable data from bundle , and assign the mURI as Uri for current movie table appended with tag
         Bundle movie_arguments=getArguments();
         if(movie_arguments!=null){
             mUri=movie_arguments.getParcelable(MOVIE_BUNDLE_TAG);
-            Log.i("rec_uri",mUri.toString());
+//            Log.i("rec_uri",mUri.toString());
         }
 
         View rootview= inflater.inflate(R.layout.movie_fragment, container, false);
+        // assign the movie_details layout as the the header of listview
         Header_layout =(View) getActivity().getLayoutInflater().inflate(R.layout.movie_details, null);
         Header_viewHolder =new ViewHolder(Header_layout);
+        // set tag of current ViewHolder to easily get view ref again anywhere
         Header_layout.setTag(Header_viewHolder);
 
         movielv=(ListView) rootview.findViewById(R.id.movie_details_lv);
         movielv.addHeaderView(Header_layout,null,false);
-        movieAdapter=new movie_detailsAdapter(getActivity(),null,0);
+        //define instance of Cursor adapter which will show the trailers and reviews
+        movieAdapter=new MovieDetails_Adapter(getActivity(),null,0);
         movielv.setAdapter(movieAdapter);
         update_Reviews_Trailers();
+
+
+        /* the listview on click Listener implemented to only notify that user tap on youtube Link ,
+        * so it fisrt detect type of item if it Trailer or not and then Build the Uri by getting key from coresspond Cursor ,
+        * and make implicit intent to play Trailer
+        */
 
         movielv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -135,6 +156,8 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
 
+
+        // Sshow diff. icon in case if the Movie in fav sort
         if(mUri!=null) {
             if(mUri.getPathSegments().get(0).equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME)){
             Header_viewHolder.isFavimage.setImageResource(R.drawable.favdelete);
@@ -142,6 +165,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
             }
         }
 
+        // Change the state of favorite movies
         Header_viewHolder.isFavimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,16 +189,15 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                 else if (table.equals(MoviesContract.FAV_MOVIES_TABLE.TABLE_NAME)) {
                     int _delete = 0;
                     _delete = getActivity().getContentResolver().delete(mUri, null, null);
-                    Log.i("Delete_fav_Record", Integer.toString(_delete));
-
-
+//                    Log.i("Delete_fav_Record", Integer.toString(_delete));
+                    Toast.makeText(getActivity(), "Movie has been Removed from Favorite List", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "You Can Back to Favorite List", Toast.LENGTH_SHORT).show();
+                    /*if the current view is table , i send notification to replace current fragment , and for the main fragment
+                    * it will automatically removed as the Loader keep querying the data while changing
+                    * */
                     if(Utility.isTablet(getActivity()) && Utility.getCurrentOrientation(getActivity())==1){
                         ((Remove_TwoPane) getActivity()).Remove_movieFragment();
                     }
-
-
-                    Toast.makeText(getActivity(), "Movie has been Removed from Favorite List", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(), "You Can Back to Favorite List", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -182,12 +205,12 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         return rootview;
     }
 
-
+    /* notify the Listener "MovieDetailedFragment" that user need to remove current fav movie from List*/
     public interface Remove_TwoPane{
         public void Remove_movieFragment();
     }
 
-
+    // fetch and save into db the trailers and reviews for this movies
     public void update_Reviews_Trailers(){
     if (mUri!=null) {
         Trailer_Parser mTrailer = new Trailer_Parser(getActivity());
@@ -198,14 +221,14 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
     }
     }
 
-
+    //Delete the record of movie from the table
     public void RemoveFromFavTable(Uri _remove){
         int Fav_Delete = getActivity().getContentResolver().delete(_remove,null, null);
         Header_viewHolder.isFavimage.setImageResource(R.drawable.favoff);
         Header_viewHolder.isFavtext.setText(" Remove form favorite List ");
     }
 
-
+    // add the Movie to fav_movies table
     public void AddtoFavTable(Cursor cur){
         Uri Fav_Uri= MoviesContract.FAV_MOVIES_TABLE.CONTENT_URI;
         ContentValues fav_record_values=new ContentValues();
@@ -228,7 +251,9 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
-
+        /* build the youtube link and start implicit intent with view options for user in case of
+        * the user has many options
+        * */
     public void Build_youtube_Link(String link_key){
         String Link_Base="https://www.youtube.com/watch";
         String Link_query="v";
@@ -241,7 +266,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
-
+    /* initiate the Loader to load the data */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -259,6 +284,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
         if(mUri!=null) {
             switch (id){
+                //querying the table_name with common projection
                 case MOVIE_BASIC_LOADER:{
                         return new CursorLoader(getActivity(),
                                 mUri,
@@ -279,6 +305,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
                                 null);
                 }
 
+                //Querying for Trailers and reviews but with ordered way to view trailer first and then reviews
                 case TRAILER_REVIEW:{
                     String movie_tag=mUri.getPathSegments().get(1);
                     return new CursorLoader(getActivity(),
@@ -302,6 +329,7 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
 
             case MOVIE_BASIC_LOADER:{
                 if(data.moveToFirst()){
+                    //Retreive the ViewHolder of the Header and assign values of current movie saved into Current_movie_Cursor
                     Current_movie_Cursor=data;
                     ViewHolder movie_holder=(ViewHolder) Header_layout.getTag();
                     movie_holder.movie_title.setText(data.getString(TITLE_COULMN));
@@ -349,7 +377,6 @@ public class Movie_Fragment extends Fragment implements LoaderManager.LoaderCall
         }
 
     }
-
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
